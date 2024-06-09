@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -20,50 +22,65 @@ public class WhoAmIController {
   final SessionRepo sessionRepo = new SessionRepo(Database.getInstance());
   final UserRepo userRepo = new UserRepo(Database.getInstance());
 
+  private Cookie createCookie() {
+
+    System.out.println("No cookie");
+    UUID uuid = UUID.randomUUID();
+    Cookie cookie = new Cookie("SESSION", uuid.toString());
+    return cookie;
+
+  }
+
+  private Cookie extractCookie(HttpServletRequest request) {
+    Cookie[] existingCookies = request.getCookies();
+    if (existingCookies != null) {
+      if (existingCookies.length > 0) {
+        return existingCookies[0];
+      }
+    }
+    return null;
+  }
+
   @GetMapping("/session")
   public ResponseEntity<String> getSession(HttpServletResponse response, HttpServletRequest request) {
-    Cookie[] existingCookies = request.getCookies();
     System.out.println("eating cookies");
-    if (existingCookies == null) {
-      System.out.println("No cookie");
-      UUID uuid = UUID.randomUUID();
-      Cookie cookie = new Cookie("SESSION", uuid.toString());
-      response.addCookie(cookie);
-      System.out.println("Sending new cookie: " + cookie.getValue());
 
+    SessionResponse responseBody = null;
+
+    Cookie existingCookie = extractCookie(request);
+    if (existingCookie != null) {
+      String cookieValue = existingCookie.getValue();
+      cookieValue = cookieValue.replaceAll("SESSION=", "");
+      int userId = sessionRepo.getUserIdFromSessionToken(cookieValue);
+      if (userId != -1) {
+        responseBody = SessionResponse.foundExistingSession;
+      } else {
+        existingCookie.setMaxAge(0);
+        responseBody = SessionResponse.removedExpiredSession;
+        response.addCookie(existingCookie);
+      }
     } else {
-      System.out.println("existing cookie:" + existingCookies[0].getValue());
-      // int userId = sessionRepo.getUserIdFromSessionToken(token);
-      // System.out.println(userId);
-      // if (userId == -1) {
-      //   UnnamedUser user = new UnnamedUser(token);
-      //   accessor.setUser(user);
-      // } else {
-      //   System.out.println("adding user to accessor");
-      //   User user = userRepo.getUser(userId);
-      //   accessor.setUser(user);
-      // }
+      Cookie newCookie = createCookie();
+      responseBody = SessionResponse.createdNewSession;
+      response.addCookie(newCookie);
+
     }
-    return ResponseEntity.ok().body(null);
+    return ResponseEntity.ok().body(responseBody.getName());
 
   }
 
   @PostMapping("/whoami")
   public ResponseEntity<User> whoAmI(HttpServletResponse response, HttpServletRequest request) {
-    Cookie[] existingCookies = request.getCookies();
-    System.out.println("whoami existing cookies: " + existingCookies);
-    if (existingCookies != null) {
+    User user = null;
+    Cookie existingCookie = extractCookie(request);
 
-      int userId = sessionRepo.getUserIdFromSessionToken(existingCookies[0].getValue());
-      System.out.println(userId);
+    if (existingCookie != null) {
+      int userId = sessionRepo.getUserIdFromSessionToken(existingCookie.getValue());
       if (userId != -1) {
-        User user = userRepo.getUser(userId);
-        return ResponseEntity.ok().body(user);
-      } else {
-
+        user = userRepo.getUser(userId);
       }
     }
-    return ResponseEntity.ok().body(null);
+    return ResponseEntity.ok().body(user);
   }
 
   @PostMapping("/addUser")
