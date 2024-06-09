@@ -34,7 +34,7 @@ public class ChatController {
 
   @MessageMapping("/chat.addUser")
   @SendTo("/topic/public")
-  public ChatMessage addUser(@Payload CreateUserRequest createUserRequest,
+  public ChatMessage addUser(@Payload InboundMessage createUserRequest,
       SimpMessageHeaderAccessor headerAccessor) {
     // System.out.println("in chat.adduser: " + chatMessage.getSender());
     // Add username in web socket session

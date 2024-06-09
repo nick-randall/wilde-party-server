@@ -33,6 +33,16 @@ public class WhoAmIController {
 
     } else {
       System.out.println("existing cookie:" + existingCookies[0].getValue());
+      // int userId = sessionRepo.getUserIdFromSessionToken(token);
+      // System.out.println(userId);
+      // if (userId == -1) {
+      //   UnnamedUser user = new UnnamedUser(token);
+      //   accessor.setUser(user);
+      // } else {
+      //   System.out.println("adding user to accessor");
+      //   User user = userRepo.getUser(userId);
+      //   accessor.setUser(user);
+      // }
     }
     return ResponseEntity.ok().body(null);
 
@@ -49,8 +59,7 @@ public class WhoAmIController {
       if (userId != -1) {
         User user = userRepo.getUser(userId);
         return ResponseEntity.ok().body(user);
-      }
-      else {
+      } else {
 
       }
     }
@@ -59,11 +68,11 @@ public class WhoAmIController {
 
   @PostMapping("/addUser")
   public ResponseEntity<User> addUser(HttpServletRequest request, @RequestBody String username) {
-   System.out.println("add user "+ username);
+    System.out.println("add user " + username);
     Cookie[] cookies = request.getCookies();
     if (cookies != null && cookies.length > 0) {
-     
-      User newUser  = userRepo.createUser(username);
+
+      User newUser = userRepo.createUser(username);
       sessionRepo.addSession(newUser.id, cookies[0].getValue());
       return ResponseEntity.ok().body(newUser);
     }

@@ -2,7 +2,13 @@ package com.stomp.chat;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -11,7 +17,14 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
+import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.*;
+import org.springframework.web.socket.server.HandshakeInterceptor;
+import org.springframework.web.util.WebUtils;
+
+import ch.qos.logback.core.joran.event.EndEvent;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -22,7 +35,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
-    registry.addEndpoint("/ws").setAllowedOriginPatterns("*")// .addInterceptors(httpSessionHandshakeInterceptor())
+    registry.addEndpoint("/ws").setAllowedOriginPatterns("*").addInterceptors(httpSessionHandshakeInterceptor())
         .withSockJS();
   }
 
@@ -32,53 +45,34 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     registry.enableSimpleBroker("/topic");
   }
 
-  // @Bean
-  // public HandshakeInterceptor httpSessionHandshakeInterceptor() {
-  // return new HandshakeInterceptor() {
-  // @Override
-  // public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse
-  // response,
-  // WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception
-  // {
-  // System.out.println("before handshake");
-  // if (request instanceof ServletServerHttpRequest) {
-  // ServletServerHttpRequest servletServerRequest = (ServletServerHttpRequest)
-  // request;
-  // HttpServletRequest servletRequest = servletServerRequest.getServletRequest();
-  // Cookie[] existingCookies = servletRequest.getCookies();
-  // Enumeration<String> x = servletRequest.getHeaderNames();
-  // while(x.asIterator().hasNext()) {
-  // System.out.println(x.nextElement());
+  @Bean
+  public HandshakeInterceptor httpSessionHandshakeInterceptor() {
+    return new HandshakeInterceptor() {
+      @Override
+      public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
+          Map<String, Object> attributes) throws Exception {
+        System.out.println("before handshake");
+        if (request instanceof ServletServerHttpRequest) {
+          ServletServerHttpRequest servletServerRequest = (ServletServerHttpRequest) request;
+          HttpServletRequest servletRequest = servletServerRequest.getServletRequest();
+          Cookie[] existingCookies = servletRequest.getCookies();
+          if (existingCookies != null) {
+            if (existingCookies.length > 0) {
+              Cookie cookie = existingCookies[0];
+              attributes.put("cookie", cookie.getValue());
+              return true;
+            }
+          }
+        }
+        return false;
+      }
 
-  // }
-
-  // System.out.println(existingCookies);
-  // System.out.println(servletRequest.getHeader("token"));
-  // if (existingCookies != null) {
-  // // System.out.println("No cookie");
-  // // UUID uuid = UUID.randomUUID();
-  // // Cookie cookie = new Cookie("SESSION", uuid.toString());
-  // // response.addCookie(cookie);
-  // System.out.println(existingCookies);
-
-  // }
-  // Cookie cookie = WebUtils.getCookie(servletRequest, "SESSION");
-  // if (cookie != null) {
-  // System.out.println(cookie.getValue());
-  // attributes.put("cookie", cookie.getValue());
-  // }
-  // }
-  // return true;
-  // }
-
-  // @Override
-  // public void afterHandshake(ServerHttpRequest request, ServerHttpResponse
-  // response, WebSocketHandler wsHandler,
-  // Exception exception) {
-  // System.out.println("after handshake");
-  // }
-  // };
-  // }
+      @Override
+      public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
+          Exception exception) {
+      }
+    };
+  }
 
   @Override
   public void configureClientInboundChannel(ChannelRegistration registration) {
@@ -87,24 +81,23 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
       public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
-          // Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
-          // List<String> authorization = accessor.getNativeHeader("Authorization");
-          List<String> tokens = accessor.getNativeHeader("token");
-          String token = tokens.get(0);
-          if (tokens.size() > 0) {
-            token = token.replaceAll("SESSION=", "");
-            System.out.println(token);
-            int userId = sessionRepo.getUserIdFromSessionToken(token);
-            System.out.println(userId);
-            if (userId == -1) {
-              UnnamedUser user = new UnnamedUser(token);
-              // User user = new User("l");
-              accessor.setUser(user);
-            } else {
-              System.out.println("adding user to accessor");
-              User user = userRepo.getUser(userId);
-              accessor.setUser(user);
+          Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
+          try {
+            String token = (String) sessionAttributes.get("cookie");
+            if (token != null) {
+              int userId = sessionRepo.getUserIdFromSessionToken(token);
+              System.out.println(userId);
+              if (userId == -1) {
+                UnnamedUser user = new UnnamedUser(token);
+                accessor.setUser(user);
+              } else {
+                System.out.println("adding user to accessor");
+                User user = userRepo.getUser(userId);
+                accessor.setUser(user);
+              }
             }
+          } catch (Exception e) {
+            System.err.println(e);
           }
         }
 

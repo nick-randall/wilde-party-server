@@ -1,6 +1,6 @@
 package com.stomp.chat;
 
-class CreateUserRequest {
+class InboundMessage {
  private String username;
   private MessageType type;
  
