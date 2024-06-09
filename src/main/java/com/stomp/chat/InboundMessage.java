@@ -1,14 +1,18 @@
 package com.stomp.chat;
 
-class InboundMessage {
- private String username;
-  private MessageType type;
- 
+import com.stomp.chat.OutboundMessage.MessageType;
 
-  public enum MessageType {
-    CHAT,
-    JOIN,
-    LEAVE
+class InboundMessage {
+  private String username;
+  private MessageType type;
+  private String content;
+
+  public String getContent() {
+    return content;
+  }
+
+  public void setContent(String content) {
+    this.content = content;
   }
 
 
@@ -16,16 +20,13 @@ class InboundMessage {
     return username;
   }
 
-
   public void setUsername(String username) {
     this.username = username;
   }
 
-
   public MessageType getType() {
     return type;
   }
-
 
   public void setType(MessageType type) {
     this.type = type;

@@ -1,16 +1,16 @@
 package com.stomp.chat;
 
-public class ChatMessage {
+public class OutboundMessage {
 
   private MessageType type;
   private String content;
   private User sender;
 
-  public ChatMessage() {
+  public OutboundMessage() {
     System.out.println("creating chat message");
   }
 
-  public ChatMessage(MessageType type, String content, User sender) {
+  public OutboundMessage(MessageType type, String content, User sender) {
     System.out.println("creating chat message");
     this.type = type;
     this.content = content;
@@ -20,7 +20,8 @@ public class ChatMessage {
   public enum MessageType {
     CHAT,
     JOIN,
-    LEAVE
+    LEAVE,
+    IGNORE
   }
 
   public MessageType getType() {

@@ -1,15 +1,10 @@
 package com.stomp.chat;
 
-import org.apache.catalina.connector.Request;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,10 +46,11 @@ public class WhoAmIController {
     if (existingCookie != null) {
       String cookieValue = existingCookie.getValue();
       cookieValue = cookieValue.replaceAll("SESSION=", "");
-      int userId = sessionRepo.getUserIdFromSessionToken(cookieValue);
-      if (userId != -1) {
+      Session existingSession = sessionRepo.getSessionFromSessionToken(cookieValue);
+      if (existingSession != null) {
         responseBody = SessionResponse.foundExistingSession;
       } else {
+        // Create expired cookie from existing cookie and send it to remove old cookie
         existingCookie.setMaxAge(0);
         responseBody = SessionResponse.removedExpiredSession;
         response.addCookie(existingCookie);
@@ -75,9 +71,9 @@ public class WhoAmIController {
     Cookie existingCookie = extractCookie(request);
 
     if (existingCookie != null) {
-      int userId = sessionRepo.getUserIdFromSessionToken(existingCookie.getValue());
-      if (userId != -1) {
-        user = userRepo.getUser(userId);
+      Session existingSession = sessionRepo.getSessionFromSessionToken(existingCookie.getValue());
+      if (existingSession != null) {
+        user = userRepo.getUser(existingSession.userId);
       }
     }
     return ResponseEntity.ok().body(user);
@@ -85,12 +81,11 @@ public class WhoAmIController {
 
   @PostMapping("/addUser")
   public ResponseEntity<User> addUser(HttpServletRequest request, @RequestBody String username) {
-    System.out.println("add user " + username);
-    Cookie[] cookies = request.getCookies();
-    if (cookies != null && cookies.length > 0) {
+    Cookie cookie = extractCookie(request);
+    if (cookie != null) {
 
       User newUser = userRepo.createUser(username);
-      sessionRepo.addSession(newUser.id, cookies[0].getValue());
+      sessionRepo.addSession(newUser.id, cookie.getValue(), false);
       return ResponseEntity.ok().body(newUser);
     }
     return ResponseEntity.ok().body(null);

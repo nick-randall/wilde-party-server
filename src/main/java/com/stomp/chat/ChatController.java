@@ -17,24 +17,22 @@ public class ChatController {
 
   @MessageMapping("/chat.sendMessage")
   @SendTo("/topic/public")
-  public ChatMessage sendMessage(@Payload ChatMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
-    System.out.println("new chat msg: " + chatMessage.getContent());
-    System.out.println("getting cookie from Principal:");
-
-    System.out.println(headerAccessor.getUser().getName());
-    return chatMessage;
+  public OutboundMessage sendMessage(@Payload InboundMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
+    OutboundMessage outboundMessage = new OutboundMessage(chatMessage.getType(), chatMessage.getContent(),
+        (User) headerAccessor.getUser());
+    return outboundMessage;
   }
 
   @MessageMapping("/chat.sendMessage/{room}")
   @SendTo("/topic/{room}")
-  public ChatMessage sendMessageToRoom(@DestinationVariable String room, @Payload ChatMessage chatMessage) {
+  public OutboundMessage sendMessageToRoom(@DestinationVariable String room, @Payload OutboundMessage chatMessage) {
     System.out.println("new chat msg: " + chatMessage.getContent() + " sent to room " + room);
     return chatMessage;
   }
 
   @MessageMapping("/chat.addUser")
   @SendTo("/topic/public")
-  public ChatMessage addUser(@Payload InboundMessage createUserRequest,
+  public OutboundMessage addUser(@Payload InboundMessage createUserRequest,
       SimpMessageHeaderAccessor headerAccessor) {
     // System.out.println("in chat.adduser: " + chatMessage.getSender());
     // Add username in web socket session
@@ -42,25 +40,17 @@ public class ChatController {
     // createUserRequest.getSender());
     // headerAccessor.getSessionAttributes().put("userId",
     // chatMessage.getSender());
-    ChatMessage chatMessage = new ChatMessage();
-    Principal user = headerAccessor.getUser();
-    if (user instanceof User) {
-      // if (user instanceof UnnamedUser) {
-      // UnnamedUser unnamedUser = (UnnamedUser) user;
-      // User newUser = new User(chatMessage.getSender());
-      // userRepo.addUser(newUser);
-      // sessionRepo.addSession(newUser.id, unnamedUser.token);
-      // } else {
-      System.out.println(user.getName());
+    Object currUser = headerAccessor.getSessionAttributes().get("user");
+    System.out.println(currUser);
+    OutboundMessage chatMessage = new OutboundMessage();
+    Principal principal = headerAccessor.getUser();
+    if (principal != null) {
+      User user = (User) principal;
+      Session session = sessionRepo.getSessionFromUserId(user.id);
+      sessionRepo.setIsInChatRoom(session.id, true);
       headerAccessor.getSessionAttributes().put("username", user.getName());
-      chatMessage.setSender((User) user);
+      chatMessage.setSender(user);
     }
-    // }
-
-    // System.out.println(headerAccessor.getFirstNativeHeader("token"));
-    // System.out.println("getting cookie from Principal:");
-    // System.out.println(headerAccessor.getUser().getName());
-    // System.out.println(user.getId());
     return chatMessage;
   }
 

@@ -11,6 +11,7 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -21,6 +22,8 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.*;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 import org.springframework.web.util.WebUtils;
+
+import com.stomp.chat.OutboundMessage.MessageType;
 
 import ch.qos.logback.core.joran.event.EndEvent;
 import jakarta.servlet.http.Cookie;
@@ -59,7 +62,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
           if (existingCookies != null) {
             if (existingCookies.length > 0) {
               Cookie cookie = existingCookies[0];
-              attributes.put("cookie", cookie.getValue());
+              attributes.put("token", cookie.getValue());
               return true;
             }
           }
@@ -83,24 +86,47 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
           Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
           try {
-            String token = (String) sessionAttributes.get("cookie");
+            String token = (String) sessionAttributes.get("token");
             if (token != null) {
-              int userId = sessionRepo.getUserIdFromSessionToken(token);
-              System.out.println(userId);
-              if (userId == -1) {
-                UnnamedUser user = new UnnamedUser(token);
-                accessor.setUser(user);
-              } else {
+              Session existingSession = sessionRepo.getSessionFromSessionToken(token);
+              if (existingSession != null) {
                 System.out.println("adding user to accessor");
-                User user = userRepo.getUser(userId);
+                User user = userRepo.getUser(existingSession.userId);
                 accessor.setUser(user);
               }
             }
           } catch (Exception e) {
             System.err.println(e);
           }
-        }
+        } else if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
+          System.err.println("SUBSCRIBE msg");
+          Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
+          String token = (String) sessionAttributes.get("token");
+          if (token != null) {
+            Session existingSession = sessionRepo.getSessionFromSessionToken(token);
+            if (existingSession != null && existingSession.isInChatRoom) {
+              System.out.println("blocking adding to chat room");
+              Object o = message.getPayload();
+              String x = "9";
+              // InboundMessage msgPayload = (InboundMessage) message.getPayload();
+              // msgPayload.setType(MessageType.IGNORE);
+              // Message<Object> m = new Message<Object>() {
 
+              //   @Override
+              //   public Object getPayload() {
+              //     return msgPayload;
+              //   }
+
+              //   @Override
+              //   public MessageHeaders getHeaders() {
+              //     return message.getHeaders();
+              //   }
+
+              // };
+              // return m;
+            }
+          }
+        }
         return message;
       }
     };
