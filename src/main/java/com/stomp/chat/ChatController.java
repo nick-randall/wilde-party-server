@@ -46,8 +46,6 @@ public class ChatController {
     Principal principal = headerAccessor.getUser();
     if (principal != null) {
       User user = (User) principal;
-      Session session = sessionRepo.getSessionFromUserId(user.id);
-      sessionRepo.setIsInChatRoom(session.id, true);
       headerAccessor.getSessionAttributes().put("username", user.getName());
       chatMessage.setSender(user);
     }

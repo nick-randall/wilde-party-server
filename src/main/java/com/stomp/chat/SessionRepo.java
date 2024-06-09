@@ -24,18 +24,9 @@ public class SessionRepo {
 
   }
 
-  public void setIsInChatRoom(int sessionId, boolean isInChatRoom) {
-    Optional<Session> session = db.sessions.stream().filter(e -> e.id == sessionId).findFirst();
-    if (session.isPresent()) {
-      db.sessions.remove(session.get());
-      Session updated = session.get();
-      updated.isInChatRoom = isInChatRoom;
-      db.sessions.add(updated);
-    }
-  }
 
-  public void addSession(int userId, String token, boolean isInChatRoom) {
-    Session sesh = new Session(userId, token, isInChatRoom);
+  public void addSession(int userId, String token) {
+    Session sesh = new Session(userId, token);
     db.sessions.add(sesh);
     System.out.println("after adding sesh:" + db.sessions.size());
   }

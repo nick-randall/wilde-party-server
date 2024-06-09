@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -48,16 +50,16 @@ public class WhoAmIController {
       cookieValue = cookieValue.replaceAll("SESSION=", "");
       Session existingSession = sessionRepo.getSessionFromSessionToken(cookieValue);
       if (existingSession != null) {
-        responseBody = SessionResponse.foundExistingSession;
+        responseBody = SessionResponse.FOUND_EXISTING_SESSION;
       } else {
         // Create expired cookie from existing cookie and send it to remove old cookie
         existingCookie.setMaxAge(0);
-        responseBody = SessionResponse.removedExpiredSession;
+        responseBody = SessionResponse.REMOVED_EXPIRED_SESSION;
         response.addCookie(existingCookie);
       }
     } else {
       Cookie newCookie = createCookie();
-      responseBody = SessionResponse.createdNewSession;
+      responseBody = SessionResponse.CREATED_NEW_SESSION;
       response.addCookie(newCookie);
 
     }
@@ -80,12 +82,13 @@ public class WhoAmIController {
   }
 
   @PostMapping("/addUser")
-  public ResponseEntity<User> addUser(HttpServletRequest request, @RequestBody String username) {
+  public ResponseEntity<User> addUser(HttpServletRequest request, @RequestBody AddUserRequest addUserRequest) {
+    System.out.println(addUserRequest);
     Cookie cookie = extractCookie(request);
     if (cookie != null) {
-
-      User newUser = userRepo.createUser(username);
-      sessionRepo.addSession(newUser.id, cookie.getValue(), false);
+      System.out.println(addUserRequest);
+      User newUser = userRepo.createUser(addUserRequest.getUsername());
+      sessionRepo.addSession(newUser.id, cookie.getValue());
       return ResponseEntity.ok().body(newUser);
     }
     return ResponseEntity.ok().body(null);

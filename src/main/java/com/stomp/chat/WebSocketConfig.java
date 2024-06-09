@@ -55,6 +55,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
       public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
           Map<String, Object> attributes) throws Exception {
         System.out.println("before handshake");
+
         if (request instanceof ServletServerHttpRequest) {
           ServletServerHttpRequest servletServerRequest = (ServletServerHttpRequest) request;
           HttpServletRequest servletRequest = servletServerRequest.getServletRequest();
@@ -67,6 +68,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             }
           }
         }
+        System.out.println("SOMETHING WENT WRONG");
         return false;
       }
 
@@ -98,34 +100,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
           } catch (Exception e) {
             System.err.println(e);
           }
-        } else if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
-          System.err.println("SUBSCRIBE msg");
-          Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
-          String token = (String) sessionAttributes.get("token");
-          if (token != null) {
-            Session existingSession = sessionRepo.getSessionFromSessionToken(token);
-            if (existingSession != null && existingSession.isInChatRoom) {
-              System.out.println("blocking adding to chat room");
-              Object o = message.getPayload();
-              String x = "9";
-              // InboundMessage msgPayload = (InboundMessage) message.getPayload();
-              // msgPayload.setType(MessageType.IGNORE);
-              // Message<Object> m = new Message<Object>() {
 
-              //   @Override
-              //   public Object getPayload() {
-              //     return msgPayload;
-              //   }
-
-              //   @Override
-              //   public MessageHeaders getHeaders() {
-              //     return message.getHeaders();
-              //   }
-
-              // };
-              // return m;
-            }
-          }
         }
         return message;
       }
