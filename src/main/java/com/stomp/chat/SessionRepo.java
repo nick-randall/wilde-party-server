@@ -1,22 +1,27 @@
 package com.stomp.chat;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.ArrayList;
 
 public class SessionRepo {
+  Database db;
 
-  List<Session> sessions = new ArrayList<>();
+  SessionRepo(Database db) {
+    this.db = db;
+  }
+
+  // List<Session> sessions = db.sessions;
 
   public int getUserIdFromSessionToken(String sessionToken) {
-    Optional<Session> foundSession = sessions.stream().filter(e -> e.token == sessionToken).findFirst();
-    // if sessionId is expired, remove it.
+
+    Optional<Session> foundSession = db.sessions.stream().filter(e -> e.token.equals(sessionToken)).findFirst();
+    System.out.println("found session associated with this cookie? " + foundSession.isPresent());
     return foundSession.isPresent() ? foundSession.get().userId : -1;
   }
 
   public void addSession(int userId, String token) {
     Session sesh = new Session(userId, token);
-    sessions.add(sesh);
+    db.sessions.add(sesh);
+    System.out.println("after adding sesh:" + db.sessions.size());
   }
 
 }

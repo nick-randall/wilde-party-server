@@ -1,5 +1,7 @@
 package com.stomp.chat;
 
+import java.security.Principal;
+
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
@@ -9,6 +11,9 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 public class ChatController {
+
+  final SessionRepo sessionRepo = new SessionRepo(Database.getInstance());
+  final UserRepo userRepo = new UserRepo(Database.getInstance());
 
   @MessageMapping("/chat.sendMessage")
   @SendTo("/topic/public")
@@ -29,16 +34,33 @@ public class ChatController {
 
   @MessageMapping("/chat.addUser")
   @SendTo("/topic/public")
-  public ChatMessage addUser(@Payload ChatMessage chatMessage,
+  public ChatMessage addUser(@Payload CreateUserRequest createUserRequest,
       SimpMessageHeaderAccessor headerAccessor) {
-    System.out.println("adding user: " + chatMessage.getSender());
+    // System.out.println("in chat.adduser: " + chatMessage.getSender());
     // Add username in web socket session
-    headerAccessor.getSessionAttributes().put("username", chatMessage.getSender());
-    User user = (User) headerAccessor.getUser();
+    // headerAccessor.getSessionAttributes().put("user",
+    // createUserRequest.getSender());
+    // headerAccessor.getSessionAttributes().put("userId",
+    // chatMessage.getSender());
+    ChatMessage chatMessage = new ChatMessage();
+    Principal user = headerAccessor.getUser();
+    if (user instanceof User) {
+      // if (user instanceof UnnamedUser) {
+      // UnnamedUser unnamedUser = (UnnamedUser) user;
+      // User newUser = new User(chatMessage.getSender());
+      // userRepo.addUser(newUser);
+      // sessionRepo.addSession(newUser.id, unnamedUser.token);
+      // } else {
+      System.out.println(user.getName());
+      headerAccessor.getSessionAttributes().put("username", user.getName());
+      chatMessage.setSender((User) user);
+    }
+    // }
+
     // System.out.println(headerAccessor.getFirstNativeHeader("token"));
     // System.out.println("getting cookie from Principal:");
     // System.out.println(headerAccessor.getUser().getName());
-    System.out.println(user.getId());
+    // System.out.println(user.getId());
     return chatMessage;
   }
 

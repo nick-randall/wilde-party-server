@@ -17,7 +17,8 @@ import org.springframework.web.socket.config.annotation.*;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-  final SessionRepo sessionRepo = new SessionRepo();
+  final SessionRepo sessionRepo = new SessionRepo(Database.getInstance());
+  final UserRepo userRepo = new UserRepo(Database.getInstance());
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
@@ -89,22 +90,22 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
           // Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
           // List<String> authorization = accessor.getNativeHeader("Authorization");
           List<String> tokens = accessor.getNativeHeader("token");
-          int userId = sessionRepo.getUserIdFromSessionToken(tokens.get(0));
-          if (userId == -1) {
-            User user = new UnnamedUser(tokens.get(0));
-          }
           String token = tokens.get(0);
-
-          Principal principal = new Principal() {
-
-            @Override
-            public String getName() {
-              return token;
+          if (tokens.size() > 0) {
+            token = token.replaceAll("SESSION=", "");
+            System.out.println(token);
+            int userId = sessionRepo.getUserIdFromSessionToken(token);
+            System.out.println(userId);
+            if (userId == -1) {
+              UnnamedUser user = new UnnamedUser(token);
+              // User user = new User("l");
+              accessor.setUser(user);
+            } else {
+              System.out.println("adding user to accessor");
+              User user = userRepo.getUser(userId);
+              accessor.setUser(user);
             }
-          };
-
-          
-
+          }
         }
 
         return message;
