@@ -67,31 +67,51 @@ public class WhoAmIController {
 
   }
 
+  @PostMapping("/logout")
+  public ResponseEntity<Void> logout(HttpServletResponse response, HttpServletRequest request) {
+    System.out.println("logging out");
+    Cookie existingCookie = extractCookie(request);
+    if (existingCookie != null) {
+      existingCookie.setMaxAge(0);
+      response.addCookie(existingCookie);
+    }
+    return ResponseEntity.ok(null);
+  }
+
   @PostMapping("/whoami")
   public ResponseEntity<User> whoAmI(HttpServletResponse response, HttpServletRequest request) {
-    User user = null;
+
     Cookie existingCookie = extractCookie(request);
 
-    if (existingCookie != null) {
-      Session existingSession = sessionRepo.getSessionFromSessionToken(existingCookie.getValue());
-      if (existingSession != null) {
-        user = userRepo.getUser(existingSession.userId);
-      }
+    if (existingCookie == null) {
+      return ResponseEntity.noContent().build();
+    }
+
+    Session existingSession = sessionRepo.getSessionFromSessionToken(existingCookie.getValue());
+    if (existingSession == null) {
+      return ResponseEntity.notFound().build();
+    }
+    User user = userRepo.getUser(existingSession.userId);
+    if (user == null) {
+      return ResponseEntity.notFound().build();
     }
     return ResponseEntity.ok().body(user);
   }
 
   @PostMapping("/addUser")
-  public ResponseEntity<User> addUser(HttpServletRequest request, @RequestBody AddUserRequest addUserRequest) {
+  public ResponseEntity<User> addUser(HttpServletResponse response, HttpServletRequest request,
+      @RequestBody AddUserRequest addUserRequest) {
     System.out.println(addUserRequest);
-    Cookie cookie = extractCookie(request);
-    if (cookie != null) {
-      System.out.println(addUserRequest);
-      User newUser = userRepo.createUser(addUserRequest.getUsername());
-      sessionRepo.addSession(newUser.id, cookie.getValue());
-      return ResponseEntity.ok().body(newUser);
-    }
-    return ResponseEntity.ok().body(null);
+    // Cookie cookie = extractCookie(request);
+    // if (cookie != null) {
+    System.out.println(addUserRequest);
+    User newUser = userRepo.createUser(addUserRequest.getUsername());
+    Cookie newCookie = createCookie();
+    sessionRepo.addSession(newUser.id, newCookie.getValue());
+    response.addCookie(newCookie);
+    return ResponseEntity.ok().body(newUser);
+    // }
+    // return ResponseEntity.ok().body(null);
   }
 
 }
