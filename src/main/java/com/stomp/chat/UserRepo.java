@@ -13,7 +13,6 @@ public class UserRepo {
   }
 
   public User getUser(int userId) {
-    System.out.println(" users " +db.users.size());
     Optional<User> foundUser = db.users.stream().filter(e -> e.id == userId).findFirst();
     // if sessionId is expired, remove it.
     return foundUser.isPresent() ? foundUser.get(): null;

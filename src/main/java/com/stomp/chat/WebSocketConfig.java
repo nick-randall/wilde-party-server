@@ -1,7 +1,5 @@
 package com.stomp.chat;
 
-import java.security.Principal;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.context.annotation.Bean;
@@ -11,7 +9,6 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -21,11 +18,6 @@ import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.*;
 import org.springframework.web.socket.server.HandshakeInterceptor;
-import org.springframework.web.util.WebUtils;
-
-import com.stomp.chat.OutboundMessage.MessageType;
-
-import ch.qos.logback.core.joran.event.EndEvent;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -38,14 +30,16 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
   @Override
   public void registerStompEndpoints(StompEndpointRegistry registry) {
-    registry.addEndpoint("/ws").setAllowedOriginPatterns("*").addInterceptors(httpSessionHandshakeInterceptor())
+    registry.addEndpoint("/ws").setAllowedOriginPatterns("*")
+        .addInterceptors(httpSessionHandshakeInterceptor())
         .withSockJS();
   }
 
   @Override
   public void configureMessageBroker(MessageBrokerRegistry registry) {
+    registry.enableSimpleBroker( "/queue", "/topic");
     registry.setApplicationDestinationPrefixes("/app");
-    registry.enableSimpleBroker("/topic");
+    registry.setUserDestinationPrefix("/users");
   }
 
   @Bean
@@ -92,8 +86,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             if (token != null) {
               Session existingSession = sessionRepo.getSessionFromSessionToken(token);
               if (existingSession != null) {
-                System.out.println("adding user to accessor");
                 User user = userRepo.getUser(existingSession.userId);
+                System.out.println("adding user '" + user.getName() + "' to accessor");
                 accessor.setUser(user);
               }
             }
