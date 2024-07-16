@@ -71,17 +71,11 @@ public class WhoAmIController {
   @PostMapping("/addUser")
   public ResponseEntity<User> addUser(HttpServletResponse response, HttpServletRequest request,
       @RequestBody AddUserRequest addUserRequest) {
-    System.out.println(addUserRequest);
-    // Cookie cookie = extractCookie(request);
-    // if (cookie != null) {
-    System.out.println(addUserRequest);
     User newUser = userRepo.createUser(addUserRequest.getUsername());
     Cookie newCookie = createCookie();
     sessionRepo.addSession(newUser.id, newCookie.getValue());
     response.addCookie(newCookie);
     return ResponseEntity.ok().body(newUser);
-    // }
-    // return ResponseEntity.ok().body(null);
   }
 
 }

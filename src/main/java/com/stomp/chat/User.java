@@ -14,19 +14,12 @@ public class User implements Principal {
   this.id = id;
   }
 
-  // User(String name) {
-  //   System.out.println("creating new user " + currId);
-  //   // StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-  //   // for(StackTraceElement s: stackTraceElements) {
-  //   //   System.out.println(s);
-  //   // }
-  //   this.name = name;
-  //   this.id = currId;
-  //   currId++;
-  // }
-
   @Override
   public String getName() {
+    return name + id;
+  }
+
+  public String getUsername() {
     return name;
   }
 
