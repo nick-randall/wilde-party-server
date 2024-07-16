@@ -38,35 +38,6 @@ public class WhoAmIController {
     return null;
   }
 
-  @GetMapping("/session")
-  public ResponseEntity<String> getSession(HttpServletResponse response, HttpServletRequest request) {
-    System.out.println("eating cookies");
-
-    SessionResponse responseBody = null;
-
-    Cookie existingCookie = extractCookie(request);
-    if (existingCookie != null) {
-      String cookieValue = existingCookie.getValue();
-      cookieValue = cookieValue.replaceAll("SESSION=", "");
-      Session existingSession = sessionRepo.getSessionFromSessionToken(cookieValue);
-      if (existingSession != null) {
-        responseBody = SessionResponse.FOUND_EXISTING_SESSION;
-      } else {
-        // Create expired cookie from existing cookie and send it to remove old cookie
-        existingCookie.setMaxAge(0);
-        responseBody = SessionResponse.REMOVED_EXPIRED_SESSION;
-        response.addCookie(existingCookie);
-      }
-    } else {
-      Cookie newCookie = createCookie();
-      responseBody = SessionResponse.CREATED_NEW_SESSION;
-      response.addCookie(newCookie);
-
-    }
-    return ResponseEntity.ok().body(responseBody.getName());
-
-  }
-
   @PostMapping("/logout")
   public ResponseEntity<Void> logout(HttpServletResponse response, HttpServletRequest request) {
     System.out.println("logging out");
@@ -84,11 +55,13 @@ public class WhoAmIController {
     Cookie existingCookie = extractCookie(request);
 
     if (existingCookie == null) {
+      // New user with no session cookie
       return ResponseEntity.noContent().build();
     }
 
     Session existingSession = sessionRepo.getSessionFromSessionToken(existingCookie.getValue());
     if (existingSession == null) {
+      // Error -- user not found!
       return ResponseEntity.notFound().build();
     }
     User user = userRepo.getUser(existingSession.userId);
