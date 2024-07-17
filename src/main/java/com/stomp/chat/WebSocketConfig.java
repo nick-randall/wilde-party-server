@@ -19,6 +19,8 @@ import org.springframework.messaging.support.MessageHeaderAccessor;
 import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.*;
 import org.springframework.web.socket.server.HandshakeInterceptor;
+
+import jakarta.persistence.Id;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -38,7 +40,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
   @Override
   public void configureMessageBroker(MessageBrokerRegistry registry) {
-    registry.enableSimpleBroker( "/queue", "/topic");
+    registry.enableSimpleBroker("/queue", "/topic");
     registry.setApplicationDestinationPrefixes("/app");
     registry.setUserDestinationPrefix("/users");
   }
@@ -91,12 +93,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 // Because we are not using Spring Security, we need to
                 // set the user in the accessor in a hacky way, that allows
                 // us to access the userId in the controller.
-                Principal idContainer = new Principal() {
-                  @Override
-                  public String getName() {
-                    return String.valueOf(user.getId());
-                  }
-                };
+                IdContainer idContainer = new IdContainer(user.id);
                 System.out.println("adding principal '" + idContainer.getName() + "' to accessor");
                 accessor.setUser(idContainer);
               }
@@ -112,4 +109,19 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     registration.interceptors(interceptor);
 
   }
+}
+
+class IdContainer implements Principal {
+
+  private int id;
+
+  public IdContainer(int id) {
+    this.id = id;
+  }
+
+  @Override
+  public String getName() {
+    return String.valueOf(id);
+  }
+
 }

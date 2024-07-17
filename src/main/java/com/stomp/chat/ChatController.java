@@ -15,6 +15,8 @@ import org.springframework.messaging.simp.user.SimpUser;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Controller;
 
+import com.stomp.chat.model.InviteReply;
+
 @Controller
 public class ChatController {
 
@@ -24,7 +26,7 @@ public class ChatController {
   @Autowired
   private SimpMessagingTemplate simpMessagingTemplate;
   @Autowired
-  private  SimpUserRegistry simpUserRegistry;
+  private SimpUserRegistry simpUserRegistry;
 
   private User getSender(SimpMessageHeaderAccessor sha) {
     // In WebsocketConfig, we set the userId as the Principal name
@@ -38,29 +40,59 @@ public class ChatController {
   }
 
   private Set<User> getRoomUsers() {
-   Set<SimpUser> roomUsers = simpUserRegistry.getUsers();
-   Set<User> users = new HashSet<User>(); 
-   for (SimpUser user : roomUsers) {
-     users.add(userRepo.getUserById(Integer.parseInt(user.getName())));
-   }
-   return users;
+    Set<SimpUser> roomUsers = simpUserRegistry.getUsers();
+    Set<User> users = new HashSet<User>();
+    for (SimpUser user : roomUsers) {
+      users.add(userRepo.getUserById(Integer.parseInt(user.getName())));
+    }
+    return users;
   }
 
   @MessageMapping("/invite")
-  public void send(SimpMessageHeaderAccessor sha, @Payload int inviteeId) {
+  public void sendInvite(SimpMessageHeaderAccessor sha, @Payload int inviteeId) {
     System.out.println(sha.getSessionAttributes().get("token"));
     User inviter = getSender(sha);
-    String message = "Hello from " + inviter.getName();
+    String message = "You were invited to a game by " + inviter.getName();
 
     simpMessagingTemplate.convertAndSendToUser(String.valueOf(inviteeId), "/queue/messages", message);
   }
+
+  // @MessageMapping("/reply-to-invite")
+  // @SendTo("/topic/public")
+  // public OutboundMessage replyToInvite(SimpMessageHeaderAccessor sha, @Payload InviteReply reply) {
+  //   // either get inviter from database or from the message
+  //   User invitee = getSender(sha);
+  //   // Create game in database
+  //   simpMessagingTemplate.convertAndSendToUser(String.valueOf(inviteeId), "/queue/messages", reply);
+  //   return new OutboundMessage(OutboundMessage.MessageType.STARTING_GAME, "reply to invite", invitee);
+  // }
 
   @MessageMapping("/chat.sendMessage")
   @SendTo("/topic/public")
   public OutboundMessage sendMessage(@Payload InboundMessage chatMessage, SimpMessageHeaderAccessor headerAccessor) {
     OutboundMessage outboundMessage = new OutboundMessage(chatMessage.getType(), chatMessage.getContent(),
-        (User) headerAccessor.getUser());
+        getSender(headerAccessor));
     return outboundMessage;
+  }
+
+  @MessageMapping("/chat.joinRoom")
+  @SendTo("/topic/public")
+  public void joinRoom(SimpMessageHeaderAccessor headerAccessor) {
+    // Send the list of users in the chat room
+    Set<User> users = getRoomUsers();
+    simpMessagingTemplate.convertAndSend("/topic/users-in-chat-room", users);
+    // Send a message to the chat room that a user has joined
+    OutboundMessage chatMessage = new OutboundMessage();
+    User sender = getSender(headerAccessor);
+    if (sender != null) {
+      headerAccessor.getSessionAttributes().put("username", sender.getName());
+      chatMessage.setSender(sender);
+      chatMessage.setContent(sender.getName() + " has joined the chat room!");
+      chatMessage.setType(OutboundMessage.MessageType.JOIN);
+      System.out.println("type set to " + chatMessage.getType());
+    }
+
+    simpMessagingTemplate.convertAndSend("/topic/public", chatMessage);
   }
 
   @MessageMapping("/chat.sendMessage/{room}")
@@ -70,27 +102,5 @@ public class ChatController {
     return chatMessage;
   }
 
-  @MessageMapping("/chat.addUser")
-  @SendTo("/topic/public")
-  public OutboundMessage addUser(@Payload InboundMessage createUserRequest,
-      SimpMessageHeaderAccessor headerAccessor) {
-    System.out.println("in chat.adduser");
-    // Add username in web socket session
-    // headerAccessor.getSessionAttributes().put("user",
-    // createUserRequest.getSender());
-    // headerAccessor.getSessionAttributes().put("userId",
-    // chatMessage.getSender());
-    // Object currUser = headerAccessor.getSessionAttributes().get("user");
-    // System.out.println(currUser);
-    OutboundMessage chatMessage = new OutboundMessage();
-    User sender = getSender(headerAccessor);
-    // Principal principal = headerAccessor.getUser();
-    if (sender != null) {
-      // User user = (User) principal;
-      headerAccessor.getSessionAttributes().put("username", sender.getName());
-      chatMessage.setSender(sender);
-    }
-    return chatMessage;
-  }
 
 }

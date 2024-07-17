@@ -21,7 +21,7 @@ public class OutboundMessage {
     CHAT,
     JOIN,
     LEAVE,
-    IGNORE
+    STARTING_GAME,
   }
 
   public MessageType getType() {
