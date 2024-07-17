@@ -1,5 +1,6 @@
 package com.stomp.chat;
 
+import java.security.Principal;
 import java.util.Map;
 
 import org.springframework.context.annotation.Bean;
@@ -87,8 +88,17 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
               Session existingSession = sessionRepo.getSessionFromSessionToken(token);
               if (existingSession != null) {
                 User user = userRepo.getUserById(existingSession.userId);
-                System.out.println("adding user '" + user.getName() + "' to accessor");
-                accessor.setUser(user);
+                // Because we are not using Spring Security, we need to
+                // set the user in the accessor in a hacky way, that allows
+                // us to access the userId in the controller.
+                Principal idContainer = new Principal() {
+                  @Override
+                  public String getName() {
+                    return String.valueOf(user.getId());
+                  }
+                };
+                System.out.println("adding principal '" + idContainer.getName() + "' to accessor");
+                accessor.setUser(idContainer);
               }
             }
           } catch (Exception e) {

@@ -12,7 +12,7 @@ public class UserRepo {
     this.db = db;
   }
 
-  public User getUser(int userId) {
+  public User getUserById(int userId) {
     Optional<User> foundUser = db.users.stream().filter(e -> e.id == userId).findFirst();
     // if sessionId is expired, remove it.
     return foundUser.isPresent() ? foundUser.get(): null;

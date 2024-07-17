@@ -1,10 +1,6 @@
 package com.stomp.chat;
 
-import java.security.Principal;
-
-public class User implements Principal {
-
-  // static int currId = 0;
+public class User {
 
   int id;
   String name;
@@ -14,12 +10,7 @@ public class User implements Principal {
   this.id = id;
   }
 
-  @Override
   public String getName() {
-    return name + id;
-  }
-
-  public String getUsername() {
     return name;
   }
 

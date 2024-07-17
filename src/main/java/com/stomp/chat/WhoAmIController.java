@@ -61,7 +61,7 @@ public class WhoAmIController {
       // Error -- user not found!
       return ResponseEntity.notFound().build();
     }
-    User user = userRepo.getUser(existingSession.userId);
+    User user = userRepo.getUserById(existingSession.userId);
     if (user == null) {
       return ResponseEntity.notFound().build();
     }

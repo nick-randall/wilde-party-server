@@ -1,6 +1,8 @@
 package com.stomp.chat;
 
 import java.security.Principal;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -9,6 +11,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.user.SimpUser;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Controller;
 
 @Controller
@@ -19,13 +23,36 @@ public class ChatController {
 
   @Autowired
   private SimpMessagingTemplate simpMessagingTemplate;
+  @Autowired
+  private  SimpUserRegistry simpUserRegistry;
+
+  private User getSender(SimpMessageHeaderAccessor sha) {
+    // In WebsocketConfig, we set the userId as the Principal name
+    // Normally, the Principal getName() method returns the username
+    // which, if it were an email address, would be unique.
+    // Since we are using an integer userId, we have set it as the Principal
+    // getName()
+    // value.
+    int userId = Integer.parseInt(sha.getUser().getName());
+    return userRepo.getUserById(userId);
+  }
+
+  private Set<User> getRoomUsers() {
+   Set<SimpUser> roomUsers = simpUserRegistry.getUsers();
+   Set<User> users = new HashSet<User>(); 
+   for (SimpUser user : roomUsers) {
+     users.add(userRepo.getUserById(Integer.parseInt(user.getName())));
+   }
+   return users;
+  }
 
   @MessageMapping("/invite")
-  public void send(SimpMessageHeaderAccessor sha, @Payload String username) {
-    User inviter = (User) sha.getUser();
-    String message = "Hello from " + inviter.getUsername();
+  public void send(SimpMessageHeaderAccessor sha, @Payload int inviteeId) {
+    System.out.println(sha.getSessionAttributes().get("token"));
+    User inviter = getSender(sha);
+    String message = "Hello from " + inviter.getName();
 
-    simpMessagingTemplate.convertAndSendToUser(inviter.getName(), "/queue/messages", message);
+    simpMessagingTemplate.convertAndSendToUser(String.valueOf(inviteeId), "/queue/messages", message);
   }
 
   @MessageMapping("/chat.sendMessage")
@@ -53,14 +80,15 @@ public class ChatController {
     // createUserRequest.getSender());
     // headerAccessor.getSessionAttributes().put("userId",
     // chatMessage.getSender());
-    Object currUser = headerAccessor.getSessionAttributes().get("user");
-    System.out.println(currUser);
+    // Object currUser = headerAccessor.getSessionAttributes().get("user");
+    // System.out.println(currUser);
     OutboundMessage chatMessage = new OutboundMessage();
-    Principal principal = headerAccessor.getUser();
-    if (principal != null) {
-      User user = (User) principal;
-      headerAccessor.getSessionAttributes().put("username", user.getName());
-      chatMessage.setSender(user);
+    User sender = getSender(headerAccessor);
+    // Principal principal = headerAccessor.getUser();
+    if (sender != null) {
+      // User user = (User) principal;
+      headerAccessor.getSessionAttributes().put("username", sender.getName());
+      chatMessage.setSender(sender);
     }
     return chatMessage;
   }
