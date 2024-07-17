@@ -19,6 +19,10 @@ public class Database {
   public void setSessions(List<Session> sessions) {
     this.sessions = sessions;
   }
+
+  public void addUser(User user) {
+    users.add(user);
+  }
   
   public void setUsers(List<User> users) {
     this.users = users;

@@ -17,15 +17,16 @@ public class ChatController {
   final SessionRepo sessionRepo = new SessionRepo(Database.getInstance());
   final UserRepo userRepo = new UserRepo(Database.getInstance());
 
-   @Autowired
-    private SimpMessagingTemplate simpMessagingTemplate;
- 
-    @MessageMapping("/hello")
-    public void send(SimpMessageHeaderAccessor sha, @Payload String username) {
-        String message = "Hello from " + sha.getUser().getName();
- 
-        simpMessagingTemplate.convertAndSendToUser(username, "/queue/messages", message);
-    }
+  @Autowired
+  private SimpMessagingTemplate simpMessagingTemplate;
+
+  @MessageMapping("/invite")
+  public void send(SimpMessageHeaderAccessor sha, @Payload String username) {
+    User inviter = (User) sha.getUser();
+    String message = "Hello from " + inviter.getUsername();
+
+    simpMessagingTemplate.convertAndSendToUser(inviter.getName(), "/queue/messages", message);
+  }
 
   @MessageMapping("/chat.sendMessage")
   @SendTo("/topic/public")

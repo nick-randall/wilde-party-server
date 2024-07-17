@@ -86,7 +86,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             if (token != null) {
               Session existingSession = sessionRepo.getSessionFromSessionToken(token);
               if (existingSession != null) {
-                User user = userRepo.getUser(existingSession.userId);
+                User user = userRepo.getUserById(existingSession.userId);
                 System.out.println("adding user '" + user.getName() + "' to accessor");
                 accessor.setUser(user);
               }
