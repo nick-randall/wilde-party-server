@@ -15,8 +15,6 @@ import org.springframework.messaging.simp.user.SimpUser;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Controller;
 
-import com.stomp.chat.model.InviteReply;
-
 @Controller
 public class ChatController {
 
@@ -35,7 +33,7 @@ public class ChatController {
     // Since we are using an integer userId, we have set it as the Principal
     // getName()
     // value.
-    int userId = Integer.parseInt(sha.getUser().getName());
+    Long userId = Long.parseLong(sha.getUser().getName());
     return userRepo.getUserById(userId);
   }
 
@@ -43,7 +41,7 @@ public class ChatController {
     Set<SimpUser> roomUsers = simpUserRegistry.getUsers();
     Set<User> users = new HashSet<User>();
     for (SimpUser user : roomUsers) {
-      users.add(userRepo.getUserById(Integer.parseInt(user.getName())));
+      users.add(userRepo.getUserById(Long.parseLong(user.getName())));
     }
     return users;
   }

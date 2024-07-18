@@ -1,21 +1,40 @@
 package com.stomp.chat;
 
-public class User {
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
-  int id;
+@Entity
+@Table(name = "users")
+public class User {
+  @Id
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  Long id;
   String name;
 
-  User(String name, int id) {
-  this.name = name;
-  this.id = id;
+  User() {
+  }
+
+  User(String name, Long id) {
+    this.name = name;
+    this.id = id;
   }
 
   public String getName() {
     return name;
   }
 
-  public int getId() {
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public Long getId() {
     return id;
+  }
+  public void setId(Long id) {
+    this.id = id;
   }
 
 }

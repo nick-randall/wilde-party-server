@@ -25,7 +25,7 @@ public class SessionRepo {
   }
 
 
-  public void addSession(int userId, String token) {
+  public void addSession(Long userId, String token) {
     Session sesh = new Session(userId, token);
     db.sessions.add(sesh);
     System.out.println("after adding sesh:" + db.sessions.size());

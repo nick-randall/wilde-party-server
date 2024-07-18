@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public class UserRepo {
 
-  static int currUserId = 0;
+  static Long currUserId = 0L;
 
   Database db;
 
@@ -12,7 +12,7 @@ public class UserRepo {
     this.db = db;
   }
 
-  public User getUserById(int userId) {
+  public User getUserById(Long userId) {
     Optional<User> foundUser = db.users.stream().filter(e -> e.id == userId).findFirst();
     // if sessionId is expired, remove it.
     return foundUser.isPresent() ? foundUser.get(): null;

@@ -113,9 +113,9 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
 class IdContainer implements Principal {
 
-  private int id;
+  private Long id;
 
-  public IdContainer(int id) {
+  public IdContainer(Long id) {
     this.id = id;
   }
 

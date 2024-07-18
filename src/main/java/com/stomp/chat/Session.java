@@ -13,10 +13,10 @@ public class Session {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   int id;
-  int userId;
+  Long userId;
   String token;
 
-  public Session(int userId, String token) {
+  public Session(Long userId, String token) {
     this.userId = userId;
     this.token = token;
   }

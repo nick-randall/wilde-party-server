@@ -1,9 +1,12 @@
 package com.stomp.chat;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.stomp.chat.backend.UserService;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +18,9 @@ public class WhoAmIController {
 
   final SessionRepo sessionRepo = new SessionRepo(Database.getInstance());
   final UserRepo userRepo = new UserRepo(Database.getInstance());
+  @Autowired
+  UserService userService;
+
 
   private Cookie createCookie() {
 
@@ -75,6 +81,14 @@ public class WhoAmIController {
     Cookie newCookie = createCookie();
     sessionRepo.addSession(newUser.id, newCookie.getValue());
     response.addCookie(newCookie);
+
+    /// Demo of UserServiceImpl
+    User savedUser = userService.saveUser(newUser);
+    User user = userService.getUserById(savedUser.id);
+    System.out.println(user);
+    ///
+
+
     return ResponseEntity.ok().body(newUser);
   }
 
