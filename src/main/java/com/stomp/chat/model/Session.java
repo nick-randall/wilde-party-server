@@ -1,4 +1,4 @@
-package com.stomp.chat;
+package com.stomp.chat.model;
 
 import jakarta.annotation.Generated;
 import jakarta.persistence.GeneratedValue;
@@ -14,11 +14,29 @@ public class Session {
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   int id;
   Long userId;
+  public Long getUserId() {
+    return userId;
+  }
+
+  public void setUserId(Long userId) {
+    this.userId = userId;
+  }
+
   String token;
+
+  public String getToken() {
+    return token;
+  }
+
+  public void setToken(String token) {
+    this.token = token;
+  }
 
   public Session(Long userId, String token) {
     this.userId = userId;
     this.token = token;
   }
+
+  
 
 }

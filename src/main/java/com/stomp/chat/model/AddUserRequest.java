@@ -1,4 +1,4 @@
-package com.stomp.chat;
+package com.stomp.chat.model;
 
 public class AddUserRequest {
   private String username;

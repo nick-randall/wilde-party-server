@@ -14,7 +14,7 @@ public class User {
   Long id;
   String name;
 
-  User() {
+  public User() {
   }
 
   User(String name, Long id) {

@@ -2,10 +2,12 @@ package com.stomp.chat;
 
 import java.util.Optional;
 
+import com.stomp.chat.model.Session;
+
 public class SessionRepo {
   Database db;
 
-  SessionRepo(Database db) {
+  public SessionRepo(Database db) {
     this.db = db;
   }
 
@@ -13,13 +15,13 @@ public class SessionRepo {
 
   public Session getSessionFromSessionToken(String sessionToken) {
 
-    Optional<Session> foundSession = db.sessions.stream().filter(e -> e.token.equals(sessionToken)).findFirst();
+    Optional<Session> foundSession = db.sessions.stream().filter(e -> e.getToken().equals(sessionToken)).findFirst();
     System.out.println("found session associated with this cookie? " + foundSession.isPresent());
     return foundSession.isPresent() ? foundSession.get() : null;
   }
 
   public Session getSessionFromUserId(int userId) {
-    Optional<Session> foundSession = db.sessions.stream().filter(e -> e.userId == userId).findFirst();
+    Optional<Session> foundSession = db.sessions.stream().filter(e -> e.getUserId() == userId).findFirst();
     return foundSession.isPresent() ? foundSession.get() : null;
 
   }

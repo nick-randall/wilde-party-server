@@ -1,6 +1,9 @@
 package com.stomp.chat;
 
 import java.util.List;
+
+import com.stomp.chat.model.Session;
+
 import java.util.ArrayList;
 
 public class Database {

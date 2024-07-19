@@ -1,4 +1,6 @@
-package com.stomp.chat;
+package com.stomp.chat.model;
+
+import com.stomp.chat.User;
 
 public class OutboundMessage {
 

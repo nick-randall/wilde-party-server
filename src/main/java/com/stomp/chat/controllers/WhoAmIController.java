@@ -1,4 +1,4 @@
-package com.stomp.chat;
+package com.stomp.chat.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -6,10 +6,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.stomp.chat.Database;
+import com.stomp.chat.SessionRepo;
+import com.stomp.chat.User;
+import com.stomp.chat.UserRepo;
 import com.stomp.chat.backend.GamesService;
 import com.stomp.chat.backend.UserService;
+import com.stomp.chat.model.AddUserRequest;
 import com.stomp.chat.model.Game;
 import com.stomp.chat.model.GameSnapshot;
+import com.stomp.chat.model.Session;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -74,7 +80,7 @@ public class WhoAmIController {
       // Error -- user not found!
       return ResponseEntity.notFound().build();
     }
-    User user = userRepo.getUserById(existingSession.userId);
+    User user = userRepo.getUserById(existingSession.getUserId());
     if (user == null) {
       return ResponseEntity.notFound().build();
     }
@@ -86,12 +92,12 @@ public class WhoAmIController {
       @RequestBody AddUserRequest addUserRequest) {
     User newUser = userRepo.createUser(addUserRequest.getUsername());
     Cookie newCookie = createCookie();
-    sessionRepo.addSession(newUser.id, newCookie.getValue());
+    sessionRepo.addSession(newUser.getId(), newCookie.getValue());
     response.addCookie(newCookie);
 
     /// Demo of UserServiceImpl
     User savedUser = userService.saveUser(newUser);
-    User user = userService.getUserById(savedUser.id);
+    User user = userService.getUserById(savedUser.getId());
     User userTwo = new User();
     userTwo.setName("Steve");
     User savedUserTwo = userService.saveUser(userTwo);

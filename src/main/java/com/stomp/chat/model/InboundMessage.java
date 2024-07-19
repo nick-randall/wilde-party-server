@@ -1,8 +1,8 @@
-package com.stomp.chat;
+package com.stomp.chat.model;
 
-import com.stomp.chat.OutboundMessage.MessageType;
+import com.stomp.chat.model.OutboundMessage.MessageType;
 
-class InboundMessage {
+public class InboundMessage {
   private String username;
   private MessageType type;
   private String content;

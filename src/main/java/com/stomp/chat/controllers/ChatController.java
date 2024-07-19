@@ -1,4 +1,4 @@
-package com.stomp.chat;
+package com.stomp.chat.controllers;
 
 import java.security.Principal;
 import java.util.HashSet;
@@ -14,6 +14,13 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.user.SimpUser;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Controller;
+
+import com.stomp.chat.Database;
+import com.stomp.chat.SessionRepo;
+import com.stomp.chat.User;
+import com.stomp.chat.UserRepo;
+import com.stomp.chat.model.OutboundMessage;
+import com.stomp.chat.model.InboundMessage;
 
 @Controller
 public class ChatController {

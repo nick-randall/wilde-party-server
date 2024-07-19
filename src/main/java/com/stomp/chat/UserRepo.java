@@ -8,7 +8,7 @@ public class UserRepo {
 
   Database db;
 
-  UserRepo(Database db) {
+  public UserRepo(Database db) {
     this.db = db;
   }
 

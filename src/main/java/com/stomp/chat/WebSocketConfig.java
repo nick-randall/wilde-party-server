@@ -20,6 +20,8 @@ import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.config.annotation.*;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
+import com.stomp.chat.model.Session;
+
 import jakarta.persistence.Id;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -89,7 +91,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             if (token != null) {
               Session existingSession = sessionRepo.getSessionFromSessionToken(token);
               if (existingSession != null) {
-                User user = userRepo.getUserById(existingSession.userId);
+                User user = userRepo.getUserById(existingSession.getUserId());
                 // Because we are not using Spring Security, we need to
                 // set the user in the accessor in a hacky way, that allows
                 // us to access the userId in the controller.
