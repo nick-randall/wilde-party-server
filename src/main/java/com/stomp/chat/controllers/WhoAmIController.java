@@ -15,6 +15,7 @@ import com.stomp.chat.backend.UserService;
 import com.stomp.chat.model.AddUserRequest;
 import com.stomp.chat.model.Game;
 import com.stomp.chat.model.GameSnapshot;
+import com.stomp.chat.model.Player;
 import com.stomp.chat.model.Session;
 
 import jakarta.servlet.http.Cookie;
@@ -105,10 +106,10 @@ public class WhoAmIController {
     ///
     Game game = new Game();
     GameSnapshot snapshot = new GameSnapshot();
-    List<String> players = new ArrayList<>();
-    players.add(savedUser.getName());
-    players.add(savedUserTwo.getName());
-
+    List<Player> players = new ArrayList<>();
+    players.add(new Player(savedUser));
+    players.add(new Player(savedUserTwo));
+  
     snapshot.setPlayers(players);
     game.setGameSnapshot(snapshot);
     List<User> users = new ArrayList<>();
