@@ -1,10 +1,13 @@
 package com.stomp.chat.model;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Place {
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+public class Place implements Serializable{
 
   private long id;
 
@@ -15,7 +18,6 @@ public class Place {
   }
 
   public Place(PlaceType placeType) {
-    super();
     this.placeType = placeType;
   }
 
@@ -41,7 +43,7 @@ public class Place {
   public PlaceType getPlaceType() {
     return placeType;
   }
-
+  @JsonIgnore
   public CardType[] getAcceptedCardTypes() {
     return switch (this.placeType) {
       case DECK -> CardType.getAllCardTypes();

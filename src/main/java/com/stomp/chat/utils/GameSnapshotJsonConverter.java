@@ -13,9 +13,9 @@ import jakarta.persistence.AttributeConverter;
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public String convertToDatabaseColumn(GameSnapshot snaphot) {
+    public String convertToDatabaseColumn(GameSnapshot snapshot) {
         try {
-            return objectMapper.writeValueAsString(snaphot);
+            return objectMapper.writeValueAsString(snapshot);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Could not convert to Json", e);
         }

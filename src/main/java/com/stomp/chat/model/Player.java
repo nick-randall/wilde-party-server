@@ -1,6 +1,10 @@
 package com.stomp.chat.model;
 
-public class Player {
+import java.io.Serializable;
+
+import com.stomp.chat.User;
+
+public class Player implements Serializable {
   private Long id;
 
   private Long userId;
@@ -14,6 +18,12 @@ public class Player {
   public Player() {
 
   }
+
+  public Player(User user) {
+    this.userId = user.getId();
+    this.name = user.getName();
+  }
+
 
   public String getName() {
     return name;
