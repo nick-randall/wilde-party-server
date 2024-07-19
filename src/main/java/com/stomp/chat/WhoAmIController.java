@@ -6,11 +6,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.stomp.chat.backend.GamesService;
 import com.stomp.chat.backend.UserService;
+import com.stomp.chat.model.Game;
+import com.stomp.chat.model.GameSnapshot;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -20,7 +26,8 @@ public class WhoAmIController {
   final UserRepo userRepo = new UserRepo(Database.getInstance());
   @Autowired
   UserService userService;
-
+  @Autowired
+  GamesService gamesService;
 
   private Cookie createCookie() {
 
@@ -87,7 +94,16 @@ public class WhoAmIController {
     User user = userService.getUserById(savedUser.id);
     System.out.println(user);
     ///
-
+    Game game = new Game();
+    GameSnapshot snapshot = new GameSnapshot();
+    List<String> players = new ArrayList<>();
+    players.add("Nick");
+    snapshot.setPlayers(players);
+    game.setGameSnapshot(snapshot);
+    Game savedGame = gamesService.saveGame(game);
+    gamesService.getGame(savedGame.getId());
+    System.out.println(savedGame.getGameSnapshot().getPlayers());
+    /// Demo of GamesServiceImpl
 
     return ResponseEntity.ok().body(newUser);
   }
