@@ -115,6 +115,7 @@ public class WhoAmIController {
     users.add(savedUser);
     users.add(savedUserTwo);
     game.setUsers(users);
+    game.setWinner(savedUserTwo);
     Game savedGame = gamesService.saveGame(game);
     gamesService.getGame(savedGame.getId());
     System.out.println(savedGame.getGameSnapshot().getPlayers());

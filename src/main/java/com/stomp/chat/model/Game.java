@@ -11,7 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.List;
 
@@ -30,6 +30,25 @@ public class Game {
   // @OneToMany(targetEntity = User.class)
   @ManyToMany(targetEntity = User.class)
   private List<User> users;
+  private GameStatus status = GameStatus.STARTED;
+  @OneToOne(targetEntity = User.class)
+  private User winner;
+
+  public User getWinner() {
+    return winner;
+  }
+
+  public void setWinner(User winner) {
+    this.winner = winner;
+  }
+
+  public GameStatus getStatus() {
+    return status;
+  }
+
+  public void setStatus(GameStatus status) {
+    this.status = status;
+  }
 
   public List<User> getUsers() {
     return users;
