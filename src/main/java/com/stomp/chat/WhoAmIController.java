@@ -92,14 +92,23 @@ public class WhoAmIController {
     /// Demo of UserServiceImpl
     User savedUser = userService.saveUser(newUser);
     User user = userService.getUserById(savedUser.id);
+    User userTwo = new User();
+    userTwo.setName("Steve");
+    User savedUserTwo = userService.saveUser(userTwo);
     System.out.println(user);
     ///
     Game game = new Game();
     GameSnapshot snapshot = new GameSnapshot();
     List<String> players = new ArrayList<>();
-    players.add("Nick");
+    players.add(savedUser.getName());
+    players.add(savedUserTwo.getName());
+
     snapshot.setPlayers(players);
     game.setGameSnapshot(snapshot);
+    List<User> users = new ArrayList<>();
+    users.add(savedUser);
+    users.add(savedUserTwo);
+    game.setUsers(users);
     Game savedGame = gamesService.saveGame(game);
     gamesService.getGame(savedGame.getId());
     System.out.println(savedGame.getGameSnapshot().getPlayers());
