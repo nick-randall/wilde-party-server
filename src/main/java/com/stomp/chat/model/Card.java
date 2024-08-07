@@ -1,5 +1,7 @@
 package com.stomp.chat.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
@@ -11,11 +13,17 @@ public class Card {
   private String image;
   private CardType cardType;
   // Action properties with an example (Guest card)
+  @JsonIgnore
   private CardActionType actionType;
+  @JsonIgnore
   private LegalTargetType legalTargetType = LegalTargetType.PLACE;
+  @JsonIgnore
   private TargetPlayerType legalTargetOwnerType = TargetPlayerType.SELF;
+  @JsonIgnore
   private TargetPlayerType legalPlayerType = null;
+  @JsonIgnore
   private CardType[] legalCardTargets = new CardType[] {};
+  @JsonIgnore
   private PlaceType[] legalPlaceTargets = new PlaceType[] {PlaceType.GUEST_CARD_ZONE};
 
   public Card() {
