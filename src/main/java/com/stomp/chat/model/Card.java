@@ -10,6 +10,13 @@ public class Card {
   private String name;
   private String image;
   private CardType cardType;
+  // Action properties with an example (Guest card)
+  private CardActionType actionType;
+  private LegalTargetType legalTargetType = LegalTargetType.PLACE;
+  private TargetPlayerType legalTargetOwnerType = TargetPlayerType.SELF;
+  private TargetPlayerType legalPlayerType = null;
+  private CardType[] legalCardTargets = new CardType[] {};
+  private PlaceType[] legalPlaceTargets = new PlaceType[] {PlaceType.GUEST_CARD_ZONE};
 
   public Card() {
   }
