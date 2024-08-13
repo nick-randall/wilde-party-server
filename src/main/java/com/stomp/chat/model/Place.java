@@ -50,7 +50,7 @@ public class Place implements Serializable{
       case DISCARD_PILE -> CardType.getAllCardTypes();
       case GUEST_CARD_ZONE -> new CardType[] { CardType.BFF, CardType.GUEST, CardType.ENCHANT };
       case HAND -> CardType.getAllCardTypes();
-      case PLAYER_PROTECTION -> new CardType[] { CardType.ENCHANT_PLAYER };
+      case PLAYER_ENCHANTMENT -> new CardType[] { CardType.ENCHANT_PLAYER };
       case SPECIALS_ZONE -> new CardType[] { CardType.SPECIAL };
       case UNWANTEDS_ZONE -> new CardType[] { CardType.UNWANTED };
       default -> new CardType[0];

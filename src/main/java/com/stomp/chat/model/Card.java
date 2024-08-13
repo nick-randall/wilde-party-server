@@ -12,131 +12,73 @@ public class Card {
   private CardType cardType;
 
   CardActionType getCardActionType() {
-    switch (cardType) {
-      case GUEST:
-        return CardActionType.ADD_DRAGGED;
-      case UNWANTED:
-        return CardActionType.ADD_DRAGGED;
-      case SPECIAL:
-        return CardActionType.ADD_DRAGGED;
-      case INTERRUPT:
-        return CardActionType.INTERRUPT;
-      case BFF:
-        return CardActionType.ENCHANT_WITH_BFF;
-      case ENCHANT:
-        return CardActionType.ENCHANT;
-      case STEAL:
-        return CardActionType.STEAL;
-      case SWAP:
-        return CardActionType.SWAP;
-      case DESTROY:
-        return CardActionType.DESTROY;
-      case ENCHANT_PLAYER:
-        return CardActionType.ENCHANT_PLAYER;
-      case SORCERY_ON_PLAYER:
-        return CardActionType.SORCERY_ON_PLAYER;
-      default:
-        System.out.println("ERROR couldnt match card type with a CardActionType ");
-        return CardActionType.NONE;
-    }
+    return switch (cardType) {
+      case GUEST -> CardActionType.ADD_DRAGGED;
+      case UNWANTED -> CardActionType.ADD_DRAGGED;
+      case SPECIAL -> CardActionType.ADD_DRAGGED;
+      case INTERRUPT -> CardActionType.INTERRUPT;
+      case BFF -> CardActionType.ENCHANT_WITH_BFF;
+      case ENCHANT -> CardActionType.ENCHANT;
+      case STEAL -> CardActionType.STEAL;
+      case SWAP -> CardActionType.SWAP;
+      case DESTROY -> CardActionType.DESTROY;
+      case ENCHANT_PLAYER -> CardActionType.ENCHANT_PLAYER;
+      case SORCERY_ON_PLAYER -> CardActionType.SORCERY_ON_PLAYER;
+    };
   }
 
   /**
    * PS it's always a Guest card, if it's a card.
    */
   LegalTargetType getLegalTargetType() {
-    switch (cardType) {
-      case GUEST:
-        return LegalTargetType.PLACE;
-      case UNWANTED:
-        return LegalTargetType.PLACE;
-      case SPECIAL:
-        return LegalTargetType.PLACE;
-      case INTERRUPT:
-        return LegalTargetType.NONE;
-      case BFF:
-        return LegalTargetType.CARD;
-      case ENCHANT:
-        return LegalTargetType.CARD;
-      case STEAL:
-        return LegalTargetType.CARD;
-      case SWAP:
-        return LegalTargetType.CARD;
-      case DESTROY:
-        return LegalTargetType.CARD;
-      case ENCHANT_PLAYER:
-        return LegalTargetType.PLAYER;
-      case SORCERY_ON_PLAYER:
-        return LegalTargetType.PLAYER;
-      default:
-        System.out.println("ERROR couldnt match CardType with a LegalTargetType");
-        return LegalTargetType.NONE;
-    }
+    return switch (cardType) {
+      case GUEST -> LegalTargetType.PLACE;
+      case UNWANTED -> LegalTargetType.PLACE;
+      case SPECIAL -> LegalTargetType.PLACE;
+      case INTERRUPT -> LegalTargetType.NONE;
+      case BFF -> LegalTargetType.CARD;
+      case ENCHANT -> LegalTargetType.CARD;
+      case STEAL -> LegalTargetType.CARD;
+      case SWAP -> LegalTargetType.CARD;
+      case DESTROY -> LegalTargetType.CARD;
+      case ENCHANT_PLAYER -> LegalTargetType.PLAYER;
+      case SORCERY_ON_PLAYER -> LegalTargetType.PLAYER;
+    };
   }
 
   TargetPlayerType getLegalTargetOwnerType() {
-    switch (cardType) {
-      case GUEST:
-        return TargetPlayerType.SELF;
-      case UNWANTED:
-        return TargetPlayerType.SELF;
-      case SPECIAL:
-        return TargetPlayerType.SELF;
-      case INTERRUPT:
-        return TargetPlayerType.ENEMY;
-      case BFF:
-        return TargetPlayerType.SELF;
-      case STEAL:
-        return TargetPlayerType.ENEMY;
-      case SWAP:
-        return TargetPlayerType.ENEMY;
-      case DESTROY:
-        return TargetPlayerType.SELF;
-      case ENCHANT:
-        if (this.name.toLowerCase() == "perplex") {
-          return TargetPlayerType.ENEMY;
-        }
-        return TargetPlayerType.SELF;
-      case ENCHANT_PLAYER:
-        if (this.name.toLowerCase() == "stromausfall") {
-          return TargetPlayerType.ENEMY;
-        }
-        return TargetPlayerType.SELF;
-      case SORCERY_ON_PLAYER:
-        return TargetPlayerType.SELF;
-      default:
-        System.out.println("ERROR couldnt match CardType with a LegalTargetType");
-        return TargetPlayerType.SELF;
-    }
+    return switch (cardType) {
+      case GUEST -> TargetPlayerType.SELF;
+      case UNWANTED -> TargetPlayerType.SELF;
+      case SPECIAL -> TargetPlayerType.SELF;
+      case INTERRUPT -> TargetPlayerType.ENEMY;
+      case BFF -> TargetPlayerType.SELF;
+      case STEAL -> TargetPlayerType.ENEMY;
+      case SWAP -> TargetPlayerType.ENEMY;
+      case DESTROY -> TargetPlayerType.SELF;
+      case ENCHANT ->
+        this.name.toLowerCase() == "perplex" ? TargetPlayerType.ENEMY : TargetPlayerType.SELF;
+      case ENCHANT_PLAYER ->
+        this.name.toLowerCase() == "stromausfall" ? TargetPlayerType.ENEMY : TargetPlayerType.SELF;
+      case SORCERY_ON_PLAYER -> TargetPlayerType.SELF;
+    };
   }
 
   PlaceType getLegalTargetPlaceType() {
-    switch (cardType) {
-      case GUEST:
-        return PlaceType.GUEST_CARD_ZONE;
-      case SPECIAL:
-        return PlaceType.SPECIALS_ZONE;
-      case UNWANTED:
-        return PlaceType.UNWANTEDS_ZONE;
-      case BFF:
-        return null;
-      case DESTROY:
-        return null;
-      case ENCHANT:
-        return null;
-      case ENCHANT_PLAYER:
-        return null;
-      case INTERRUPT:
-        return null;
-      case SORCERY_ON_PLAYER:
-        return null;
-      case STEAL:
-        return null;
-      case SWAP:
-        return null;
-      default:
-        return null;
-    }
+    return switch (cardType) {
+      case GUEST -> PlaceType.GUEST_CARD_ZONE;
+      case SPECIAL -> PlaceType.SPECIALS_ZONE;
+      case UNWANTED -> PlaceType.UNWANTEDS_ZONE;
+      case BFF -> null;
+      case DESTROY -> null;
+      case ENCHANT -> null;
+      case ENCHANT_PLAYER -> null;
+      case INTERRUPT -> null;
+      case SORCERY_ON_PLAYER -> null;
+      case STEAL -> null;
+      case SWAP -> null;
+      default -> null;
+    };
   }
 
   public Card() {
