@@ -24,77 +24,7 @@ class DeckCreator {
     return currId++;
   }
 
-  static Map<GuestCardType, String[]> guestTypesAndSpecials = Map.of(
-      GuestCardType.RUMGROELERIN,
-      new String[] {
-          "megaphon",
-          "karaoke",
-          "heliumballon",
-          "meinsong",
-          "smile"
-      },
-      GuestCardType.SAUFNASE,
-      new String[] {
-          "shots",
-          "beerpong",
-          "prost",
-          "raucherzimmer",
-          "barkeeperin"
-      },
-      GuestCardType.SCHLECKERMAUL,
-      new String[] {
-          "eisimbecher",
-          "suessigkeiten",
-          "midnightsnack",
-          "fingerfood",
-          "partypizza"
-      },
-      GuestCardType.TAENZERIN,
-      new String[] {
-          "nebelmaschine",
-          "lichtshow",
-          "discokugel",
-          "poledance",
-          "playlist"
-      });
-
-  static String[] enchantTypes = new String[] { "bffs",
-      "zwilling",
-      "perplex"
-  };
-
-  static String[] enchantPlayerTypes = new String[] {
-      "glitzaglitza",
-      "stromausfall",
-  };
-
-  static String[] unwantedsTypes = new String[] {
-      "musikfuersichalleinebeansprucherin",
-      "quasselstrippe",
-      "partymuffel"
-  };
-
-  static String[] destroyTypes = new String[] {
-      "nachbarin",
-      "polizei",
-      "schonsospaet"
-  };
-
-  static String[] swapTypes = new String[] {
-      "falscheparty",
-  };
-
-  static String[] stealTypes = new String[] {
-      "partyfluesterin",
-      "bierleer"
-  };
-
-  static String[] playerSorceryTypes = new String[] {
-      "wildeparty",
-      "geburtstagskind",
-    };
-
-  static Map<CardType, Integer> numPerCardType = Map.ofEntries(
+    static Map<CardType, Integer> numPerCardType = Map.ofEntries(
       Map.entry(CardType.BFF, 2),
       Map.entry(CardType.GUEST, 5),
       Map.entry(CardType.ENCHANT, 2),
@@ -115,7 +45,7 @@ class DeckCreator {
       for (int i = 0; i < numGuestsPerType; i++) {
         Card card = new Card();
         card.setCardType(CardType.GUEST);
-        card.setName(guestCardType.getName() + i);
+        card.setImageName(guestCardType.getName() + i);
         card.setId(getCurrId());
         card.setGuestCardType(guestCardType);
         guests.add(card);
@@ -131,7 +61,7 @@ class DeckCreator {
       Card card = new Card();
       card.setCardType(CardType.GUEST);
       card.setGuestCardType(guestCardType);
-      card.setName("startgast_" + guestCardType.getName());
+      card.setImageName("startgast_" + guestCardType.getName());
       card.setId(getCurrId());
       startGasts.add(card);
     }
@@ -142,12 +72,12 @@ class DeckCreator {
     List<Card> specials = new ArrayList<Card>();
 
     for (GuestCardType guestCardType : GuestCardType.basicGuestCardTypes()) {
-      String[] specialsOfthisType = guestTypesAndSpecials.get(guestCardType);
+      String[] specialsOfthisType = CardNames.guestTypesAndSpecials.get(guestCardType);
       for (int i = 0; i < specialsOfthisType.length; i++) {
         Card card = new Card();
         card.setCardType(CardType.SPECIAL);
         card.setGuestCardType(guestCardType);
-        card.setName(specialsOfthisType[i]);
+        card.setImageName(specialsOfthisType[i]);
         card.setId(getCurrId());
         specials.add(card);
       }
@@ -156,15 +86,15 @@ class DeckCreator {
   }
 
   static List<Card> createEnchantments() {
-    return createCards(CardType.ENCHANT, enchantTypes);
+    return createCards(CardType.ENCHANT, CardNames.enchantNames);
   }
 
   static List<Card> createUnwanteds() {
-    return createCards(CardType.UNWANTED, unwantedsTypes);
+    return createCards(CardType.UNWANTED, CardNames.unwantedsNames);
   }
 
   static List<Card> createDestroyCards() {
-    return createCards(CardType.DESTROY, destroyTypes);
+    return createCards(CardType.DESTROY, CardNames.destroyNames);
   }
 
   static List<Card> createDeck(int numPlayers) {
@@ -180,7 +110,7 @@ class DeckCreator {
   }
 
   static List<Card> createEnchantPlayer() {
-    return createCards(CardType.ENCHANT_PLAYER, enchantPlayerTypes);
+    return createCards(CardType.ENCHANT_PLAYER, CardNames.enchantPlayerNames);
   }
 
   static List<Card> createCards(CardType cardType, String[] types) {
@@ -190,7 +120,7 @@ class DeckCreator {
       for (int i = 0; i < numCardsPerType; i++) {
         Card card = new Card();
         card.setCardType(cardType);
-        card.setName(type + i);
+        card.setImageName(type + i);
         card.setId(getCurrId());
         cards.add(card);
       }
@@ -205,7 +135,7 @@ class DeckCreator {
     List<Card> deck = createDeck(3);
     Collections.shuffle(deck);
     for (Card card : deck) {
-      System.out.println(card.getName() + "(" + card.getId() + ")" + " = " + card.getCardType());
+      System.out.println(card.getImageName() + "(" + card.getId() + ")" + " = " + card.getCardType());
     }
   }
 

@@ -1,5 +1,8 @@
 package com.stomp.chat.model;
 
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
@@ -7,7 +10,7 @@ import jakarta.persistence.Id;
 public class Card {
   @Id
   private Long id;
-  private String name;
+  private String imageName;
   private CardType cardType;
   private GuestCardType guestCardType;
 
@@ -48,29 +51,30 @@ public class Card {
   }
 
   CardType getTargetCardType() {
-    if (name.toLowerCase() == "tuersteher") {
+    if (getName().toLowerCase() == "tuersteher") {
       return CardType.UNWANTED;
     }
     return CardType.GUEST;
   }
 
-  CardType[] getInterruptableCardTypes() {
-    if (name.toLowerCase() == "tuersteher") {
-      return new CardType[] { CardType.UNWANTED };
-    } else if (name.toLowerCase() == "glitzaglitza") {
-      return new CardType[] {
-          CardType.SORCERY_ON_PLAYER,
-          CardType.ENCHANT_PLAYER,
-          CardType.STEAL,
-          CardType.SWAP,
-          CardType.DESTROY,
-      };
-    } else if (name.toLowerCase() == "biervorrat") {
-      return new CardType[] { CardType.STEAL };
-    }
-    return new CardType[] {};
+  // String[] getInterruptableCardTypes() {
+  // if (getName().toLowerCase() == "tuersteher") {
+  // return CardNames.unwantedsNames;
+  // } else if (getName().toLowerCase() == "glitzaglitza") {
+  // return new String[] {
+  // // CardNames.s, CardNames.SORCERY_ON_PLAYER,
 
-  }
+  // CardNames.enchantPlayerNames,
+  // CardNames.stealTypes,
+  // CardNames.swapTypes,
+  // CardNames.destroyNames,
+  // };
+  // } else if (getName().toLowerCase() == "biervorrat") {
+  // return new CardType[] { CardType.STEAL };
+  // }
+  // return new CardType[] {};
+
+  // }
 
   TargetPlayerType getLegalTargetOwnerType() {
     return switch (cardType) {
@@ -83,9 +87,9 @@ public class Card {
       case SWAP -> TargetPlayerType.ENEMY;
       case DESTROY -> TargetPlayerType.SELF;
       case ENCHANT ->
-        this.name.toLowerCase() == "perplex" ? TargetPlayerType.ENEMY : TargetPlayerType.SELF;
+        this.getName().toLowerCase() == "perplex" ? TargetPlayerType.ENEMY : TargetPlayerType.SELF;
       case ENCHANT_PLAYER ->
-        this.name.toLowerCase() == "stromausfall" ? TargetPlayerType.ENEMY : TargetPlayerType.SELF;
+        this.getName().toLowerCase() == "stromausfall" ? TargetPlayerType.ENEMY : TargetPlayerType.SELF;
       case SORCERY_ON_PLAYER -> TargetPlayerType.SELF;
     };
   }
@@ -137,10 +141,10 @@ public class Card {
   public Card() {
   }
 
-  public Card(Long id, String name, String image, CardType cardType, GuestCardType guestCardType) {
+  public Card(Long id, String imageName, CardType cardType, GuestCardType guestCardType) {
     super();
     this.id = id;
-    this.name = name;
+    this.imageName = imageName;
     this.cardType = cardType;
     this.guestCardType = guestCardType;
   }
@@ -150,7 +154,10 @@ public class Card {
   }
 
   public String getName() {
-    return name;
+    Pattern pattern = Pattern.compile("[a-z_]+");
+    Matcher matcher = pattern.matcher(imageName);
+    matcher.find();
+    return matcher.group(0);
   }
 
   public CardType getCardType() {
@@ -161,8 +168,12 @@ public class Card {
     this.id = id;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setImageName(String imageName) {
+    this.imageName = imageName;
+  }
+
+  public String getImageName() {
+    return imageName;
   }
 
   public GuestCardType getGuestCardType() {
