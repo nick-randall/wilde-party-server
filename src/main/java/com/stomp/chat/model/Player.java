@@ -1,6 +1,8 @@
 package com.stomp.chat.model;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 
 import com.stomp.chat.User;
 
@@ -19,11 +21,12 @@ public class Player implements Serializable {
 
   }
 
+  TargetPlayerType targetPlayerType;
+
   public Player(User user) {
     this.userId = user.getId();
     this.name = user.getName();
   }
-
 
   public String getName() {
     return name;
@@ -64,4 +67,29 @@ public class Player implements Serializable {
   public void setUnderProtection(boolean underProtection) {
     this.underProtection = underProtection;
   }
+
+  private boolean isLegalTarget(Action action) {  
+    throw new UnsupportedOperationException("Not supported yet.");
+    
+    // action.getCardActionType() == CardActionType.ENCHANT_PLAYER;
+  }
+
+  public void gatherLegalTargets(Integer cardId, Action action, Map<Integer, TypeAndTargets> legalTargetsMap) {
+    List<Integer> legalTargets = legalTargetsMap.get(cardId).getTargetCardIds();
+    if (action.getLegalTargetType() == LegalTargetType.PLAYER) {
+      if (isLegalTarget(action)) {
+        legalTargets.add(cardId);
+      }
+      // logic for determining if this player is a legal target
+    } else {
+      places.getSpecialsZone().gatherLegalTargets(cardId, action, legalTargetsMap);
+      places.getGuestCardZone().gatherLegalTargets(cardId, action, legalTargetsMap);
+      places.getHand().gatherLegalTargets(cardId, action, legalTargetsMap);
+      places.getUnwantedsZone().gatherLegalTargets(cardId, action, legalTargetsMap);
+    }
+    TypeAndTargets typeAndTargets = new TypeAndTargets(action.getLegalTargetType());
+    typeAndTargets.setTargetCardIds(legalTargets);
+    legalTargetsMap.put(cardId, typeAndTargets);
+  }
+
 }

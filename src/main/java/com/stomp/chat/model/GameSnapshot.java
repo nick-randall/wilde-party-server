@@ -1,7 +1,9 @@
 package com.stomp.chat.model;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,18 +19,29 @@ public class GameSnapshot implements Serializable {
   List<Player> players;
 
   private int currPlayer = 0;
-	private TurnPhase currPhase = TurnPhase.DEAL_PHASE;
-	private SnapshotUpdateData snapshotUpdateData;
-  
+  private TurnPhase currPhase = TurnPhase.DEAL_PHASE;
+  private SnapshotUpdateData snapshotUpdateData;
 
   public GameSnapshot() {
   }
 
-  public GameSnapshot(List<Player> players, int currPlayer, TurnPhase currPhase, SnapshotUpdateData snapshotUpdateData) {
+  public GameSnapshot(List<Player> players, int currPlayer, TurnPhase currPhase,
+      SnapshotUpdateData snapshotUpdateData) {
     this.players = players;
     this.currPlayer = currPlayer;
     this.currPhase = currPhase;
     this.snapshotUpdateData = snapshotUpdateData;
+  }
+
+  public void updateLegalTargets() {
+    Map<Integer, TypeAndTargets> legalTargetsMap = new HashMap<Integer, TypeAndTargets>();
+    List<Card> currentHandCards = players.get(currPlayer).getPlaces().getHand().getCards();
+    for (Card card : currentHandCards) {
+      Action action = Action.fromCard(card);
+      for (Player player : players) {
+        player.gatherLegalTargets(card.getId(), action, legalTargetsMap);
+      }
+    }
   }
 
   public int getCurrPlayer() {
@@ -78,11 +91,11 @@ public class GameSnapshot implements Serializable {
   @Override
   public String toString() {
     return "{" +
-      " players='" + getPlayers() + "'" +
-      ", currPlayer='" + getCurrPlayer() + "'" +
-      ", currPhase='" + getCurrPhase() + "'" +
-      ", snapshotUpdateData='" + getSnapshotUpdateData() + "'" +
-      "}";
+        " players='" + getPlayers() + "'" +
+        ", currPlayer='" + getCurrPlayer() + "'" +
+        ", currPhase='" + getCurrPhase() + "'" +
+        ", snapshotUpdateData='" + getSnapshotUpdateData() + "'" +
+        "}";
   }
 
   public List<Player> getPlayers() {
@@ -92,6 +105,5 @@ public class GameSnapshot implements Serializable {
   public void setPlayers(List<Player> players) {
     this.players = players;
   }
-  
 
 }

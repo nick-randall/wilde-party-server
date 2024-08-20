@@ -1,15 +1,15 @@
 package com.stomp.chat.model;
 
 import java.util.regex.Pattern;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
-@Entity
 public class Card {
-  @Id
-  private Long id;
+  private int id;
   private String imageName;
   private CardType cardType;
   private GuestCardType guestCardType;
@@ -141,7 +141,7 @@ public class Card {
   public Card() {
   }
 
-  public Card(Long id, String imageName, CardType cardType, GuestCardType guestCardType) {
+  public Card(int id, String imageName, CardType cardType, GuestCardType guestCardType) {
     super();
     this.id = id;
     this.imageName = imageName;
@@ -149,7 +149,7 @@ public class Card {
     this.guestCardType = guestCardType;
   }
 
-  public long getId() {
+  public int getId() {
     return id;
   }
 
@@ -164,7 +164,7 @@ public class Card {
     return cardType;
   }
 
-  public void setId(Long id) {
+  public void setId(int id) {
     this.id = id;
   }
 
@@ -182,5 +182,21 @@ public class Card {
 
   public void setCardType(CardType cardType) {
     this.cardType = cardType;
+  }
+
+  private boolean isLegalTarget(Action action) {
+    throw new UnsupportedOperationException("Not supported yet.");
+
+  }
+
+  public void gatherLegalTargets(int cardId, Action action, Map<Integer, TypeAndTargets> legalTargetsMap) {
+    List<Integer> legalTargets = legalTargetsMap.get(cardId).getTargetCardIds();
+    if(isLegalTarget(action)) {
+      legalTargets.add(cardId);
+    }
+
+    TypeAndTargets typeAndTargets = new TypeAndTargets(action.getLegalTargetType());
+    typeAndTargets.setTargetCardIds(legalTargets);
+    legalTargetsMap.put(cardId, typeAndTargets);
   }
 }

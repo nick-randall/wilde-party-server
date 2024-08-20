@@ -18,9 +18,9 @@ import jakarta.annotation.PostConstruct;
 @Component
 class DeckCreator {
 
-  static private Long currId = 0L;
+  static private int currId = 0;
 
-  static Long getCurrId() {
+  static int getCurrId() {
     return currId++;
   }
 

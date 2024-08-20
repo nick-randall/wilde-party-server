@@ -1,13 +1,15 @@
 package com.stomp.chat.model;
 
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import org.aspectj.apache.bcel.generic.Type;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class Place implements Serializable{
+public class Place implements Serializable {
 
   private long id;
 
@@ -22,10 +24,10 @@ public class Place implements Serializable{
   }
 
   // public static Place findById(long id, EntityManager em) {
-  //   List<Place> results = em.createNamedQuery("findById", Place.class)
-  //       .setParameter("id", id)
-  //       .getResultList();
-  //   return results.isEmpty() ? null : results.get(0);
+  // List<Place> results = em.createNamedQuery("findById", Place.class)
+  // .setParameter("id", id)
+  // .getResultList();
+  // return results.isEmpty() ? null : results.get(0);
   // }
 
   public List<Card> getCards() {
@@ -43,6 +45,7 @@ public class Place implements Serializable{
   public PlaceType getPlaceType() {
     return placeType;
   }
+
   @JsonIgnore
   public CardType[] getAcceptedCardTypes() {
     return switch (this.placeType) {
@@ -55,6 +58,28 @@ public class Place implements Serializable{
       case UNWANTEDS_ZONE -> new CardType[] { CardType.UNWANTED };
       default -> new CardType[0];
     };
+  }
+  private boolean isLegalTarget(Action action) {
+    throw new UnsupportedOperationException("Not supported yet.");
+
+  }
+
+  public void gatherLegalTargets(Integer cardId, Action action, Map<Integer, TypeAndTargets> legalTargetsMap) {
+    List<Integer> legalTargets = legalTargetsMap.get(cardId).getTargetCardIds();
+
+    if (action.getLegalTargetType() == LegalTargetType.PLACE) {
+      // logic for determining if this place is a legal target
+      if(isLegalTarget(action)) {
+        legalTargets.add(cardId);
+      }
+    } else {
+      for (Card card : cards) {
+        card.gatherLegalTargets(cardId, action, legalTargetsMap);
+      }
+      TypeAndTargets typeAndTargets = new TypeAndTargets(action.getLegalTargetType());
+      typeAndTargets.setTargetCardIds(legalTargets);
+      legalTargetsMap.put(cardId, typeAndTargets);
+    }
   }
 
 }
