@@ -1,4 +1,4 @@
-package com.stomp.chat.model;
+package com.stomp.chat.model.cards;
 
 public enum CardActionType {
   ADD_DRAGGED,

@@ -1,4 +1,8 @@
-package com.stomp.chat.model;
+package com.stomp.chat.model.cards;
+
+import com.stomp.chat.model.LegalTargetType;
+import com.stomp.chat.model.PlaceType;
+import com.stomp.chat.model.TargetPlayerType;
 
 public class Action {
   private PlaceType targetPlaceType;

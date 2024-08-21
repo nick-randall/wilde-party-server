@@ -8,6 +8,9 @@ import java.util.Map;
 import org.aspectj.apache.bcel.generic.Type;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.stomp.chat.model.cards.Action;
+import com.stomp.chat.model.cards.Card;
+import com.stomp.chat.model.cards.CardType;
 
 public class Place implements Serializable {
 

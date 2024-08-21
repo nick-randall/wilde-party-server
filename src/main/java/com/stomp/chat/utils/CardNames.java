@@ -1,7 +1,8 @@
 package com.stomp.chat.utils;
 
 import java.util.Map;
-import com.stomp.chat.model.GuestCardType;
+
+import com.stomp.chat.model.cards.GuestCardType;
 
 public class CardNames {
   static Map<GuestCardType, String[]> guestTypesAndSpecials = Map.of(

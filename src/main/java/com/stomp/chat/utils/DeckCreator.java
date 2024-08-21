@@ -9,9 +9,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import com.stomp.chat.model.Card;
-import com.stomp.chat.model.CardType;
-import com.stomp.chat.model.GuestCardType;
+import com.stomp.chat.model.GameSnapshot;
+import com.stomp.chat.model.Player;
+import com.stomp.chat.model.PlayerPlaces;
+import com.stomp.chat.model.cards.Card;
+import com.stomp.chat.model.cards.CardType;
+import com.stomp.chat.model.cards.GuestCard;
+import com.stomp.chat.model.cards.GuestCardType;
 
 import jakarta.annotation.PostConstruct;
 
@@ -24,7 +28,7 @@ class DeckCreator {
     return currId++;
   }
 
-    static Map<CardType, Integer> numPerCardType = Map.ofEntries(
+  static Map<CardType, Integer> numPerCardType = Map.ofEntries(
       Map.entry(CardType.BFF, 2),
       Map.entry(CardType.GUEST, 5),
       Map.entry(CardType.ENCHANT, 2),
@@ -58,7 +62,7 @@ class DeckCreator {
     List<Card> startGasts = new ArrayList<Card>();
     GuestCardType[] startGuestTypes = Arrays.copyOfRange(GuestCardType.basicGuestCardTypes(), 0, numPlayers);
     for (GuestCardType guestCardType : startGuestTypes) {
-      Card card = new Card();
+      GuestCard card = new GuestCard();
       card.setCardType(CardType.GUEST);
       card.setGuestCardType(guestCardType);
       card.setImageName("startgast_" + guestCardType.getName());
@@ -137,6 +141,24 @@ class DeckCreator {
     for (Card card : deck) {
       System.out.println(card.getImageName() + "(" + card.getId() + ")" + " = " + card.getCardType());
     }
+   
+   // Create game snapshot
+    // GameSnapshot snapshot = new GameSnapshot();
+    // List<Player> players = new ArrayList<>();
+    // Player player = new Player();
+    // player.setId(0L);
+    // player.setName("francis");
+    // player.setPlaces(new PlayerPlaces());
+    // Player player2 = new Player();
+    // player2.setId(1L);
+    //  player.getPlaces().getHand().setCards(createStartGast(3));;
+
+    // player2.setName("steven");
+    // players.add(player);
+    // players.add(player2);
+    // snapshot.setPlayers(players);
+    // GameSnapshotJsonConverter converter = new GameSnapshotJsonConverter();
+    // System.out.println(converter.convertToDatabaseColumn(snapshot));
   }
 
 }

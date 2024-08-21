@@ -1,4 +1,6 @@
-package com.stomp.chat.model;
+package com.stomp.chat.model.cards;
+
+import com.stomp.chat.model.LegalTargetType;
 
 public class CardLegalTargets {
 

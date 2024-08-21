@@ -1,6 +1,12 @@
-package com.stomp.chat.model;
+package com.stomp.chat.model.cards;
 
 import java.util.regex.Pattern;
+
+import com.stomp.chat.model.LegalTargetType;
+import com.stomp.chat.model.PlaceType;
+import com.stomp.chat.model.TargetPlayerType;
+import com.stomp.chat.model.TypeAndTargets;
+
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;

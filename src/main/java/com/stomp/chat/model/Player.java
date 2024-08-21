@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.stomp.chat.User;
+import com.stomp.chat.model.cards.Action;
 
 public class Player implements Serializable {
   private Long id;
