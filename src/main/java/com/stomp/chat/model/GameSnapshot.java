@@ -24,6 +24,15 @@ public class GameSnapshot implements Serializable {
   private int currPlayer = 0;
   private TurnPhase currPhase = TurnPhase.DEAL_PHASE;
   private SnapshotUpdateData snapshotUpdateData;
+  public Place[] allPlaces;
+
+  public Place getDeck () {
+    return allPlaces[0];
+  }
+
+  public Place getDiscardPile () {
+    return allPlaces[1];
+  }
 
   public GameSnapshot() {
   }
@@ -34,6 +43,13 @@ public class GameSnapshot implements Serializable {
     this.currPlayer = currPlayer;
     this.currPhase = currPhase;
     this.snapshotUpdateData = snapshotUpdateData;
+    initPlaces();
+  }
+
+  private void initPlaces() {
+    Place deck = new Place(PlaceType.DECK);
+    Place discardPile = new Place(PlaceType.DISCARD_PILE);
+    allPlaces = new Place[] {deck, discardPile};
   }
 
   public void updateLegalTargets() {

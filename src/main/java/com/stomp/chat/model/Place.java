@@ -49,6 +49,20 @@ public class Place implements Serializable {
     return placeType;
   }
 
+  public Card getCardToRight(int cardIndex) {
+    if(cards.size() > cardIndex + 1) {
+      return cards.get(cardIndex + 1);
+    }
+    return null;
+  }
+
+  public Card getCardTwoToRight(int cardIndex) {
+    if(cards.size() > cardIndex + 2) {
+      return cards.get(cardIndex + 2);
+    }
+    return null;
+  }
+
   @JsonIgnore
   public CardType[] getAcceptedCardTypes() {
     return switch (this.placeType) {

@@ -3,42 +3,40 @@ package com.stomp.chat.model;
 import java.io.Serializable;
 
 public class PlayerPlaces implements Serializable {
-  private long id;
 
-  public long getId() {
-    return id;
-  }
-
-  private Place guestCardZone;
-  private Place unwantedsZone;
-  private Place hand;
-  private Place specialsZone;
+  public Place[] allPlaces;
 
   public PlayerPlaces() {
-    initPlaces();
+    allPlaces = initPlaces();
   }
 
-  private void initPlaces() {
-    guestCardZone = new Place(PlaceType.GUEST_CARD_ZONE);
-    hand = new Place(PlaceType.HAND);
-    unwantedsZone = new Place(PlaceType.UNWANTEDS_ZONE);
-    specialsZone = new Place(PlaceType.SPECIALS_ZONE);
+  private Place[]  initPlaces() {
+    Place guestCardZone = new Place(PlaceType.GUEST_CARD_ZONE);
+    Place enchantmentsRow = new Place(PlaceType.ENCHANTMENTS_ROW);
+    Place hand = new Place(PlaceType.HAND);
+    Place unwantedsZone = new Place(PlaceType.UNWANTEDS_ZONE);
+    Place specialsZone = new Place(PlaceType.SPECIALS_ZONE);
+    return new Place[] {guestCardZone, enchantmentsRow, unwantedsZone, hand, specialsZone};
   }
 
   public Place getGuestCardZone() {
-    return guestCardZone;
+    return allPlaces[0];
+  }
+
+  public Place getEnchantmentsRow() {
+    return allPlaces[1];
   }
 
   public Place getUnwantedsZone() {
-    return unwantedsZone;
+    return allPlaces[2];
   }
 
   public Place getHand() {
-    return hand;
+    return allPlaces[3];
   }
 
   public Place getSpecialsZone() {
-    return specialsZone;
+    return allPlaces[4];
   }
 
 }
