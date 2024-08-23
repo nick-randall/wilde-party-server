@@ -1,8 +1,7 @@
 package com.stomp.chat.model.cards;
 
-import java.util.List;
-
 import com.stomp.chat.model.GameSnapshot;
+import com.stomp.chat.model.LegalTargetType;
 import com.stomp.chat.model.PlaceType;
 import com.stomp.chat.model.SnapshotUpdateData;
 import com.stomp.chat.model.SnapshotUpdateType;
@@ -25,18 +24,23 @@ public class DestroyAction implements CardAction {
   }
 
   @Override
-  public GameSnapshot updateSnapshot(GameSnapshot gameSnapshot, Card playedCard, Object target) {
+  public CardActionResult getActionResult(GameSnapshot gameSnapshot, Card playedCard, Object target) {
+    if (!isLegalTargetOf(gameSnapshot, playedCard, target)) {
+      return new CardActionResult(false);
+    }
     Card targetCard = (Card) target;
     SnapshotUpdater updater = new SnapshotUpdater(gameSnapshot);
 
     updater.moveCardToDiscardPile(targetCard);
-    updater.moveCardToDiscardPile(playedCard);
-    
+    GameSnapshot updatedSnapshot = updater.moveCardToDiscardPile(playedCard);
+
     SnapshotUpdateData updateData = new SnapshotUpdateData(SnapshotUpdateType.DESTROY, targetCard.getId(),
         playedCard.getId());
     gameSnapshot.setSnapshotUpdateData(updateData);
+    CardActionResult result = new CardActionResult(true, LegalTargetType.CARD, updatedSnapshot,
+        CardActionType.DESTROY);
 
-    return gameSnapshot;
+    return result;
 
   }
 

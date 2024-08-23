@@ -10,6 +10,7 @@ import org.aspectj.apache.bcel.generic.Type;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.stomp.chat.model.cards.Action;
 import com.stomp.chat.model.cards.Card;
+import com.stomp.chat.model.cards.CardActionResult;
 import com.stomp.chat.model.cards.CardType;
 
 public class Place implements Serializable {
@@ -50,14 +51,14 @@ public class Place implements Serializable {
   }
 
   public Card getCardToRight(int cardIndex) {
-    if(cards.size() > cardIndex + 1) {
+    if (cards.size() > cardIndex + 1) {
       return cards.get(cardIndex + 1);
     }
     return null;
   }
 
   public Card getCardTwoToRight(int cardIndex) {
-    if(cards.size() > cardIndex + 2) {
+    if (cards.size() > cardIndex + 2) {
       return cards.get(cardIndex + 2);
     }
     return null;
@@ -76,27 +77,23 @@ public class Place implements Serializable {
       default -> new CardType[0];
     };
   }
+
   private boolean isLegalTarget(Action action) {
     throw new UnsupportedOperationException("Not supported yet.");
 
   }
 
-  public void gatherLegalTargets(Integer cardId, Action action, Map<Integer, TypeAndTargets> legalTargetsMap) {
-    List<Integer> legalTargets = legalTargetsMap.get(cardId).getTargetCardIds();
-
-    if (action.getLegalTargetType() == LegalTargetType.PLACE) {
-      // logic for determining if this place is a legal target
-      if(isLegalTarget(action)) {
-        legalTargets.add(cardId);
-      }
-    } else {
-      for (Card card : cards) {
-        card.gatherLegalTargets(cardId, action, legalTargetsMap);
-      }
-      TypeAndTargets typeAndTargets = new TypeAndTargets(action.getLegalTargetType());
-      typeAndTargets.setTargetCardIds(legalTargets);
-      legalTargetsMap.put(cardId, typeAndTargets);
+  public void gatherCardActionResults(GameSnapshot gameSnapshot, Card playedCard,
+      List<CardActionResult> cardActionResults) {
+    // List<Integer> legalTargets = legalTargetsMap.get(cardId).getTargetCardIds();
+    CardActionResult result = playedCard.getAction().getActionResult(gameSnapshot, playedCard, cardActionResults);
+    cardActionResults.add(result);
+    for (Card card : cards) {
+      card.gatherCardActionResults(gameSnapshot, card, cardActionResults);
     }
+    TypeAndTargets typeAndTargets = new TypeAndTargets(action.getLegalTargetType());
+    typeAndTargets.setTargetCardIds(legalTargets);
+    legalTargetsMap.put(cardId, typeAndTargets);
   }
 
 }

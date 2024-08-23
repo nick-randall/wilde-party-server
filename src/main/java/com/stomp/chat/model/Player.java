@@ -6,6 +6,9 @@ import java.util.Map;
 
 import com.stomp.chat.User;
 import com.stomp.chat.model.cards.Action;
+import com.stomp.chat.model.cards.Card;
+import com.stomp.chat.model.cards.CardAction;
+import com.stomp.chat.model.cards.CardActionResult;
 
 public class Player implements Serializable {
   private Long id;
@@ -69,28 +72,19 @@ public class Player implements Serializable {
     this.underProtection = underProtection;
   }
 
-  private boolean isLegalTarget(Action action) {  
+  private boolean isLegalTarget(Action action) {
     throw new UnsupportedOperationException("Not supported yet.");
-    
+
     // action.getCardActionType() == CardActionType.ENCHANT_PLAYER;
   }
 
-  public void gatherLegalTargets(Integer cardId, Action action, Map<Integer, TypeAndTargets> legalTargetsMap) {
-    List<Integer> legalTargets = legalTargetsMap.get(cardId).getTargetCardIds();
-    if (action.getLegalTargetType() == LegalTargetType.PLAYER) {
-      if (isLegalTarget(action)) {
-        legalTargets.add(cardId);
-      }
-      // logic for determining if this player is a legal target
-    } else {
-      places.getSpecialsZone().gatherLegalTargets(cardId, action, legalTargetsMap);
-      places.getGuestCardZone().gatherLegalTargets(cardId, action, legalTargetsMap);
-      places.getHand().gatherLegalTargets(cardId, action, legalTargetsMap);
-      places.getUnwantedsZone().gatherLegalTargets(cardId, action, legalTargetsMap);
+  public void gatherCardActionResults(GameSnapshot gameSnapshot, Card playedCard,
+      List<CardActionResult> cardActionResults) {
+    CardActionResult result = playedCard.getAction().getActionResult(gameSnapshot, playedCard, this);
+    cardActionResults.add(result);
+    for (Place place : places.getAllPlaces()) {
+      place.gatherCardActionResults(gameSnapshot, playedCard, cardActionResults);
     }
-    TypeAndTargets typeAndTargets = new TypeAndTargets(action.getLegalTargetType());
-    typeAndTargets.setTargetCardIds(legalTargets);
-    legalTargetsMap.put(cardId, typeAndTargets);
   }
 
 }

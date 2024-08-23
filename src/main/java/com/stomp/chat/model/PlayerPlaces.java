@@ -4,7 +4,15 @@ import java.io.Serializable;
 
 public class PlayerPlaces implements Serializable {
 
-  public Place[] allPlaces;
+  private Place[] allPlaces;
+
+  public Place[] getAllPlaces() {
+    return allPlaces;
+  }
+
+  public void setAllPlaces(Place[] allPlaces) {
+    this.allPlaces = allPlaces;
+  }
 
   public PlayerPlaces() {
     allPlaces = initPlaces();

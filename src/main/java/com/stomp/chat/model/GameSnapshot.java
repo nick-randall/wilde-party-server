@@ -1,12 +1,14 @@
 package com.stomp.chat.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.stomp.chat.model.cards.Action;
 import com.stomp.chat.model.cards.Card;
+import com.stomp.chat.model.cards.CardActionResult;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -52,14 +54,25 @@ public class GameSnapshot implements Serializable {
     allPlaces = new Place[] {deck, discardPile};
   }
 
+  // public void updateLegalTargets() {
+  //   Map<Integer, TypeAndTargets> legalTargetsMap = new HashMap<Integer, TypeAndTargets>();
+  //   List<Card> currentHandCards = players.get(currPlayer).getPlaces().getHand().getCards();
+  //   for (Card card : currentHandCards) {
+  //     Action action = Action.fromCard(card);
+  //     for (Player player : players) {
+  //       player.gatherLegalTargets(card.getId(), action, legalTargetsMap);
+  //     }
+  //   }
+  // }
   public void updateLegalTargets() {
-    Map<Integer, TypeAndTargets> legalTargetsMap = new HashMap<Integer, TypeAndTargets>();
+    Map<Integer, List<CardActionResult>> actionResultsMap = new HashMap<Integer, List<CardActionResult>>();
     List<Card> currentHandCards = players.get(currPlayer).getPlaces().getHand().getCards();
     for (Card card : currentHandCards) {
-      Action action = Action.fromCard(card);
+      List<CardActionResult> cardActionResults = new ArrayList<CardActionResult>();
       for (Player player : players) {
-        player.gatherLegalTargets(card.getId(), action, legalTargetsMap);
+        player.gatherCardActionResults(this, card, cardActionResults);
       }
+      actionResultsMap.put(card.getId(), cardActionResults);
     }
   }
 

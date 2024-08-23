@@ -2,6 +2,7 @@ package com.stomp.chat.model.cards;
 
 import java.util.regex.Pattern;
 
+import com.stomp.chat.model.GameSnapshot;
 import com.stomp.chat.model.LegalTargetType;
 import com.stomp.chat.model.PlaceType;
 import com.stomp.chat.model.TargetPlayerType;
@@ -19,6 +20,7 @@ public class Card {
   private String imageName;
   private CardType cardType;
   private GuestCardType guestCardType;
+  private CardAction action;
 
   public void setGuestCardType(GuestCardType guestCardType) {
     this.guestCardType = guestCardType;
@@ -190,19 +192,17 @@ public class Card {
     this.cardType = cardType;
   }
 
-  private boolean isLegalTarget(Action action) {
-    throw new UnsupportedOperationException("Not supported yet.");
-
+  public CardAction getAction() {
+    return action;
   }
 
-  public void gatherLegalTargets(int cardId, Action action, Map<Integer, TypeAndTargets> legalTargetsMap) {
-    List<Integer> legalTargets = legalTargetsMap.get(cardId).getTargetCardIds();
-    if(isLegalTarget(action)) {
-      legalTargets.add(cardId);
-    }
+  public void setAction(CardAction action) {
+    this.action = action;
+  }
 
-    TypeAndTargets typeAndTargets = new TypeAndTargets(action.getLegalTargetType());
-    typeAndTargets.setTargetCardIds(legalTargets);
-    legalTargetsMap.put(cardId, typeAndTargets);
+  public void gatherCardActionResults(GameSnapshot gameSnapshot, Card playedCard,
+      List<CardActionResult> cardActionResults) {
+    CardActionResult result = playedCard.getAction().getActionResult(gameSnapshot, playedCard, this);
+    cardActionResults.add(result);
   }
 }
