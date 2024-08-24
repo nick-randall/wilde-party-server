@@ -26,23 +26,12 @@ public class GameSnapshot implements Serializable {
   private int currPlayer = 0;
   private TurnPhase currPhase = TurnPhase.DEAL_PHASE;
   private SnapshotUpdateData snapshotUpdateData;
-  @JsonIgnore
-  public Place[] allPlaces;
-  private Place deck = new Place(PlaceType.DECK);
-  private Place discardPile = new Place(PlaceType.DISCARD_PILE);
+  private NonPlayerPlaces nonPlayerPlaces = new NonPlayerPlaces();
+
 
   Map<Integer, List<CardActionResult>> actionResultsMap = new HashMap<Integer, List<CardActionResult>>();
 
-  public Place getDeck () {
-    return allPlaces[0];
-  }
-
-  public Place getDiscardPile () {
-    return allPlaces[1];
-  }
-
   public GameSnapshot() {
-    initPlaces();
   }
 
   public GameSnapshot(List<Player> players, int currPlayer, TurnPhase currPhase,
@@ -51,13 +40,7 @@ public class GameSnapshot implements Serializable {
     this.currPlayer = currPlayer;
     this.currPhase = currPhase;
     this.snapshotUpdateData = snapshotUpdateData;
-    initPlaces();
   }
-
-  private void initPlaces() {
-    allPlaces = new Place[] {deck, discardPile};
-  }
-
 
   public void updateLegalTargets() {
     List<Card> currentHandCards = players.get(currPlayer).getPlaces().getHand().getCards();
@@ -131,5 +114,14 @@ public class GameSnapshot implements Serializable {
   public void setPlayers(List<Player> players) {
     this.players = players;
   }
+
+  public NonPlayerPlaces getNonPlayerPlaces() {
+    return nonPlayerPlaces;
+  }
+
+  public void setNonPlayerPlaces(NonPlayerPlaces nonPlayerPlaces) {
+    this.nonPlayerPlaces = nonPlayerPlaces;
+  }
+
 
 }

@@ -17,6 +17,7 @@ import com.wildeparty.model.Game;
 import com.wildeparty.model.GameSnapshot;
 import com.wildeparty.model.Player;
 import com.wildeparty.model.Session;
+import com.wildeparty.utils.GameSnapshotJsonConverter;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -120,7 +121,7 @@ public class WhoAmIController {
     Game savedGame = gamesService.saveGame(game);
     gamesService.getGame(savedGame.getId());
     System.out.println(savedGame.getGameSnapshot().getPlayers());
-    System.out.println(savedGame.getGameSnapshot());
+    System.out.println(new GameSnapshotJsonConverter().convertToDatabaseColumn(savedGame.getGameSnapshot()));
     /// Demo of GamesServiceImpl
 
     return ResponseEntity.ok().body(newUser);

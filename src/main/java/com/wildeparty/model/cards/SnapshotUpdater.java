@@ -14,7 +14,7 @@ public class SnapshotUpdater {
   public GameSnapshot moveCardToDiscardPile(Card card) {
     Location location = utils.findCard(card, gameSnapshot);
     location.place.getCards().remove(location.index);
-    gameSnapshot.getDiscardPile().getCards().add(card);
+    gameSnapshot.getNonPlayerPlaces().getDiscardPile().getCards().add(card);
     return gameSnapshot;
   }
 

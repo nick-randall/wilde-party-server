@@ -23,7 +23,7 @@ public class GameSnapshotUtils {
         }
       }
     }
-    for (Place gamePlace : gameSnapshot.allPlaces) {
+    for (Place gamePlace : gameSnapshot.getNonPlayerPlaces().getAllPlaces()) {
       if (gamePlace == place) {
         return null;
       }
@@ -42,7 +42,7 @@ public class GameSnapshotUtils {
         }
       }
     }
-    for (Place place : gameSnapshot.allPlaces) {
+    for (Place place : gameSnapshot.getNonPlayerPlaces().getAllPlaces()) {
       for (int i = 0; i < place.getCards().size(); i++) {
         if (place.getCards().get(i) == card) {
           return new Location(null, place, i);
