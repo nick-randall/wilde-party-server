@@ -17,7 +17,7 @@ public class GameSnapshotUtils {
 
   public Place findPlace(Place place, GameSnapshot gameSnapshot) {
     for (Player player : gameSnapshot.getPlayers()) {
-      for (Place playerPlace : player.getPlaces().allPlaces) {
+      for (Place playerPlace : player.getPlaces().getAllPlaces()) {
         if (playerPlace == place) {
           return playerPlace;
         }
@@ -34,7 +34,7 @@ public class GameSnapshotUtils {
   public Location findCard(Card card, GameSnapshot gameSnapshot) {
 
     for (Player player : gameSnapshot.getPlayers()) {
-      for (Place place : player.getPlaces().allPlaces) {
+      for (Place place : player.getPlaces().getAllPlaces()) {
         for (int i = 0; i < place.getCards().size(); i++) {
           if (place.getCards().get(i) == card) {
             return new Location(player, place, i);

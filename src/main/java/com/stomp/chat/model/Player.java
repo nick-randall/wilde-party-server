@@ -2,12 +2,8 @@ package com.stomp.chat.model;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
-
 import com.stomp.chat.User;
-import com.stomp.chat.model.cards.Action;
 import com.stomp.chat.model.cards.Card;
-import com.stomp.chat.model.cards.CardAction;
 import com.stomp.chat.model.cards.CardActionResult;
 
 public class Player implements Serializable {
@@ -70,12 +66,6 @@ public class Player implements Serializable {
 
   public void setUnderProtection(boolean underProtection) {
     this.underProtection = underProtection;
-  }
-
-  private boolean isLegalTarget(Action action) {
-    throw new UnsupportedOperationException("Not supported yet.");
-
-    // action.getCardActionType() == CardActionType.ENCHANT_PLAYER;
   }
 
   public void gatherCardActionResults(GameSnapshot gameSnapshot, Card playedCard,

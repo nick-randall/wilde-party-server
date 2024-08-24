@@ -1,7 +1,5 @@
 package com.stomp.chat.model;
 
-import java.util.List;
-
 public class SnapshotUpdateData {
 
   private SnapshotUpdateType type;
@@ -16,18 +14,10 @@ public class SnapshotUpdateData {
     this.type = type;
   }
 
-  // public SnapshotUpdateData(SnapshotUpdateType type, int targetId, int secondaryCardId, int... playedCardIds) {
-  //   this.type = type;
-  //   this.playedCardIds = playedCardIds;
-  //   this.targetId = targetId;
-  //   this.secondaryCardId = secondaryCardId;
-  // }
-
   public SnapshotUpdateData(SnapshotUpdateType type, int targetId, int... playedCardIds) {
     this.type = type;
     this.playedCardIds = playedCardIds;
     this.targetId = targetId;
-    // this.secondaryCardId = null;
   }
 
   public SnapshotUpdateType getType() {
@@ -64,16 +54,6 @@ public class SnapshotUpdateData {
 
   public void setSecondaryCardId(Integer secondaryCardId) {
     this.secondaryCardId = secondaryCardId;
-  }
-
-  @Override
-  public String toString() {
-    return "{" +
-        " type='" + getType() + "'" +
-        ", playedCardIds='" + getPlayedCardIds() + "'" +
-        ", targetId='" + getTargetId() + "'" +
-        ", secondaryCardId='" + getSecondaryCardId() + "'" +
-        "}";
   }
 
 }

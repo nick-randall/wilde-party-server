@@ -6,14 +6,8 @@ import com.stomp.chat.model.GameSnapshot;
 import com.stomp.chat.model.LegalTargetType;
 import com.stomp.chat.model.PlaceType;
 import com.stomp.chat.model.TargetPlayerType;
-import com.stomp.chat.model.TypeAndTargets;
-
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
 
 public class Card {
   private int id;
@@ -21,6 +15,13 @@ public class Card {
   private CardType cardType;
   private GuestCardType guestCardType;
   private CardAction action;
+
+
+  public void gatherCardActionResults(GameSnapshot gameSnapshot, Card playedCard,
+      List<CardActionResult> cardActionResults) {
+    CardActionResult result = playedCard.getAction().getActionResult(gameSnapshot, playedCard, this);
+    cardActionResults.add(result);
+  }
 
   public void setGuestCardType(GuestCardType guestCardType) {
     this.guestCardType = guestCardType;
@@ -200,9 +201,4 @@ public class Card {
     this.action = action;
   }
 
-  public void gatherCardActionResults(GameSnapshot gameSnapshot, Card playedCard,
-      List<CardActionResult> cardActionResults) {
-    CardActionResult result = playedCard.getAction().getActionResult(gameSnapshot, playedCard, this);
-    cardActionResults.add(result);
-  }
 }

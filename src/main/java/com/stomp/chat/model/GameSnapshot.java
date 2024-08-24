@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.stomp.chat.model.cards.Action;
 import com.stomp.chat.model.cards.Card;
 import com.stomp.chat.model.cards.CardActionResult;
 
@@ -27,6 +26,7 @@ public class GameSnapshot implements Serializable {
   private TurnPhase currPhase = TurnPhase.DEAL_PHASE;
   private SnapshotUpdateData snapshotUpdateData;
   public Place[] allPlaces;
+  Map<Integer, List<CardActionResult>> actionResultsMap = new HashMap<Integer, List<CardActionResult>>();
 
   public Place getDeck () {
     return allPlaces[0];
@@ -54,18 +54,8 @@ public class GameSnapshot implements Serializable {
     allPlaces = new Place[] {deck, discardPile};
   }
 
-  // public void updateLegalTargets() {
-  //   Map<Integer, TypeAndTargets> legalTargetsMap = new HashMap<Integer, TypeAndTargets>();
-  //   List<Card> currentHandCards = players.get(currPlayer).getPlaces().getHand().getCards();
-  //   for (Card card : currentHandCards) {
-  //     Action action = Action.fromCard(card);
-  //     for (Player player : players) {
-  //       player.gatherLegalTargets(card.getId(), action, legalTargetsMap);
-  //     }
-  //   }
-  // }
+
   public void updateLegalTargets() {
-    Map<Integer, List<CardActionResult>> actionResultsMap = new HashMap<Integer, List<CardActionResult>>();
     List<Card> currentHandCards = players.get(currPlayer).getPlaces().getHand().getCards();
     for (Card card : currentHandCards) {
       List<CardActionResult> cardActionResults = new ArrayList<CardActionResult>();

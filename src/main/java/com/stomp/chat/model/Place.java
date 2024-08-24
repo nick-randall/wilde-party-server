@@ -3,19 +3,14 @@ package com.stomp.chat.model;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
-import org.aspectj.apache.bcel.generic.Type;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.stomp.chat.model.cards.Action;
 import com.stomp.chat.model.cards.Card;
 import com.stomp.chat.model.cards.CardActionResult;
 import com.stomp.chat.model.cards.CardType;
 
 public class Place implements Serializable {
 
-  private long id;
+  private int id;
 
   private List<Card> cards = new ArrayList<>();
   private PlaceType placeType;
@@ -27,12 +22,15 @@ public class Place implements Serializable {
     this.placeType = placeType;
   }
 
-  // public static Place findById(long id, EntityManager em) {
-  // List<Place> results = em.createNamedQuery("findById", Place.class)
-  // .setParameter("id", id)
-  // .getResultList();
-  // return results.isEmpty() ? null : results.get(0);
-  // }
+
+  public void gatherCardActionResults(GameSnapshot gameSnapshot, Card playedCard,
+      List<CardActionResult> cardActionResults) {
+    CardActionResult result = playedCard.getAction().getActionResult(gameSnapshot, playedCard, this);
+    cardActionResults.add(result);
+    for (Card card : cards) {
+      card.gatherCardActionResults(gameSnapshot, card, cardActionResults);
+    }
+  }
 
   public List<Card> getCards() {
     return cards;
@@ -78,22 +76,5 @@ public class Place implements Serializable {
     };
   }
 
-  private boolean isLegalTarget(Action action) {
-    throw new UnsupportedOperationException("Not supported yet.");
-
-  }
-
-  public void gatherCardActionResults(GameSnapshot gameSnapshot, Card playedCard,
-      List<CardActionResult> cardActionResults) {
-    // List<Integer> legalTargets = legalTargetsMap.get(cardId).getTargetCardIds();
-    CardActionResult result = playedCard.getAction().getActionResult(gameSnapshot, playedCard, cardActionResults);
-    cardActionResults.add(result);
-    for (Card card : cards) {
-      card.gatherCardActionResults(gameSnapshot, card, cardActionResults);
-    }
-    TypeAndTargets typeAndTargets = new TypeAndTargets(action.getLegalTargetType());
-    typeAndTargets.setTargetCardIds(legalTargets);
-    legalTargetsMap.put(cardId, typeAndTargets);
-  }
 
 }
