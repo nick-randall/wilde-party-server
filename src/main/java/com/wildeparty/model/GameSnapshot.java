@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.wildeparty.User;
 import com.wildeparty.model.cards.Card;
 import com.wildeparty.model.cards.CardActionResult;
 
@@ -21,7 +22,7 @@ public class GameSnapshot implements Serializable {
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private Long id;
 
-  List<Player> players;
+  List<Player> players = new ArrayList<Player>();
 
   private int currPlayer = 0;
   private TurnPhase currPhase = TurnPhase.DEAL_PHASE;
@@ -32,6 +33,15 @@ public class GameSnapshot implements Serializable {
   Map<Integer, List<CardActionResult>> actionResultsMap = new HashMap<Integer, List<CardActionResult>>();
 
   public GameSnapshot() {
+  }
+
+  public GameSnapshot(User userOne, User userTwo, User userThree) {
+    Player playerOne = new Player(userOne, 0);
+    Player playerTwo = new Player(userTwo, 1);
+    Player playerThree = new Player(userThree, 2);
+    players.add(playerOne);
+    players.add(playerTwo);
+    players.add(playerThree);
   }
 
   public GameSnapshot(List<Player> players, int currPlayer, TurnPhase currPhase,

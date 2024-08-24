@@ -103,15 +103,19 @@ public class WhoAmIController {
     User userTwo = new User();
     userTwo.setName("Steve");
     User savedUserTwo = userService.saveUser(userTwo);
-    System.out.println(user);
+    User userThree = new User();
+    userTwo.setName("AI");
+    User savedUserThree = userService.saveUser(userThree);
     ///
     Game game = new Game();
-    GameSnapshot snapshot = new GameSnapshot();
-    List<Player> players = new ArrayList<>();
-    players.add(new Player(savedUser));
-    players.add(new Player(savedUserTwo));
+    GameSnapshot snapshot = new GameSnapshot(user, savedUserTwo, savedUserThree);
+    // List<Player> players = new ArrayList<>();
+    // players.add(new Player(user));
+    // players.add(new Player(savedUserTwo));
+    // players.add(new Player(savedUserThree));
+
   
-    snapshot.setPlayers(players);
+    // snapshot.setPlayers(players);
     game.setGameSnapshot(snapshot);
     List<User> users = new ArrayList<>();
     users.add(savedUser);
