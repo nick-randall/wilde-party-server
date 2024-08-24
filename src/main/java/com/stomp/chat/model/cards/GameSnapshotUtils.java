@@ -15,17 +15,17 @@ public class GameSnapshotUtils {
     return cardToRight.getCardType() == CardType.BFF || cardToRight.getCardType() == CardType.ENCHANT;
   }
 
-  public Place findPlace(Place place, GameSnapshot gameSnapshot) {
+  public Player findPlace(Place place, GameSnapshot gameSnapshot) {
     for (Player player : gameSnapshot.getPlayers()) {
       for (Place playerPlace : player.getPlaces().getAllPlaces()) {
         if (playerPlace == place) {
-          return playerPlace;
+          return player;
         }
       }
     }
     for (Place gamePlace : gameSnapshot.allPlaces) {
       if (gamePlace == place) {
-        return gamePlace;
+        return null;
       }
     }
     throw new RuntimeException("Place not found in gameSnapshot");

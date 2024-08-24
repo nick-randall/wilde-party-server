@@ -9,12 +9,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 
-import com.stomp.chat.model.GameSnapshot;
-import com.stomp.chat.model.Player;
-import com.stomp.chat.model.PlayerPlaces;
 import com.stomp.chat.model.cards.Card;
 import com.stomp.chat.model.cards.CardType;
-import com.stomp.chat.model.cards.GuestCard;
 import com.stomp.chat.model.cards.GuestCardType;
 
 import jakarta.annotation.PostConstruct;
@@ -62,7 +58,7 @@ class DeckCreator {
     List<Card> startGasts = new ArrayList<Card>();
     GuestCardType[] startGuestTypes = Arrays.copyOfRange(GuestCardType.basicGuestCardTypes(), 0, numPlayers);
     for (GuestCardType guestCardType : startGuestTypes) {
-      GuestCard card = new GuestCard();
+      Card card = new Card();
       card.setCardType(CardType.GUEST);
       card.setGuestCardType(guestCardType);
       card.setImageName("startgast_" + guestCardType.getName());
@@ -117,14 +113,14 @@ class DeckCreator {
     return createCards(CardType.ENCHANT_PLAYER, CardNames.enchantPlayerNames);
   }
 
-  static List<Card> createCards(CardType cardType, String[] types) {
+  static List<Card> createCards(CardType cardType, String[] names) {
     List<Card> cards = new ArrayList<Card>();
     int numCardsPerType = numPerCardType.get(cardType);
-    for (String type : types) {
+    for (String name : names) {
       for (int i = 0; i < numCardsPerType; i++) {
         Card card = new Card();
         card.setCardType(cardType);
-        card.setImageName(type + i);
+        card.setImageName(name + i);
         card.setId(getCurrId());
         cards.add(card);
       }

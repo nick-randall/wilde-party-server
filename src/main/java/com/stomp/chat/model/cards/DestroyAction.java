@@ -6,9 +6,7 @@ import com.stomp.chat.model.PlaceType;
 import com.stomp.chat.model.SnapshotUpdateData;
 import com.stomp.chat.model.SnapshotUpdateType;
 
-public class DestroyAction implements CardAction {
-  GameSnapshotUtils utils = new GameSnapshotUtils();
-  ConditionChecker checker = new ConditionChecker();
+public class DestroyAction extends CardAction {
 
   @Override
   public boolean isLegalTargetOf(GameSnapshot gameSnapshot, Card playedCard, Object target) {
@@ -44,21 +42,4 @@ public class DestroyAction implements CardAction {
 
   }
 
-}
-
-class ConditionChecker {
-  Boolean[] booleans;
-
-  public boolean areAllTrue() {
-    for (boolean bool : booleans) {
-      if (!bool) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  public void setConditions(Boolean... booleans) {
-    this.booleans = booleans;
-  }
 }

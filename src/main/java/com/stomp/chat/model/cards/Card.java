@@ -43,21 +43,21 @@ public class Card {
     };
   }
 
-  LegalTargetType getLegalTargetType() {
-    return switch (cardType) {
-      case GUEST -> LegalTargetType.PLACE;
-      case UNWANTED -> LegalTargetType.PLACE;
-      case SPECIAL -> LegalTargetType.PLACE;
-      case INTERRUPT -> LegalTargetType.NONE;
-      case BFF -> LegalTargetType.CARD;
-      case ENCHANT -> LegalTargetType.CARD;
-      case STEAL -> LegalTargetType.CARD;
-      case SWAP -> LegalTargetType.CARD;
-      case DESTROY -> LegalTargetType.CARD;
-      case ENCHANT_PLAYER -> LegalTargetType.PLAYER;
-      case SORCERY_ON_PLAYER -> LegalTargetType.PLAYER;
-    };
-  }
+  // LegalTargetType getLegalTargetType() {
+  //   return switch (cardType) {
+  //     case GUEST -> LegalTargetType.PLACE;
+  //     case UNWANTED -> LegalTargetType.PLACE;
+  //     case SPECIAL -> LegalTargetType.PLACE;
+  //     case INTERRUPT -> LegalTargetType.NONE;
+  //     case BFF -> LegalTargetType.CARD;
+  //     case ENCHANT -> LegalTargetType.CARD;
+  //     case STEAL -> LegalTargetType.CARD;
+  //     case SWAP -> LegalTargetType.CARD;
+  //     case DESTROY -> LegalTargetType.CARD;
+  //     case ENCHANT_PLAYER -> LegalTargetType.PLAYER;
+  //     case SORCERY_ON_PLAYER -> LegalTargetType.PLAYER;
+  //   };
+  // }
 
   CardType getTargetCardType() {
     if (getName().toLowerCase() == "tuersteher") {
@@ -140,12 +140,12 @@ public class Card {
     };
   }
 
-  public LegalTargetType getHighlightType() {
-    if (cardType == CardType.ENCHANT) {
-      return LegalTargetType.CARD;
-    }
-    return getLegalTargetType();
-  }
+  // public LegalTargetType getHighlightType() {
+  //   if (cardType == CardType.ENCHANT) {
+  //     return LegalTargetType.CARD;
+  //   }
+  //   return getLegalTargetType();
+  // }
 
   public Card() {
   }
