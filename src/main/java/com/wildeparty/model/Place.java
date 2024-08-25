@@ -20,6 +20,12 @@ public class Place implements Serializable {
 
   public Place(PlaceType placeType) {
     this.placeType = placeType;
+    this.id = getCurrId();
+  }
+
+  static int currId = 100;
+  static private int getCurrId() {
+    return currId ++;
   }
 
 

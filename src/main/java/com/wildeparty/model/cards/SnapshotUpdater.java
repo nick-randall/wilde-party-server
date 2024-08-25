@@ -1,6 +1,10 @@
 package com.wildeparty.model.cards;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.wildeparty.model.GameSnapshot;
+import com.wildeparty.model.Place;
 import com.wildeparty.model.Player;
 
 public class SnapshotUpdater {
@@ -18,11 +22,20 @@ public class SnapshotUpdater {
     return gameSnapshot;
   }
 
-  public GameSnapshot drawCard(Card card, Player player) {
-    Location location = utils.findCard(card, gameSnapshot);
-    location.place.getCards().remove(location.index);
+  public GameSnapshot drawCard(Player player) {
+    Place deck = gameSnapshot.getNonPlayerPlaces().getDeck();
+    Card card = deck.getCards().remove(0);
     player.getPlaces().getHand().getCards().add(card);
     return gameSnapshot;
   }
-  
+
+  public GameSnapshot drawCards(Player player, int numCards) {
+    Place deck = gameSnapshot.getNonPlayerPlaces().getDeck();
+    for (int i = 0; i < numCards; i++) {
+      Card drawnCard = deck.getCards().remove(0);
+      player.getPlaces().getHand().getCards().add(drawnCard);
+    }
+    return gameSnapshot;
+  }
+
 }

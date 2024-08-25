@@ -16,7 +16,7 @@ import com.wildeparty.model.cards.GuestCardType;
 import jakarta.annotation.PostConstruct;
 
 @Component
-class DeckCreator {
+public class DeckCreator {
 
   static private int currId = 0;
 
@@ -97,7 +97,7 @@ class DeckCreator {
     return createCards(CardType.DESTROY, CardNames.destroyNames);
   }
 
-  static List<Card> createDeck(int numPlayers) {
+  public static List<Card> createDeck(int numPlayers) {
     List<Card> deck = new ArrayList<Card>();
     deck.addAll(createGuests());
     deck.addAll(createSpecials());

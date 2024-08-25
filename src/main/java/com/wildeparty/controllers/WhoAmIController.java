@@ -18,6 +18,7 @@ import com.wildeparty.model.GameSnapshot;
 import com.wildeparty.model.Player;
 import com.wildeparty.model.Session;
 import com.wildeparty.utils.GameSnapshotJsonConverter;
+import com.wildeparty.utils.DeckCreator;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -109,13 +110,7 @@ public class WhoAmIController {
     ///
     Game game = new Game();
     GameSnapshot snapshot = new GameSnapshot(user, savedUserTwo, savedUserThree);
-    // List<Player> players = new ArrayList<>();
-    // players.add(new Player(user));
-    // players.add(new Player(savedUserTwo));
-    // players.add(new Player(savedUserThree));
-
-  
-    // snapshot.setPlayers(players);
+    snapshot.getNonPlayerPlaces().getDeck().setCards(DeckCreator.createDeck(3));
     game.setGameSnapshot(snapshot);
     List<User> users = new ArrayList<>();
     users.add(savedUser);

@@ -6,10 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wildeparty.User;
 import com.wildeparty.model.cards.Card;
 import com.wildeparty.model.cards.CardActionResult;
+import com.wildeparty.model.cards.SnapshotUpdater;
+import com.wildeparty.utils.GameSnapshotJsonConverter;
 
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -29,16 +30,15 @@ public class GameSnapshot implements Serializable {
   private SnapshotUpdateData snapshotUpdateData;
   private NonPlayerPlaces nonPlayerPlaces = new NonPlayerPlaces();
 
-
   Map<Integer, List<CardActionResult>> actionResultsMap = new HashMap<Integer, List<CardActionResult>>();
 
   public GameSnapshot() {
   }
 
   public GameSnapshot(User userOne, User userTwo, User userThree) {
-    Player playerOne = new Player(userOne, 0);
-    Player playerTwo = new Player(userTwo, 1);
-    Player playerThree = new Player(userThree, 2);
+    Player playerOne = new Player(userOne);
+    Player playerTwo = new Player(userTwo);
+    Player playerThree = new Player(userThree);
     players.add(playerOne);
     players.add(playerTwo);
     players.add(playerThree);
@@ -54,13 +54,23 @@ public class GameSnapshot implements Serializable {
 
   public void updateLegalTargets() {
     List<Card> currentHandCards = players.get(currPlayer).getPlaces().getHand().getCards();
+    SnapshotUpdater updater = new SnapshotUpdater(this);
+    // All legal targets will be calculated based on player having drawn once. 
+    updater.drawCard(players.get(currPlayer));
     for (Card card : currentHandCards) {
       List<CardActionResult> cardActionResults = new ArrayList<CardActionResult>();
+      // Iterate through all players, places and cards to see if they are legal targets.
       for (Player player : players) {
         player.gatherCardActionResults(this, card, cardActionResults);
       }
       actionResultsMap.put(card.getId(), cardActionResults);
     }
+  }
+
+  public GameSnapshot cloneGameSnapshot(GameSnapshot snapshot) {
+    GameSnapshotJsonConverter converter = new GameSnapshotJsonConverter();
+    String json = converter.convertToDatabaseColumn(snapshot);
+    return converter.convertToEntityAttribute(json);
   }
 
   public int getCurrPlayer() {
@@ -107,15 +117,11 @@ public class GameSnapshot implements Serializable {
     return this;
   }
 
-  // @Override
-  // public String toString() {
-  //   return "{" +
-  //       " players='" + getPlayers() + "'" +
-  //       ", currPlayer='" + getCurrPlayer() + "'" +
-  //       ", currPhase='" + getCurrPhase() + "'" +
-  //       ", snapshotUpdateData='" + getSnapshotUpdateData() + "'" +
-  //       "}";
-  // }
+  @Override
+  public String toString() {
+  GameSnapshotJsonConverter converter = new GameSnapshotJsonConverter();
+  return converter.convertToDatabaseColumn(this);
+  }
 
   public List<Player> getPlayers() {
     return players;
@@ -132,6 +138,5 @@ public class GameSnapshot implements Serializable {
   public void setNonPlayerPlaces(NonPlayerPlaces nonPlayerPlaces) {
     this.nonPlayerPlaces = nonPlayerPlaces;
   }
-
 
 }

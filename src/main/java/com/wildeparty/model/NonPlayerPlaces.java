@@ -11,11 +11,11 @@ public class NonPlayerPlaces implements Serializable {
   private Place deck = new Place(PlaceType.DECK);
   private Place discardPile = new Place(PlaceType.DISCARD_PILE);
 
-  public Place getDeck () {
+  public Place getDeck() {
     return allPlaces[0];
   }
 
-  public Place getDiscardPile () {
+  public Place getDiscardPile() {
     return allPlaces[1];
   }
 
@@ -28,12 +28,11 @@ public class NonPlayerPlaces implements Serializable {
   }
 
   public NonPlayerPlaces() {
-   initPlaces();
+    initPlaces();
   }
 
   private void initPlaces() {
-    allPlaces = new Place[] {deck, discardPile};
+    allPlaces = new Place[] { deck, discardPile };
   }
-
 
 }
