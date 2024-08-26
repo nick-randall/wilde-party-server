@@ -2,20 +2,22 @@ package com.wildeparty.model.cards;
 
 import java.util.regex.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wildeparty.model.GameSnapshot;
-import com.wildeparty.model.LegalTargetType;
 import com.wildeparty.model.PlaceType;
 import com.wildeparty.model.TargetPlayerType;
+
+import java.io.Serializable;
 import java.util.List;
 import java.util.regex.Matcher;
 
-public class Card {
+public class Card implements Serializable {
   private int id;
   private String imageName;
   private CardType cardType;
   private GuestCardType guestCardType;
   private CardAction action;
-
+  private int pointValue;
 
   public void gatherCardActionResults(GameSnapshot gameSnapshot, Card playedCard,
       List<CardActionResult> cardActionResults) {
@@ -44,19 +46,19 @@ public class Card {
   }
 
   // LegalTargetType getLegalTargetType() {
-  //   return switch (cardType) {
-  //     case GUEST -> LegalTargetType.PLACE;
-  //     case UNWANTED -> LegalTargetType.PLACE;
-  //     case SPECIAL -> LegalTargetType.PLACE;
-  //     case INTERRUPT -> LegalTargetType.NONE;
-  //     case BFF -> LegalTargetType.CARD;
-  //     case ENCHANT -> LegalTargetType.CARD;
-  //     case STEAL -> LegalTargetType.CARD;
-  //     case SWAP -> LegalTargetType.CARD;
-  //     case DESTROY -> LegalTargetType.CARD;
-  //     case ENCHANT_PLAYER -> LegalTargetType.PLAYER;
-  //     case SORCERY_ON_PLAYER -> LegalTargetType.PLAYER;
-  //   };
+  // return switch (cardType) {
+  // case GUEST -> LegalTargetType.PLACE;
+  // case UNWANTED -> LegalTargetType.PLACE;
+  // case SPECIAL -> LegalTargetType.PLACE;
+  // case INTERRUPT -> LegalTargetType.NONE;
+  // case BFF -> LegalTargetType.CARD;
+  // case ENCHANT -> LegalTargetType.CARD;
+  // case STEAL -> LegalTargetType.CARD;
+  // case SWAP -> LegalTargetType.CARD;
+  // case DESTROY -> LegalTargetType.CARD;
+  // case ENCHANT_PLAYER -> LegalTargetType.PLAYER;
+  // case SORCERY_ON_PLAYER -> LegalTargetType.PLAYER;
+  // };
   // }
 
   CardType getTargetCardType() {
@@ -116,35 +118,44 @@ public class Card {
     return null;
   }
 
-  public int getPointValue() {
-    return switch (guestCardType) {
-      case RUMGROELERIN -> 1;
-      case SAUFNASE -> 1;
-      case SCHLECKERMAUL -> 1;
-      case TAENZERIN -> 1;
-      case DOPPELT -> 2;
-      case UNSCHEINBAR -> 1;
-      default -> 0;
-    };
-  }
+  // public void setPointValue() {
+  //   int pointValue;
+  //   if (guestCardType == null) {
+  //     pointValue = 0;
+  //   } else {
+  //     pointValue = switch (guestCardType) {
+  //       case RUMGROELERIN -> 1;
+  //       case SAUFNASE -> 1;
+  //       case SCHLECKERMAUL -> 1;
+  //       case TAENZERIN -> 1;
+  //       case DOPPELT -> 2;
+  //       case UNSCHEINBAR -> 1;
+  //       default -> 0;
+  //     };
+  //   }
+  //   this.pointValue = pointValue;
+  // }
 
-  public int getTakesUpSpaces() {
-    return switch (guestCardType) {
-      case RUMGROELERIN -> 1;
-      case SAUFNASE -> 1;
-      case SCHLECKERMAUL -> 1;
-      case TAENZERIN -> 1;
-      case DOPPELT -> 1;
-      case UNSCHEINBAR -> 0;
-      default -> 0;
-    };
-  }
+  // public int getTakesUpSpaces() {
+  //   if (guestCardType == null) {
+  //     return 0;
+  //   }
+  //   return switch (guestCardType) {
+  //     case RUMGROELERIN -> 1;
+  //     case SAUFNASE -> 1;
+  //     case SCHLECKERMAUL -> 1;
+  //     case TAENZERIN -> 1;
+  //     case DOPPELT -> 1;
+  //     case UNSCHEINBAR -> 0;
+  //     default -> 0;
+  //   };
+  // }
 
   // public LegalTargetType getHighlightType() {
-  //   if (cardType == CardType.ENCHANT) {
-  //     return LegalTargetType.CARD;
-  //   }
-  //   return getLegalTargetType();
+  // if (cardType == CardType.ENCHANT) {
+  // return LegalTargetType.CARD;
+  // }
+  // return getLegalTargetType();
   // }
 
   public Card() {
@@ -162,11 +173,16 @@ public class Card {
     return id;
   }
 
+  @JsonIgnore
   public String getName() {
     Pattern pattern = Pattern.compile("[a-z_]+");
     Matcher matcher = pattern.matcher(imageName);
     matcher.find();
     return matcher.group(0);
+  }
+
+  public int getPointValue() {
+    return pointValue;
   }
 
   public CardType getCardType() {

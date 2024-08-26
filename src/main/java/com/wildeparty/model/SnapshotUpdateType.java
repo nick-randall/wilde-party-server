@@ -1,8 +1,33 @@
 package com.wildeparty.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum SnapshotUpdateType {
 
-  INITIAL_SNAPSHOT, DEALING_INITIAL_CARDS, DEALING_CARDS, REARRANGING_HAND, REARRANGING_TABLE_PLACE,
-  DRAWING_WILDE_PARTY, DESTROY, STEAL, ENCHANT_WITH_BFF, ENCHANT, SWAP, ADD_DRAGGED, PROTECT_SELF;
+  INITIAL_SNAPSHOT("initialSnapshot"),
+  ADD_DRAGGED("addDragged"),
+  DEALING_INITIAL_CARDS("dealingInitialCards"),
+  DEALING_CARDS("dealingCards"),
+  // REARRANGING_HAND("rearrangingHand"),
+  REARRANGING_TABLE_PLACE("rearrangingTablePlace"),
+  DRAWING_WILDE_PARTY("drawingWildeParty"),
+  DESTROY("destroy"),
+  STEAL("steal"),
+  ENCHANT_WITH_BFF("enchantWithBff"),
+  ENCHANT("enchant"),
+  SWAP_CHOOSE_FIRST("swapChooseFirst"),
+  SWAP_CHOOSE_SECOND("swapChooseSecond"),
+  SORCERY_ON_PLAYER("sorceryOnPlayer"),;
+
+  private String name;
+
+  @JsonValue
+  public String getName() {
+    return name;
+  }
+
+  private SnapshotUpdateType(String name) {
+    this.name = name;
+  }
 
 }
