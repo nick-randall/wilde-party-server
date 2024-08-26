@@ -1,5 +1,7 @@
 package com.wildeparty.model.cards;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum CardType {
   GUEST("guest"),
   UNWANTED("unwanted"),
@@ -15,6 +17,7 @@ public enum CardType {
 
   private String name;
 
+  @JsonValue
   public String getName() {
     return name;
   }
