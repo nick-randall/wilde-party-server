@@ -17,6 +17,7 @@ public class Card implements Serializable {
   private CardType cardType;
   private GuestCardType guestCardType;
   private CardAction action;
+  @JsonIgnore // TODO just remove?
   private int pointValue;
 
   public void gatherCardActionResults(GameSnapshot gameSnapshot, Card playedCard,

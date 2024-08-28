@@ -14,6 +14,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "games")
@@ -29,10 +30,20 @@ public class Game {
 
   // @OneToMany(targetEntity = User.class)
   @ManyToMany(targetEntity = User.class)
-  private List<User> users;
+  private List<User> users = new ArrayList<>();
   private GameStatus status = GameStatus.STARTED;
   @OneToOne(targetEntity = User.class)
   private User winner;
+
+  public Game() {
+  }
+
+  public Game(User userOne, User userTwo, User userThree) {
+    this.users.add(userOne);
+    this.users.add(userTwo);
+    this.users.add(userThree);
+    this.gameSnapshot = new GameSnapshot(userOne, userTwo, userThree);
+  }
 
   public User getWinner() {
     return winner;

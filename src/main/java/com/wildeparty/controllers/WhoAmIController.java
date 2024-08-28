@@ -108,18 +108,9 @@ public class WhoAmIController {
     userTwo.setName("AI");
     User savedUserThree = userService.saveUser(userThree);
     ///
-    Game game = new Game();
-    GameSnapshot snapshot = new GameSnapshot(user, savedUserTwo, savedUserThree);
-    snapshot.getNonPlayerPlaces().getDeck().setCards(DeckCreator.createDeck(3));
-    game.setGameSnapshot(snapshot);
-    List<User> users = new ArrayList<>();
-    users.add(savedUser);
-    users.add(savedUserTwo);
-    game.setUsers(users);
-    game.setWinner(savedUserTwo);
+    Game game = new Game(savedUser, savedUserTwo, savedUserThree);
     Game savedGame = gamesService.saveGame(game);
     gamesService.getGame(savedGame.getId());
-    System.out.println(savedGame.getGameSnapshot().getPlayers());
     System.out.println(new GameSnapshotJsonConverter().convertToDatabaseColumn(savedGame.getGameSnapshot()));
     /// Demo of GamesServiceImpl
 

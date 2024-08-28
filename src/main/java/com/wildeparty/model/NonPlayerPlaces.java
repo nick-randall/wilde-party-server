@@ -8,8 +8,8 @@ public class NonPlayerPlaces implements Serializable {
 
   @JsonIgnore
   private Place[] allPlaces;
-  private Place deck = new Place(PlaceType.DECK);
-  private Place discardPile = new Place(PlaceType.DISCARD_PILE);
+  private Place deck = new Place(PlaceType.DECK, 501);
+  private Place discardPile = new Place(PlaceType.DISCARD_PILE, 502);
 
   public Place getDeck() {
     return allPlaces[0];

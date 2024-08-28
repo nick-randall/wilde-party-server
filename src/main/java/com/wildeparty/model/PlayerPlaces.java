@@ -8,12 +8,30 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class PlayerPlaces implements Serializable {
 
   @JsonIgnore
-  private Place[] allPlaces;
-  private Place guestCardZone = new Place(PlaceType.GUEST_CARD_ZONE);
-  private Place enchantmentsRow = new Place(PlaceType.ENCHANTMENTS_ROW);
-  private Place hand = new Place(PlaceType.HAND);
-  private Place unwantedsZone = new Place(PlaceType.UNWANTEDS_ZONE);
-  private Place specialsZone = new Place(PlaceType.SPECIALS_ZONE);
+  private Place[] allPlaces = new Place[5];
+  private Place guestCardZone;
+  private Place enchantmentsRow;
+  private Place hand;
+  private Place unwantedsZone;
+  private Place specialsZone;
+
+  public PlayerPlaces(int playerIndex) {
+   initPlaces(playerIndex);
+  }
+
+  public PlayerPlaces() {
+  }
+
+  private void initPlaces(int playerIndex) {
+    System.out.println("Player index: " + playerIndex);
+    int playerSuffix = playerIndex * 100;
+    guestCardZone = new Place(PlaceType.GUEST_CARD_ZONE, playerSuffix + 1);
+    enchantmentsRow = new Place(PlaceType.ENCHANTMENTS_ROW, playerSuffix + 2);
+    hand = new Place(PlaceType.HAND,  playerSuffix + 3);
+    unwantedsZone = new Place(PlaceType.UNWANTEDS_ZONE, playerSuffix + 4);
+    specialsZone = new Place(PlaceType.SPECIALS_ZONE, playerSuffix + 5);
+    this.allPlaces = new Place[] { guestCardZone, enchantmentsRow, unwantedsZone, hand, specialsZone };
+  }
 
   public Place[] getAllPlaces() {
     return allPlaces;
@@ -21,14 +39,6 @@ public class PlayerPlaces implements Serializable {
 
   public void setAllPlaces(Place[] allPlaces) {
     this.allPlaces = allPlaces;
-  }
-
-  public PlayerPlaces() {
-   initPlaces();
-  }
-
-  private void initPlaces() {
-    allPlaces = new Place[] { guestCardZone, enchantmentsRow, unwantedsZone, hand, specialsZone };
   }
 
   public Place getGuestCardZone() {

@@ -10,6 +10,7 @@ import com.wildeparty.User;
 import com.wildeparty.model.cards.Card;
 import com.wildeparty.model.cards.CardActionResult;
 import com.wildeparty.model.cards.SnapshotUpdater;
+import com.wildeparty.utils.DeckCreator;
 import com.wildeparty.utils.GameSnapshotJsonConverter;
 
 import jakarta.persistence.GeneratedValue;
@@ -36,12 +37,14 @@ public class GameSnapshot implements Serializable {
   }
 
   public GameSnapshot(User userOne, User userTwo, User userThree) {
-    Player playerOne = new Player(userOne);
-    Player playerTwo = new Player(userTwo);
-    Player playerThree = new Player(userThree);
+    Player playerOne = new Player(userOne, 1);
+    Player playerTwo = new Player(userTwo, 2);
+    Player playerThree = new Player(userThree, 3);
     players.add(playerOne);
     players.add(playerTwo);
     players.add(playerThree);
+    List<Card> deck = new DeckCreator().createDeck(3);
+    getNonPlayerPlaces().getDeck().setCards(deck);
   }
 
   public GameSnapshot(List<Player> players, int currPlayer, TurnPhase currPhase,
@@ -55,11 +58,12 @@ public class GameSnapshot implements Serializable {
   public void updateLegalTargets() {
     List<Card> currentHandCards = players.get(currPlayer).getPlaces().getHand().getCards();
     SnapshotUpdater updater = new SnapshotUpdater(this);
-    // All legal targets will be calculated based on player having drawn once. 
+    // All legal targets will be calculated based on player having drawn once.
     updater.drawCard(players.get(currPlayer));
     for (Card card : currentHandCards) {
       List<CardActionResult> cardActionResults = new ArrayList<CardActionResult>();
-      // Iterate through all players, places and cards to see if they are legal targets.
+      // Iterate through all players, places and cards to see if they are legal
+      // targets.
       for (Player player : players) {
         player.gatherCardActionResults(this, card, cardActionResults);
       }
@@ -119,8 +123,8 @@ public class GameSnapshot implements Serializable {
 
   @Override
   public String toString() {
-  GameSnapshotJsonConverter converter = new GameSnapshotJsonConverter();
-  return converter.convertToDatabaseColumn(this);
+    GameSnapshotJsonConverter converter = new GameSnapshotJsonConverter();
+    return converter.convertToDatabaseColumn(this);
   }
 
   public List<Player> getPlayers() {

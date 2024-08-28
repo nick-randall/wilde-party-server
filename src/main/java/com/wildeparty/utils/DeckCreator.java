@@ -18,13 +18,13 @@ import jakarta.annotation.PostConstruct;
 @Component
 public class DeckCreator {
 
-  static private int currId = 0;
+  private int currCardId = 0;
 
-  static int getCurrId() {
-    return currId++;
+  public int getCurrCardId() {
+    return currCardId++;
   }
 
-  static Map<CardType, Integer> numPerCardType = Map.ofEntries(
+   Map<CardType, Integer> numPerCardType = Map.ofEntries(
       Map.entry(CardType.BFF, 2),
       Map.entry(CardType.GUEST, 5),
       Map.entry(CardType.ENCHANT, 2),
@@ -37,7 +37,7 @@ public class DeckCreator {
       Map.entry(CardType.ENCHANT_PLAYER, 2),
       Map.entry(CardType.SORCERY_ON_PLAYER, 2));
 
-  static List<Card> createGuests() {
+   List<Card> createGuests() {
     List<Card> guests = new ArrayList<Card>();
 
     int numGuestsPerType = numPerCardType.get(CardType.GUEST);
@@ -46,7 +46,7 @@ public class DeckCreator {
         Card card = new Card();
         card.setCardType(CardType.GUEST);
         card.setImageName(guestCardType.getName() + i);
-        card.setId(getCurrId());
+        card.setId(getCurrCardId());
         card.setGuestCardType(guestCardType);
         guests.add(card);
       }
@@ -54,7 +54,7 @@ public class DeckCreator {
     return guests;
   }
 
-  static List<Card> createStartGast(int numPlayers) {
+   List<Card> createStartGast(int numPlayers) {
     List<Card> startGasts = new ArrayList<Card>();
     GuestCardType[] startGuestTypes = Arrays.copyOfRange(GuestCardType.basicGuestCardTypes(), 0, numPlayers);
     for (GuestCardType guestCardType : startGuestTypes) {
@@ -62,13 +62,13 @@ public class DeckCreator {
       card.setCardType(CardType.GUEST);
       card.setGuestCardType(guestCardType);
       card.setImageName("startgast_" + guestCardType.getName());
-      card.setId(getCurrId());
+      card.setId(getCurrCardId());
       startGasts.add(card);
     }
     return startGasts;
   }
 
-  static List<Card> createSpecials() {
+   List<Card> createSpecials() {
     List<Card> specials = new ArrayList<Card>();
 
     for (GuestCardType guestCardType : GuestCardType.basicGuestCardTypes()) {
@@ -78,26 +78,26 @@ public class DeckCreator {
         card.setCardType(CardType.SPECIAL);
         card.setGuestCardType(guestCardType);
         card.setImageName(specialsOfthisType[i]);
-        card.setId(getCurrId());
+        card.setId(getCurrCardId());
         specials.add(card);
       }
     }
     return specials;
   }
 
-  static List<Card> createEnchantments() {
+   List<Card> createEnchantments() {
     return createCards(CardType.ENCHANT, CardNames.enchantNames);
   }
 
-  static List<Card> createUnwanteds() {
+   List<Card> createUnwanteds() {
     return createCards(CardType.UNWANTED, CardNames.unwantedsNames);
   }
 
-  static List<Card> createDestroyCards() {
+   List<Card> createDestroyCards() {
     return createCards(CardType.DESTROY, CardNames.destroyNames);
   }
 
-  public static List<Card> createDeck(int numPlayers) {
+  public  List<Card> createDeck(int numPlayers) {
     List<Card> deck = new ArrayList<Card>();
     deck.addAll(createGuests());
     deck.addAll(createSpecials());
@@ -109,11 +109,11 @@ public class DeckCreator {
     return deck;
   }
 
-  static List<Card> createEnchantPlayer() {
+   List<Card> createEnchantPlayer() {
     return createCards(CardType.ENCHANT_PLAYER, CardNames.enchantPlayerNames);
   }
 
-  static List<Card> createCards(CardType cardType, String[] names) {
+   List<Card> createCards(CardType cardType, String[] names) {
     List<Card> cards = new ArrayList<Card>();
     int numCardsPerType = numPerCardType.get(cardType);
     for (String name : names) {
@@ -121,7 +121,7 @@ public class DeckCreator {
         Card card = new Card();
         card.setCardType(cardType);
         card.setImageName(name + i);
-        card.setId(getCurrId());
+        card.setId(getCurrCardId());
         cards.add(card);
       }
     }
@@ -130,15 +130,15 @@ public class DeckCreator {
   }
 
   @PostConstruct
-  static void main() {
+   void main() {
     System.out.println("Creating deck");
     List<Card> deck = createDeck(3);
     Collections.shuffle(deck);
     for (Card card : deck) {
       System.out.println(card.getImageName() + "(" + card.getId() + ")" + " = " + card.getCardType());
     }
-   
-   // Create game snapshot
+
+    // Create game snapshot
     // GameSnapshot snapshot = new GameSnapshot();
     // List<Player> players = new ArrayList<>();
     // Player player = new Player();
@@ -147,7 +147,7 @@ public class DeckCreator {
     // player.setPlaces(new PlayerPlaces());
     // Player player2 = new Player();
     // player2.setId(1L);
-    //  player.getPlaces().getHand().setCards(createStartGast(3));;
+    // player.getPlaces().getHand().setCards(createStartGast(3));;
 
     // player2.setName("steven");
     // players.add(player);

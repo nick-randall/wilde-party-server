@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wildeparty.model.cards.Card;
 import com.wildeparty.model.cards.CardActionResult;
 import com.wildeparty.model.cards.CardType;
+import com.wildeparty.utils.DeckCreator;
 
 public class Place implements Serializable {
 
@@ -18,16 +19,10 @@ public class Place implements Serializable {
   public Place() {
   }
 
-  public Place(PlaceType placeType) {
+  public Place(PlaceType placeType, int id) {
     this.placeType = placeType;
-    this.id = getCurrId();
+    this.id = id;
   }
-
-  static int currId = 100;
-  static private int getCurrId() {
-    return currId ++;
-  }
-
 
   public void gatherCardActionResults(GameSnapshot gameSnapshot, Card playedCard,
       List<CardActionResult> cardActionResults) {

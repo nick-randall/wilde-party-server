@@ -5,15 +5,16 @@ import java.util.List;
 import com.wildeparty.User;
 import com.wildeparty.model.cards.Card;
 import com.wildeparty.model.cards.CardActionResult;
+import com.wildeparty.utils.DeckCreator;
 
 public class Player implements Serializable {
-  private Long id;
+  private int id;
 
   private Long userId;
 
   private String name;
 
-  private PlayerPlaces places = new PlayerPlaces();
+  private PlayerPlaces places;
 
   private boolean underProtection = false;
 
@@ -23,9 +24,11 @@ public class Player implements Serializable {
 
   TargetPlayerType targetPlayerType;
 
-  public Player(User user) {
+  public Player(User user, int playerIndex) {
     this.userId = user.getId();
     this.name = user.getName();
+    this.id = playerIndex * 1000;
+    this.places = new PlayerPlaces(playerIndex);
   }
 
   public String getName() {
@@ -44,11 +47,11 @@ public class Player implements Serializable {
     this.userId = userId;
   }
 
-  public Long getId() {
+  public int getId() {
     return id;
   }
 
-  public void setId(Long id) {
+  public void setId(int id) {
     this.id = id;
   }
 
