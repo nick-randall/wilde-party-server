@@ -3,6 +3,7 @@ package com.wildeparty.model.cards;
 import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wildeparty.model.GameSnapshot;
 import com.wildeparty.model.PlaceType;
 import com.wildeparty.model.TargetPlayerType;
@@ -11,11 +12,13 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.regex.Matcher;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Card implements Serializable {
   private int id;
   private String imageName;
   private CardType cardType;
   private GuestCardType guestCardType;
+  @JsonIgnore
   private CardAction action;
   @JsonIgnore // TODO just remove?
   private int pointValue;
