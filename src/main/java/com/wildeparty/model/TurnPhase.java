@@ -1,5 +1,7 @@
 package com.wildeparty.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum TurnPhase {
 
   DEAL_PHASE("dealPhase"),
@@ -10,7 +12,7 @@ public enum TurnPhase {
   COUNTER_PHASE("counterPhase");
 
   private String name;
-
+  @JsonValue
   public String getName() {
     return name;
   }

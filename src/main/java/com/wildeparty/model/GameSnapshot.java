@@ -26,7 +26,7 @@ public class GameSnapshot implements Serializable {
 
   List<Player> players = new ArrayList<Player>();
 
-  private int currPlayer = 0;
+  private Current current;
   private TurnPhase currPhase = TurnPhase.DEAL_PHASE;
   private SnapshotUpdateData snapshotUpdateData;
   private NonPlayerPlaces nonPlayerPlaces = new NonPlayerPlaces();
@@ -45,21 +45,21 @@ public class GameSnapshot implements Serializable {
     players.add(playerThree);
     List<Card> deck = new DeckCreator().createDeck(3);
     getNonPlayerPlaces().getDeck().setCards(deck);
+    current = Current.init();
   }
 
   public GameSnapshot(List<Player> players, int currPlayer, TurnPhase currPhase,
       SnapshotUpdateData snapshotUpdateData) {
     this.players = players;
-    this.currPlayer = currPlayer;
     this.currPhase = currPhase;
     this.snapshotUpdateData = snapshotUpdateData;
   }
 
   public void updateLegalTargets() {
-    List<Card> currentHandCards = players.get(currPlayer).getPlaces().getHand().getCards();
+    List<Card> currentHandCards = players.get(getCurrent().getPlayer()).getPlaces().getHand().getCards();
     SnapshotUpdater updater = new SnapshotUpdater(this);
     // All legal targets will be calculated based on player having drawn once.
-    updater.drawCard(players.get(currPlayer));
+    updater.drawCard(players.get(getCurrent().getPlayer()));
     for (Card card : currentHandCards) {
       List<CardActionResult> cardActionResults = new ArrayList<CardActionResult>();
       // Iterate through all players, places and cards to see if they are legal
@@ -77,12 +77,12 @@ public class GameSnapshot implements Serializable {
     return converter.convertToEntityAttribute(json);
   }
 
-  public int getCurrPlayer() {
-    return this.currPlayer;
+  public Current getCurrent() {
+    return this.current;
   }
 
-  public void setCurrPlayer(int currPlayer) {
-    this.currPlayer = currPlayer;
+  public void setCurrent(Current current) {
+    this.current = current;
   }
 
   public TurnPhase getCurrPhase() {
@@ -106,8 +106,8 @@ public class GameSnapshot implements Serializable {
     return this;
   }
 
-  public GameSnapshot currPlayer(int currPlayer) {
-    setCurrPlayer(currPlayer);
+  public GameSnapshot current(Current current) {
+    setCurrent(current);
     return this;
   }
 

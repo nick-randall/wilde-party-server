@@ -1,9 +1,11 @@
 package com.wildeparty.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public enum PlaceType {
 
   GUEST_CARD_ZONE("guestCardZone"),
-  ENCHANTMENTS_ROW("enchantmentsZone"),
+  ENCHANTMENTS_ROW("enchantmentsRow"),
   UNWANTEDS_ZONE("unwantedsZone"),
   SPECIALS_ZONE("specialsZone"),
   HAND("hand"),
@@ -13,6 +15,7 @@ public enum PlaceType {
 
   private String name;
 
+  @JsonValue
   public String getName() {
     return name;
   }

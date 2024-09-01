@@ -53,7 +53,6 @@ public class PlayerPlaces implements Serializable {
     return allPlaces[2];
   }
 
-  @JsonAlias("hand")
   public Place getHand() {
     return allPlaces[3];
   }

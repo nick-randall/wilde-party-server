@@ -14,18 +14,12 @@ import com.wildeparty.backend.GamesService;
 import com.wildeparty.backend.UserService;
 import com.wildeparty.model.AddUserRequest;
 import com.wildeparty.model.Game;
-import com.wildeparty.model.GameSnapshot;
-import com.wildeparty.model.Player;
 import com.wildeparty.model.Session;
 import com.wildeparty.utils.GameSnapshotJsonConverter;
-import com.wildeparty.utils.DeckCreator;
-
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @RestController
