@@ -3,6 +3,8 @@ package com.wildeparty.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wildeparty.User;
@@ -10,6 +12,7 @@ import com.wildeparty.backend.GamesService;
 import com.wildeparty.backend.UserService;
 import com.wildeparty.model.Game;
 import com.wildeparty.model.GameSnapshot;
+import com.wildeparty.model.cards.Card;
 import com.wildeparty.model.cards.SnapshotUpdater;
 
 import jakarta.annotation.PostConstruct;
@@ -38,13 +41,22 @@ public class JustGetSnapshotController {
     Game game = new Game(savedUser, savedUserTwo, savedUserThree);
     Game savedGame = gamesService.saveGame(game);
     SnapshotUpdater updater = new SnapshotUpdater(savedGame.getGameSnapshot());
-    GameSnapshot updatedSnapshot = updater.drawCards(game.getGameSnapshot().getPlayers().get(0), 7);
+    GameSnapshot updatedSnapshot = updater.drawCards(game.getGameSnapshot().getPlayers().get(0), 1);
+    Card card = updatedSnapshot.getNonPlayerPlaces().getDeck().getCards().remove(0);
+    updatedSnapshot.getPlayers().get(0).getPlaces().getGuestCardZone().getCards().add(card);
 
     // GameSnapshotJsonConverter converter = new GameSnapshotJsonConverter();
     // String snapshotJson =
     // converter.convertToDatabaseColumn(savedGame.getGameSnapshot());
     System.out.println("Game snapshot: " + updatedSnapshot);
     return ResponseEntity.ok().body(updatedSnapshot);
+  }
+
+  @GetMapping("game-latest")
+  @ResponseBody
+  public GameSnapshot getLatestSnapshot(@RequestParam("id") String gameId) {
+    System.out.println("getLatestSnapshot for game " + gameId);
+    return gamesService.getGame(Long.parseLong(gameId)).getGameSnapshot();
   }
 
 }

@@ -1,9 +1,15 @@
 package com.wildeparty;
 
+import com.wildeparty.model.Game;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -21,6 +27,9 @@ public class User {
     this.name = name;
     this.id = id;
   }
+
+  @ManyToMany(mappedBy = "users")
+  private List<Game> games = new ArrayList<Game>();
 
   public String getName() {
     return name;

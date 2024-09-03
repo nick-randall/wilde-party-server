@@ -6,10 +6,12 @@ import com.wildeparty.utils.GameSnapshotJsonConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -28,8 +30,7 @@ public class Game {
   @Column(columnDefinition = "TEXT")
   private GameSnapshot gameSnapshot;
 
-  // @OneToMany(targetEntity = User.class)
-  @ManyToMany(targetEntity = User.class)
+  @ManyToMany(fetch = FetchType.EAGER)
   private List<User> users = new ArrayList<>();
   private GameStatus status = GameStatus.STARTED;
   @OneToOne(targetEntity = User.class)

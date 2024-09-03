@@ -20,6 +20,10 @@ public class GamesServiceImpl implements GamesService {
   public Game getGame(Long id) {
     return gamesRepository.findById(id).get();
   }
+  @Override
+  public Iterable<Game> getUserGames(Long userId) {
+    return gamesRepository.getUserGames(userId);
+  }
 
   @Override
   public void deleteGame(Long id) {

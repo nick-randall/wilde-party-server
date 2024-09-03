@@ -22,7 +22,6 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import com.wildeparty.model.Session;
 
-import jakarta.persistence.Id;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -100,10 +99,25 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 accessor.setUser(idContainer);
               }
             }
+
           } catch (Exception e) {
             System.err.println(e);
           }
 
+        }
+        if (StompCommand.SUBSCRIBE.equals(accessor.getCommand())) {
+          Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
+
+          System.out.println("SUBSCRIBE");
+          String token = (String) sessionAttributes.get("token");
+          if (token != null) {
+            Session existingSession = sessionRepo.getSessionFromSessionToken(token);
+            User user = userRepo.getUserById(existingSession.getUserId());
+            String gameId = accessor.getSubscriptionId();
+            // GamesService gamesService = new GamesServiceImpl();
+            // Game game = gamesService.getGame(Long.getLong(gameId));
+            
+          }
         }
         return message;
       }

@@ -8,6 +8,8 @@ public interface GamesService {
 
   public Game getGame(Long id);
 
+  public Iterable<Game> getUserGames(Long userId);
+
   public void deleteGame(Long id);
 
   public void updateGame(Game game);
