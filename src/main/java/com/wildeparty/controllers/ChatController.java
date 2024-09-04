@@ -1,6 +1,5 @@
 package com.wildeparty.controllers;
 
-import java.security.Principal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,6 +10,8 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.user.SimpSession;
+import org.springframework.messaging.simp.user.SimpSubscription;
 import org.springframework.messaging.simp.user.SimpUser;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Controller;
@@ -18,7 +19,7 @@ import org.springframework.stereotype.Controller;
 import com.wildeparty.Database;
 import com.wildeparty.SessionRepo;
 import com.wildeparty.User;
-import com.wildeparty.UserRepo;
+import com.wildeparty.backend.UserService;
 import com.wildeparty.model.OutboundMessage;
 import com.wildeparty.model.InboundMessage;
 
@@ -26,7 +27,8 @@ import com.wildeparty.model.InboundMessage;
 public class ChatController {
 
   final SessionRepo sessionRepo = new SessionRepo(Database.getInstance());
-  final UserRepo userRepo = new UserRepo(Database.getInstance());
+  @Autowired
+  UserService userService;
 
   @Autowired
   private SimpMessagingTemplate simpMessagingTemplate;
@@ -41,14 +43,14 @@ public class ChatController {
     // getName()
     // value.
     Long userId = Long.parseLong(sha.getUser().getName());
-    return userRepo.getUserById(userId);
+    return userService.getUserById(userId);
   }
 
   private Set<User> getRoomUsers() {
     Set<SimpUser> roomUsers = simpUserRegistry.getUsers();
     Set<User> users = new HashSet<User>();
     for (SimpUser user : roomUsers) {
-      users.add(userRepo.getUserById(Long.parseLong(user.getName())));
+      users.add(userService.getUserById(Long.parseLong(user.getName())));
     }
     return users;
   }
@@ -64,12 +66,15 @@ public class ChatController {
 
   // @MessageMapping("/reply-to-invite")
   // @SendTo("/topic/public")
-  // public OutboundMessage replyToInvite(SimpMessageHeaderAccessor sha, @Payload InviteReply reply) {
-  //   // either get inviter from database or from the message
-  //   User invitee = getSender(sha);
-  //   // Create game in database
-  //   simpMessagingTemplate.convertAndSendToUser(String.valueOf(inviteeId), "/queue/messages", reply);
-  //   return new OutboundMessage(OutboundMessage.MessageType.STARTING_GAME, "reply to invite", invitee);
+  // public OutboundMessage replyToInvite(SimpMessageHeaderAccessor sha, @Payload
+  // InviteReply reply) {
+  // // either get inviter from database or from the message
+  // User invitee = getSender(sha);
+  // // Create game in database
+  // simpMessagingTemplate.convertAndSendToUser(String.valueOf(inviteeId),
+  // "/queue/messages", reply);
+  // return new OutboundMessage(OutboundMessage.MessageType.STARTING_GAME, "reply
+  // to invite", invitee);
   // }
 
   @MessageMapping("/chat.sendMessage")
@@ -100,12 +105,17 @@ public class ChatController {
     simpMessagingTemplate.convertAndSend("/topic/public", chatMessage);
   }
 
-  @MessageMapping("/chat.sendMessage/{room}")
+  @MessageMapping("/game/{room}")
   @SendTo("/topic/{room}")
   public OutboundMessage sendMessageToRoom(@DestinationVariable String room, @Payload OutboundMessage chatMessage) {
-    System.out.println("new chat msg: " + chatMessage.getContent() + " sent to room " + room);
+    // Kick out the user if they are not in the game
+    // Also send them a private message saying they were kicked out
+
+    // AFter that we know all users receiving GameSnapshots are supposed to get them
+    // We can simply send the game snapshot to all users in the room
+    // System.out.println("new chat msg: " + chatMessage.getContent() + " sent to
+    // room " + room);
     return chatMessage;
   }
-
 
 }

@@ -1,9 +1,12 @@
 package com.wildeparty.backend;
 
+import java.util.Iterator;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.wildeparty.model.Game;
+import com.wildeparty.model.GameStatus;
 
 @Service
 public class GamesServiceImpl implements GamesService {
@@ -20,9 +23,23 @@ public class GamesServiceImpl implements GamesService {
   public Game getGame(Long id) {
     return gamesRepository.findById(id).get();
   }
+
   @Override
   public Iterable<Game> getUserGames(Long userId) {
     return gamesRepository.getUserGames(userId);
+  }
+
+  @Override
+  public boolean isUserInGame(Long userId, Long gameId) {
+    Iterable<Game> userGames = gamesRepository.getUserGames(userId);
+    Iterator<Game> iterator = userGames.iterator();
+    while (iterator.hasNext()) {
+      Game game = iterator.next();
+      if (game.getId() == gameId && game.getStatus() == GameStatus.STARTED) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @Override

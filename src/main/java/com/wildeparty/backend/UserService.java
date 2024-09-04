@@ -9,6 +9,8 @@ public interface UserService {
   // save operation
   User saveUser(User User);
 
+  User createUser(String userName);
+
   // read operation
   List<User> fetchUserList();
 
