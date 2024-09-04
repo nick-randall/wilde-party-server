@@ -41,30 +41,6 @@ public class WebSocketEventListener {
     System.out.println(event.getUser());
     simpMessagingTemplate.convertAndSendToUser(event.getUser().getName(), "/queue/messages",
         "You have subscribed to the chat");
-    // MAYBE a way to remove the subscription from the user?
-    // Set<SimpSession> sessions = simpUserRegistry.getUser(event.getUser().getName()).getSessions();
-    
-    // SimpSubscription subscriptionToRemove = null;
-    // for (SimpSession sesh : sessions) {
-    //   for (SimpSubscription sub : sesh.getSubscriptions()) {
-    //     // if (sub.getDestination().equals(dest)) {
-    //     System.out.println("subscription destination has an id as: " + sub.getDestination());
-    //     System.out.println("subscription id is: " + sub.getId());
-
-    //     subscriptionToRemove = sub;
-    //     // }
-    //   }
-    // }
-    // if (subscriptionToRemove != null) {
-    //   System.out.println("Removing session: " + subscriptionToRemove.getId());
-    //   for(SimpSession sub : sessions) {
-    //     System.out.println("sub id: " + sub.getId());
-    //     boolean removedSuccessfully = sub.getSubscriptions().remove(subscriptionToRemove);
-    //     System.out.println("removed successfully? " + removedSuccessfully);
-
-    //   }
-    // }
-
   }
 
   @EventListener
