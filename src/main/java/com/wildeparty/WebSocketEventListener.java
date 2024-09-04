@@ -12,7 +12,12 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
 
+
+
+import com.wildeparty.backend.GamesService;
 import com.wildeparty.model.OutboundMessage;
 
 @Component
@@ -24,6 +29,8 @@ public class WebSocketEventListener {
   private SimpMessageSendingOperations messagingTemplate;
   @Autowired
   private SimpMessagingTemplate simpMessagingTemplate;
+  @Autowired
+  private GamesService gamesService;
 
   @EventListener
   public void handleWebSocketConnectListener(SessionConnectedEvent event) {
@@ -33,12 +40,11 @@ public class WebSocketEventListener {
   @EventListener
   public void handleWebSocketSubscribeListener(SessionSubscribeEvent event) {
     logger.info("Received a new web socket subscription");
-    MessageHeaders headers = event.getMessage().getHeaders();
-    for (String key : headers.keySet()) {
-      System.out.println(key + " : " + headers.get(key));
-    }
-    System.out.println(event.getSource());
-    System.out.println(event.getUser());
+    // User user = (User) event.getUser();
+    // Pattern pattern = Pattern.compile("[a-z_]+");
+    // Matcher matcher = pattern.matcher(event.getMessage().getPayload());
+    // matcher.find();
+    // gamesService.isUserInGame(user.getId(), null);
     simpMessagingTemplate.convertAndSendToUser(event.getUser().getName(), "/queue/messages",
         "You have subscribed to the chat");
   }
