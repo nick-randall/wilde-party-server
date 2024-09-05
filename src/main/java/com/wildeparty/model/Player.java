@@ -2,7 +2,7 @@ package com.wildeparty.model;
 
 import java.io.Serializable;
 import java.util.List;
-import com.wildeparty.User;
+
 import com.wildeparty.model.cards.Card;
 import com.wildeparty.model.cards.CardActionResult;
 import com.wildeparty.utils.DeckCreator;

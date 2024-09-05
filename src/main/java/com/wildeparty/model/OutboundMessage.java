@@ -1,7 +1,5 @@
 package com.wildeparty.model;
 
-import com.wildeparty.User;
-
 public class OutboundMessage {
 
   private MessageType type;

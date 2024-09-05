@@ -7,7 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.wildeparty.User;
+import com.wildeparty.model.User;
 
 import ch.qos.logback.classic.Logger;
 

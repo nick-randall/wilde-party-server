@@ -2,7 +2,7 @@ package com.wildeparty.backend;
 
 import java.util.List;
 
-import com.wildeparty.User;
+import com.wildeparty.model.User;
 
 public interface UserService {
 

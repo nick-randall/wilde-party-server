@@ -1,7 +1,4 @@
-package com.wildeparty;
-
-import com.wildeparty.model.Game;
-import com.wildeparty.model.Session;
+package com.wildeparty.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +27,7 @@ public class User {
   public User() {
   }
 
-  User(String name, Long id) {
+  public User(String name, Long id) {
     this.name = name;
     this.id = id;
   }

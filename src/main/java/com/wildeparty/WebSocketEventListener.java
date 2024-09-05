@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import com.wildeparty.backend.GamesService;
 import com.wildeparty.backend.UserService;
 import com.wildeparty.model.OutboundMessage;
+import com.wildeparty.model.User;
 import com.wildeparty.model.DTO.PrivateMessageDTO;
 import com.wildeparty.model.DTO.PrivateMessageType;
 
@@ -48,16 +49,17 @@ public class WebSocketEventListener {
     Long userId = Long.parseLong(accessor.getUser().getName());
     User user = userService.getUserById(userId);
     String destination = (String) accessor.getHeader(SimpMessageHeaderAccessor.DESTINATION_HEADER);
+    System.out.println("User " + user.getName() + " wants to subscribe to destination ");
 
     Pattern pattern = Pattern.compile("(\\/topic\\/game\\/)(.+)");
     Matcher matcher = pattern.matcher(destination);
     matcher.find();
     if (matcher.matches()) {
       String gameId = matcher.group(1);
-      System.out.println("User " + user.getId() + " subscribed to game " + gameId);
+      System.out.println("User " + user.getName() + " wants to subscribe to game " + gameId);
       boolean userIsInGame = gamesService.isUserInGame(user.getId(), Long.getLong(gameId));
-      System.out.println("User is in game: " + userIsInGame);
       if (!userIsInGame) {
+        System.out.println("User " + user.getName() + " is not in game " + gameId + " and cannot subscribe");
         PrivateMessageDTO message = new PrivateMessageDTO(PrivateMessageType.ERROR_SUBSCRIBING, null,
             accessor.getSubscriptionId(), "You are not in this game");
         simpMessagingTemplate.convertAndSendToUser(event.getUser().getName(), "/queue/messages", message);

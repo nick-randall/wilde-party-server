@@ -1,8 +1,9 @@
-package com.wildeparty;
+package com.wildeparty.backend;
 
 import java.util.List;
 
 import com.wildeparty.model.Session;
+import com.wildeparty.model.User;
 
 import java.util.ArrayList;
 

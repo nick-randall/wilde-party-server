@@ -1,6 +1,8 @@
-package com.wildeparty;
+package com.wildeparty.backend;
 
 import java.util.Optional;
+
+import com.wildeparty.model.User;
 
 public class UserInMemoryRepo {
 
@@ -13,7 +15,7 @@ public class UserInMemoryRepo {
   }
 
   public User getUserById(Long userId) {
-    Optional<User> foundUser = db.users.stream().filter(e -> e.id == userId).findFirst();
+    Optional<User> foundUser = db.users.stream().filter(e -> e.getId() == userId).findFirst();
     // if sessionId is expired, remove it.
     return foundUser.isPresent() ? foundUser.get(): null;
   }

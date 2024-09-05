@@ -1,6 +1,5 @@
 package com.wildeparty.model;
 
-import com.wildeparty.User;
 import com.wildeparty.utils.GameSnapshotJsonConverter;
 
 import jakarta.persistence.Column;

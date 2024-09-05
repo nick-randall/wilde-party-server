@@ -1,13 +1,13 @@
-package com.wildeparty;
+package com.wildeparty.backend;
 
 import java.util.Optional;
 
 import com.wildeparty.model.Session;
 
-public class SessionRepo {
+public class SessionInMemoryRepo {
   Database db;
 
-  public SessionRepo(Database db) {
+  public SessionInMemoryRepo(Database db) {
     this.db = db;
   }
 

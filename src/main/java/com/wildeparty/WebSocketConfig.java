@@ -34,6 +34,7 @@ import com.wildeparty.backend.SessionService;
 import com.wildeparty.backend.UserService;
 import com.wildeparty.model.Game;
 import com.wildeparty.model.Session;
+import com.wildeparty.model.User;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -111,7 +112,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 // Because we are not using Spring Security, we need to
                 // set the user in the accessor in a hacky way, that allows
                 // us to access the userId in the controller.
-                IdContainer idContainer = new IdContainer(existingUser.id);
+                IdContainer idContainer = new IdContainer(existingUser.getId());
                 System.out.println("adding principal '" + idContainer.getName() + "' to accessor");
                 accessor.setUser(idContainer);
               }

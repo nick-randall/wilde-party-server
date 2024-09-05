@@ -16,12 +16,12 @@ import org.springframework.messaging.simp.user.SimpUser;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Controller;
 
-import com.wildeparty.Database;
-import com.wildeparty.SessionRepo;
-import com.wildeparty.User;
+import com.wildeparty.backend.Database;
+import com.wildeparty.backend.SessionInMemoryRepo;
 import com.wildeparty.backend.SessionService;
 import com.wildeparty.backend.UserService;
 import com.wildeparty.model.OutboundMessage;
+import com.wildeparty.model.User;
 import com.wildeparty.model.InboundMessage;
 
 @Controller
