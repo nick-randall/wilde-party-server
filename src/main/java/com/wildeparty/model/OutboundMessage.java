@@ -1,8 +1,10 @@
 package com.wildeparty.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public class OutboundMessage {
 
-  private MessageType type;
+  private PublicMessageType type;
   private String content;
   private User sender;
 
@@ -10,25 +12,36 @@ public class OutboundMessage {
     System.out.println("creating chat message");
   }
 
-  public OutboundMessage(MessageType type, String content, User sender) {
+  public OutboundMessage(PublicMessageType type, String content, User sender) {
     System.out.println("creating chat message");
     this.type = type;
     this.content = content;
     this.sender = sender;
   }
 
-  public enum MessageType {
-    CHAT,
-    JOIN,
-    LEAVE,
-    STARTING_GAME,
+  public enum PublicMessageType {
+    CHAT("chat"),
+    JOIN("join"),
+    LEAVE("leave"),
+    STARTING_GAME("starting_game");
+
+    private String name;
+
+    @JsonValue
+    public String getName() {
+      return name;
+    }
+
+     PublicMessageType(String name) {
+      this.name = name;
+    }
   }
 
-  public MessageType getType() {
+  public PublicMessageType getType() {
     return type;
   }
 
-  public void setType(MessageType type) {
+  public void setType(PublicMessageType type) {
     this.type = type;
   }
 

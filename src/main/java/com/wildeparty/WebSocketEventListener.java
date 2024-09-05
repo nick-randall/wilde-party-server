@@ -14,6 +14,7 @@ import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import java.util.regex.Pattern;
+import java.util.Set;
 import java.util.regex.Matcher;
 
 import com.wildeparty.backend.GamesService;
@@ -45,12 +46,22 @@ public class WebSocketEventListener {
   @EventListener
   public void handleWebSocketSubscribeListener(SessionSubscribeEvent event) {
     logger.info("Received a new web socket subscription");
+    // Get the user and destination of subscription
     StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
     Long userId = Long.parseLong(accessor.getUser().getName());
     User user = userService.getUserById(userId);
     String destination = (String) accessor.getHeader(SimpMessageHeaderAccessor.DESTINATION_HEADER);
-    System.out.println("User " + user.getName() + " wants to subscribe to destination ");
+    System.out.println("User " + user.getName() + " wants to subscribe to destination " + destination);
 
+    // Inform others when joining the chat room
+    if (destination.equals("/topic/public")) {
+      OutboundMessage chatMessage = new OutboundMessage();
+      chatMessage.setType(OutboundMessage.PublicMessageType.JOIN);
+      messagingTemplate.convertAndSend("/chat.joinRoom", chatMessage);
+      return;
+    }
+
+    // If this is a subscription to a game, check if user is in game
     Pattern pattern = Pattern.compile("(\\/topic\\/game\\/)(.+)");
     Matcher matcher = pattern.matcher(destination);
     matcher.find();
@@ -77,7 +88,7 @@ public class WebSocketEventListener {
       logger.info("User Disconnected : " + user);
 
       OutboundMessage chatMessage = new OutboundMessage();
-      chatMessage.setType(OutboundMessage.MessageType.LEAVE);
+      chatMessage.setType(OutboundMessage.PublicMessageType.LEAVE);
       chatMessage.setSender(user);
 
       messagingTemplate.convertAndSend("/topic/public", chatMessage);

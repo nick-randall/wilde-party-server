@@ -10,14 +10,10 @@ import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.user.SimpSession;
-import org.springframework.messaging.simp.user.SimpSubscription;
 import org.springframework.messaging.simp.user.SimpUser;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Controller;
 
-import com.wildeparty.backend.Database;
-import com.wildeparty.backend.SessionInMemoryRepo;
 import com.wildeparty.backend.SessionService;
 import com.wildeparty.backend.UserService;
 import com.wildeparty.model.OutboundMessage;
@@ -74,7 +70,7 @@ public class ChatController {
   // // Create game in database
   // simpMessagingTemplate.convertAndSendToUser(String.valueOf(inviteeId),
   // "/queue/messages", reply);
-  // return new OutboundMessage(OutboundMessage.MessageType.STARTING_GAME, "reply
+  // return new OutboundMessage(OutboundMessage.PublicMessageType.STARTING_GAME, "reply
   // to invite", invitee);
   // }
 
@@ -96,10 +92,10 @@ public class ChatController {
     OutboundMessage chatMessage = new OutboundMessage();
     User sender = getSender(headerAccessor);
     if (sender != null) {
-      headerAccessor.getSessionAttributes().put("username", sender.getName());
+      // headerAccessor.getSessionAttributes().put("username", sender.getName());
       chatMessage.setSender(sender);
       chatMessage.setContent(sender.getName() + " has joined the chat room!");
-      chatMessage.setType(OutboundMessage.MessageType.JOIN);
+      chatMessage.setType(OutboundMessage.PublicMessageType.JOIN);
       System.out.println("type set to " + chatMessage.getType());
     }
 

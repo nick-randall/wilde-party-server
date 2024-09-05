@@ -1,10 +1,10 @@
 package com.wildeparty.model;
 
-import com.wildeparty.model.OutboundMessage.MessageType;
+import com.wildeparty.model.OutboundMessage.PublicMessageType;
 
 public class InboundMessage {
   private String username;
-  private MessageType type;
+  private PublicMessageType type;
   private String content;
 
   public String getContent() {
@@ -24,11 +24,11 @@ public class InboundMessage {
     this.username = username;
   }
 
-  public MessageType getType() {
+  public PublicMessageType getType() {
     return type;
   }
 
-  public void setType(MessageType type) {
+  public void setType(PublicMessageType type) {
     this.type = type;
   }
 }
