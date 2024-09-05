@@ -2,13 +2,13 @@ package com.wildeparty;
 
 import java.util.Optional;
 
-public class UserRepo {
+public class UserInMemoryRepo {
 
   static Long currUserId = 0L;
 
   Database db;
 
-  public UserRepo(Database db) {
+  public UserInMemoryRepo(Database db) {
     this.db = db;
   }
 

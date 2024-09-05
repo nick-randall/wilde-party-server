@@ -59,4 +59,9 @@ public class UserServiceImpl implements UserService {
     return userRepository.save(user);
   }
 
+  @Override
+  public User getUserBySessionToken(String token) {
+    return userRepository.getUserByToken(token);
+  }
+
 }

@@ -1,6 +1,7 @@
 package com.wildeparty;
 
 import com.wildeparty.model.Game;
+import com.wildeparty.model.Session;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -19,6 +22,10 @@ public class User {
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   Long id;
   String name;
+  @OneToOne
+  Session session;
+  @ManyToMany(mappedBy = "users")
+  private List<Game> games = new ArrayList<Game>();
 
   public User() {
   }
@@ -28,8 +35,7 @@ public class User {
     this.id = id;
   }
 
-  @ManyToMany(mappedBy = "users")
-  private List<Game> games = new ArrayList<Game>();
+
 
   public String getName() {
     return name;

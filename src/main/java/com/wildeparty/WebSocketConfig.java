@@ -30,6 +30,7 @@ import org.springframework.web.socket.config.annotation.*;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
 import com.wildeparty.backend.GamesService;
+import com.wildeparty.backend.SessionService;
 import com.wildeparty.backend.UserService;
 import com.wildeparty.model.Game;
 import com.wildeparty.model.Session;
@@ -41,7 +42,8 @@ import jakarta.servlet.http.HttpServletRequest;
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-  SessionRepo sessionRepo = new SessionRepo(Database.getInstance());
+  @Autowired
+  SessionService sessionService;
   @Autowired
   UserService userService;
   @Autowired
@@ -103,13 +105,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
           try {
             String token = (String) sessionAttributes.get("token");
             if (token != null) {
-              Session existingSession = sessionRepo.getSessionFromSessionToken(token);
-              if (existingSession != null) {
-                User user = userService.getUserById(existingSession.getUserId());
+              User existingUser = userService.getUserBySessionToken(token);
+              if (existingUser != null) {
+                // User user = userService.getUserById(existingSession.getUserId());
                 // Because we are not using Spring Security, we need to
                 // set the user in the accessor in a hacky way, that allows
                 // us to access the userId in the controller.
-                IdContainer idContainer = new IdContainer(user.id);
+                IdContainer idContainer = new IdContainer(existingUser.id);
                 System.out.println("adding principal '" + idContainer.getName() + "' to accessor");
                 accessor.setUser(idContainer);
               }

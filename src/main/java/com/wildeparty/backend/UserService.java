@@ -11,6 +11,8 @@ public interface UserService {
 
   User createUser(String userName);
 
+  User getUserBySessionToken(String token);
+
   // read operation
   List<User> fetchUserList();
 

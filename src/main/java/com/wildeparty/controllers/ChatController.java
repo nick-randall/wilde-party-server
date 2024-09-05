@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 import com.wildeparty.Database;
 import com.wildeparty.SessionRepo;
 import com.wildeparty.User;
+import com.wildeparty.backend.SessionService;
 import com.wildeparty.backend.UserService;
 import com.wildeparty.model.OutboundMessage;
 import com.wildeparty.model.InboundMessage;
@@ -26,10 +27,10 @@ import com.wildeparty.model.InboundMessage;
 @Controller
 public class ChatController {
 
-  final SessionRepo sessionRepo = new SessionRepo(Database.getInstance());
+  @Autowired
+  SessionService sessionService;
   @Autowired
   UserService userService;
-
   @Autowired
   private SimpMessagingTemplate simpMessagingTemplate;
   @Autowired

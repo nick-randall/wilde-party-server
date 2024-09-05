@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.wildeparty.Database;
-import com.wildeparty.SessionRepo;
+import com.wildeparty.SessionInMemoryRepo;
 import com.wildeparty.User;
-import com.wildeparty.UserRepo;
 import com.wildeparty.backend.GamesService;
+import com.wildeparty.backend.SessionService;
 import com.wildeparty.backend.UserService;
 import com.wildeparty.model.AddUserRequest;
 import com.wildeparty.model.Game;
@@ -25,12 +25,12 @@ import java.util.UUID;
 @RestController
 public class WhoAmIController {
 
-  final SessionRepo sessionRepo = new SessionRepo(Database.getInstance());
-  final UserRepo userRepo = new UserRepo(Database.getInstance());
   @Autowired
   UserService userService;
   @Autowired
   GamesService gamesService;
+  @Autowired
+  SessionService sessionService;
 
   private Cookie createCookie() {
 
@@ -71,14 +71,17 @@ public class WhoAmIController {
       // New user with no session cookie
       return ResponseEntity.noContent().build();
     }
-
-    Session existingSession = sessionRepo.getSessionFromSessionToken(existingCookie.getValue());
-    if (existingSession == null) {
-      // Error -- user not found!
-      return ResponseEntity.notFound().build();
-    }
-    User user = userRepo.getUserById(existingSession.getUserId());
-    if (user == null) {
+    // Session existingSession = userService.
+    User user = userService.getUserBySessionToken(existingCookie.getValue());
+    // if (existingSession == null) {
+    //   // Error -- user not found!
+    //   return ResponseEntity.notFound().build();
+    // }
+    // User user = userRepo.getUserById(existingSession.getUserId());
+    // if (user == null) {
+    //   return ResponseEntity.notFound().build();
+    // }
+    if(user == null) {
       return ResponseEntity.notFound().build();
     }
     return ResponseEntity.ok().body(user);
@@ -89,7 +92,7 @@ public class WhoAmIController {
       @RequestBody AddUserRequest addUserRequest) {
     User newUser = userService.createUser(addUserRequest.getUsername());
     Cookie newCookie = createCookie();
-    sessionRepo.addSession(newUser.getId(), newCookie.getValue());
+    Session newSession = sessionService.createSession(newUser.getId(), newCookie.getValue());
     response.addCookie(newCookie);
 
     /// Demo of UserServiceImpl

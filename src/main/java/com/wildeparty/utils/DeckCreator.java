@@ -147,7 +147,7 @@ public class DeckCreator {
     List<Card> deck = createDeck(3);
     Collections.shuffle(deck);
     for (Card card : deck) {
-      System.out.println(card.getImageName() + "(" + card.getId() + ")" + " = " + card.getCardType());
+      // System.out.println(card.getImageName() + "(" + card.getId() + ")" + " = " + card.getCardType());
     }
     User newUser = new User();
     newUser.setName("John");
