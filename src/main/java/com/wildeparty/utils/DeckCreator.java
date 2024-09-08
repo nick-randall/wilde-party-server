@@ -162,7 +162,7 @@ public class DeckCreator {
     ///
     Game game = new Game(savedUser, savedUserTwo, savedUserThree);
     Game savedGame = gamesService.saveGame(game);
-    Iterable<Game> userGames = gamesService.getUserGames(userTwo.getId());
+    Iterable<Game> userGames = gamesService.getUserActiveGames(userTwo.getId());
     for (Game userGame : userGames) {
       System.out.println("User game id: " + userGame.getId());
       for(User userInGame : userGame.getUsers()) {

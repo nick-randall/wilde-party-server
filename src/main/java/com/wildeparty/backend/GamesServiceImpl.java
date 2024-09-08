@@ -1,6 +1,8 @@
 package com.wildeparty.backend;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,8 +27,15 @@ public class GamesServiceImpl implements GamesService {
   }
 
   @Override
-  public Iterable<Game> getUserGames(Long userId) {
-    return gamesRepository.getUserGames(userId);
+  public List<Game> getUserActiveGames(Long userId) {
+    List<Game> result = new ArrayList<Game>();
+    Iterable<Game> iterable = gamesRepository.getUserGames(userId);
+    for(Game game : iterable) {
+      if (game.getStatus() == GameStatus.STARTED) {
+        result.add(game);
+      }
+    }
+    return result;
   }
 
   @Override

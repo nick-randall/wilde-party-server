@@ -15,11 +15,14 @@ import com.wildeparty.model.AddUserRequest;
 import com.wildeparty.model.Game;
 import com.wildeparty.model.Session;
 import com.wildeparty.model.User;
+import com.wildeparty.model.DTO.GameDTO;
+import com.wildeparty.model.DTO.UserGameDTO;
 import com.wildeparty.utils.GameSnapshotJsonConverter;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -63,7 +66,7 @@ public class WhoAmIController {
   }
 
   @PostMapping("/whoami")
-  public ResponseEntity<User> whoAmI(HttpServletResponse response, HttpServletRequest request) {
+  public ResponseEntity<UserGameDTO> whoAmI(HttpServletResponse response, HttpServletRequest request) {
 
     Cookie existingCookie = extractCookie(request);
 
@@ -71,20 +74,22 @@ public class WhoAmIController {
       // New user with no session cookie
       return ResponseEntity.noContent().build();
     }
-    // Session existingSession = userService.
     User user = userService.getUserBySessionToken(existingCookie.getValue());
-    // if (existingSession == null) {
-    //   // Error -- user not found!
-    //   return ResponseEntity.notFound().build();
-    // }
-    // User user = userRepo.getUserById(existingSession.getUserId());
-    // if (user == null) {
-    //   return ResponseEntity.notFound().build();
-    // }
     if(user == null) {
       return ResponseEntity.notFound().build();
     }
-    return ResponseEntity.ok().body(user);
+    List<Game> games = gamesService.getUserActiveGames(user.getId());
+    if(games.size() == 0) {
+      return ResponseEntity.ok().body(new UserGameDTO(user, null));
+    }
+
+    if(games.size() > 1) {
+      System.out.println("User " + user.getName() + " has more than one active game!!!!");
+    }
+
+    GameDTO gameDTO = GameDTO.fromGame(games.get(0));
+
+    return ResponseEntity.ok().body(new UserGameDTO(user, gameDTO));
   }
 
   @PostMapping("/addUser")
