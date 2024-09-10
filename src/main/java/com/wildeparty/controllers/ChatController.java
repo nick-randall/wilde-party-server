@@ -2,6 +2,7 @@ package com.wildeparty.controllers;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -14,19 +15,30 @@ import org.springframework.messaging.simp.user.SimpUser;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.wildeparty.backend.GamesService;
+import com.wildeparty.backend.InvitationService;
 import com.wildeparty.backend.SessionService;
 import com.wildeparty.backend.UserService;
 import com.wildeparty.model.OutboundMessage;
 import com.wildeparty.model.User;
+import com.wildeparty.model.DTO.InboundInvitationMessage;
+import com.wildeparty.model.DTO.InvitationMessageType;
+import com.wildeparty.model.DTO.OutboundInvitationMessage;
+import com.wildeparty.model.OutboundMessage.PublicMessageType;
+import com.wildeparty.model.Game;
 import com.wildeparty.model.InboundMessage;
+import com.wildeparty.model.Invitation;
 
 @Controller
 public class ChatController {
 
   @Autowired
-  SessionService sessionService;
+  private GamesService gamesService;
   @Autowired
-  UserService userService;
+  private UserService userService;
+  @Autowired
+  private InvitationService invitationService;
   @Autowired
   private SimpMessagingTemplate simpMessagingTemplate;
   @Autowired
@@ -52,13 +64,63 @@ public class ChatController {
     return users;
   }
 
-  @MessageMapping("/invite")
-  public void sendInvite(SimpMessageHeaderAccessor sha, @Payload int inviteeId) {
-    System.out.println(sha.getSessionAttributes().get("token"));
-    User inviter = getSender(sha);
-    String message = "You were invited to a game by " + inviter.getName();
+  String encodeUsersList(User userOne, User userTwo) {
+    ObjectMapper objectMapper = new ObjectMapper();
+    Set<User> users = new HashSet<User>();
+    users.add(userOne);
+    users.add(userTwo);
+    try {
+      String json = objectMapper.writeValueAsString(users);
+      return json;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
 
-    simpMessagingTemplate.convertAndSendToUser(String.valueOf(inviteeId), "/queue/messages", message);
+  @MessageMapping("/invitations")
+  public void sendInvite(SimpMessageHeaderAccessor sha, @Payload InboundInvitationMessage message) {
+    System.out.println("sendInvite called");
+    OutboundInvitationMessage outboundMessage = new OutboundInvitationMessage(message.getType());
+    User inviter = getSender(sha);
+    outboundMessage.setSender(inviter);
+    User invitee;
+    if (message.getType() == InvitationMessageType.INVITE) {
+      if(message.getInviteeId() == null) {
+       throw new IllegalArgumentException("Invitee ID cannot be null");
+      }
+      invitee = userService.getUserById(message.getInviteeId());
+      Invitation newInvitation = new Invitation(inviter, invitee);
+      invitationService.saveInvitation(newInvitation);
+      
+    } else {
+      invitee = invitationService.getInvitationById(message.getInvitationId()).getInvitee();
+      invitationService.deleteInvitation(message.getInvitationId());
+      ///
+      if (message.getType() == InvitationMessageType.DECLINE) {
+        //
+      } else if (message.getType() == InvitationMessageType.ACCEPT) {
+
+
+        Game game = new Game(inviter, invitee, User.createAIUser());
+        gamesService.saveGame(game);
+
+        // Let everyone know these players are leaving to play a game
+        OutboundMessage chatMessage = new OutboundMessage(PublicMessageType.STARTING_GAME,
+            encodeUsersList(inviter, invitee), inviter);
+        simpMessagingTemplate.convertAndSend("topic/public", chatMessage);
+
+      }
+    }
+
+    List<Invitation> inviteeInvitations = invitationService.getUserInvitations(invitee.getId());
+    List<Invitation> inviterInvitations = invitationService.getUserInvitations(inviter.getId());
+
+    outboundMessage.setUserInvitations(inviteeInvitations);
+    simpMessagingTemplate.convertAndSendToUser(String.valueOf(invitee.getId()), "/queue/messages", outboundMessage);
+    outboundMessage.setUserInvitations(inviterInvitations);
+    simpMessagingTemplate.convertAndSendToUser(String.valueOf(inviter.getId()), "/queue/messages", outboundMessage);
+
   }
 
   // @MessageMapping("/reply-to-invite")
@@ -70,7 +132,8 @@ public class ChatController {
   // // Create game in database
   // simpMessagingTemplate.convertAndSendToUser(String.valueOf(inviteeId),
   // "/queue/messages", reply);
-  // return new OutboundMessage(OutboundMessage.PublicMessageType.STARTING_GAME, "reply
+  // return new OutboundMessage(OutboundMessage.PublicMessageType.STARTING_GAME,
+  // "reply
   // to invite", invitee);
   // }
 
@@ -115,6 +178,5 @@ public class ChatController {
     // room " + room);
     return chatMessage;
   }
-
 
 }

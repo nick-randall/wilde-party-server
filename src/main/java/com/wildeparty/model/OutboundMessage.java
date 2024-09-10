@@ -32,7 +32,7 @@ public class OutboundMessage {
       return name;
     }
 
-     PublicMessageType(String name) {
+    PublicMessageType(String name) {
       this.name = name;
     }
   }
