@@ -31,7 +31,7 @@ public class GamesServiceImpl implements GamesService {
     List<Game> result = new ArrayList<Game>();
     Iterable<Game> iterable = gamesRepository.getUserGames(userId);
     for(Game game : iterable) {
-      if (game.getStatus() == GameStatus.STARTED) {
+      if (game.getStatus() != GameStatus.FINISHED || game.getStatus() != GameStatus.CANCELLED) {
         result.add(game);
       }
     }
@@ -44,7 +44,7 @@ public class GamesServiceImpl implements GamesService {
     Iterator<Game> iterator = userGames.iterator();
     while (iterator.hasNext()) {
       Game game = iterator.next();
-      if (game.getId() == gameId && game.getStatus() == GameStatus.STARTED) {
+      if (game.getStatus() != GameStatus.FINISHED || game.getStatus() != GameStatus.CANCELLED) {
         return true;
       }
     }

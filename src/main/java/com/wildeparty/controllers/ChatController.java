@@ -85,6 +85,7 @@ public class ChatController {
   @MessageMapping("/chat.joinRoom")
   @SendTo("/topic/public")
   public void joinRoom(SimpMessageHeaderAccessor headerAccessor) {
+    System.out.println("joinRoom called");
     // Send the list of users in the chat room
     Set<User> users = getRoomUsers();
     simpMessagingTemplate.convertAndSend("/topic/users-in-chat-room", users);

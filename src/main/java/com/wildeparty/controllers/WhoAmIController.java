@@ -67,7 +67,12 @@ public class WhoAmIController {
 
   @PostMapping("/whoami")
   public ResponseEntity<UserGameDTO> whoAmI(HttpServletResponse response, HttpServletRequest request) {
+    try {
+      Thread.sleep(1000);
 
+    } catch (Exception e) {
+      // TODO: handle exception
+    }
     Cookie existingCookie = extractCookie(request);
 
     if (existingCookie == null) {

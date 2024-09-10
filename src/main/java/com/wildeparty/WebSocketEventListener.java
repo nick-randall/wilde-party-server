@@ -9,14 +9,18 @@ import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
+import org.springframework.messaging.simp.user.SimpUser;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import java.util.regex.Pattern;
 import java.util.Set;
+import java.util.HashSet;
 import java.util.regex.Matcher;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wildeparty.backend.GamesService;
 import com.wildeparty.backend.UserService;
 import com.wildeparty.model.OutboundMessage;
@@ -37,6 +41,34 @@ public class WebSocketEventListener {
   private UserService userService;
   @Autowired
   private GamesService gamesService;
+  @Autowired
+  private SimpUserRegistry simpUserRegistry;
+
+  private String getRoomUsers() {
+    Set<SimpUser> roomUsers = simpUserRegistry.getUsers();
+    Set<User> users = new HashSet<User>();
+    for (SimpUser user : roomUsers) {
+      users.add(userService.getUserById(Long.parseLong(user.getName())));
+    }
+    // Turn the set of users into JSON
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      String json = objectMapper.writeValueAsString(users);
+      return json;
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  // private Set<User> getRoomUsers() {
+  // Set<SimpUser> roomUsers = simpUserRegistry.getUsers();
+  // Set<User> users = new HashSet<User>();
+  // for (SimpUser user : roomUsers) {
+  // users.add(userService.getUserById(Long.parseLong(user.getName())));
+  // }
+  // return users;
+  // }
 
   @EventListener
   public void handleWebSocketConnectListener(SessionConnectedEvent event) {
@@ -55,9 +87,13 @@ public class WebSocketEventListener {
 
     // Inform others when joining the chat room
     if (destination.equals("/topic/public")) {
+      String users = getRoomUsers();
       OutboundMessage chatMessage = new OutboundMessage();
+      chatMessage.setSender(user);
       chatMessage.setType(OutboundMessage.PublicMessageType.JOIN);
-      messagingTemplate.convertAndSend("/chat.joinRoom", chatMessage);
+      chatMessage.setContent(users);
+      System.out.println("Sending join message to /chat.joinRoom");
+      messagingTemplate.convertAndSend("/topic/public", chatMessage);
       return;
     }
 
@@ -86,10 +122,11 @@ public class WebSocketEventListener {
     User user = (User) headerAccessor.getSessionAttributes().get("user");
     if (user != null) {
       logger.info("User Disconnected : " + user);
-
+      String users = getRoomUsers();
       OutboundMessage chatMessage = new OutboundMessage();
       chatMessage.setType(OutboundMessage.PublicMessageType.LEAVE);
       chatMessage.setSender(user);
+      chatMessage.setContent(users);
 
       messagingTemplate.convertAndSend("/topic/public", chatMessage);
     }

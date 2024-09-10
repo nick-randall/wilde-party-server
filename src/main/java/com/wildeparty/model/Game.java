@@ -31,7 +31,7 @@ public class Game {
 
   @ManyToMany(fetch = FetchType.EAGER)
   private List<User> users = new ArrayList<>();
-  private GameStatus status = GameStatus.STARTED;
+  private GameStatus status = GameStatus.CREATED;
   @OneToOne(targetEntity = User.class)
   private User winner;
 

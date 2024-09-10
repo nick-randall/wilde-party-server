@@ -5,7 +5,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum GameStatus {
   FINISHED("finished"),
   CANCELLED("cancelled"),
-  STARTED("started");
+  STARTED("started"),
+  CREATED("created");
 
   private String name;
 
