@@ -30,4 +30,16 @@ public class InvitationServiceImpl extends InvitationService {
   public Invitation getInvitationById(Long id) {
    return repository.findById(id).orElse(null);
   }
+
+  @Override
+  public List<Invitation> getReceivedInvitationsByUserId(Long userId) {
+    return repository.getUserReceivedInvitations(userId);
+
+  }
+
+  @Override
+  public List<Invitation> getSentInvitationsByUserId(Long userId) {
+    return repository.getUserSentInvitations(userId);
+
+  }
 }

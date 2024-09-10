@@ -78,48 +78,69 @@ public class ChatController {
     return null;
   }
 
+  OutboundInvitationMessage addInvitationsListToMessage(OutboundInvitationMessage message, User user){
+    List<Invitation> sentInvitations = invitationService.getUserInvitations(user.getId());
+    List<Invitation> receivedInvitations = invitationService.getUserInvitations(user.getId());
+    message.setSentInvitations(sentInvitations);
+    message.setReceivedInvitations(receivedInvitations);
+    return message;
+  }
+
   @MessageMapping("/invitations")
   public void sendInvite(SimpMessageHeaderAccessor sha, @Payload InboundInvitationMessage message) {
     System.out.println("sendInvite called");
-    OutboundInvitationMessage outboundMessage = new OutboundInvitationMessage(message.getType());
-    User inviter = getSender(sha);
-    outboundMessage.setSender(inviter);
-    User invitee;
+   
     if (message.getType() == InvitationMessageType.INVITE) {
-      if(message.getInviteeId() == null) {
-       throw new IllegalArgumentException("Invitee ID cannot be null");
-      }
-      invitee = userService.getUserById(message.getInviteeId());
+      User inviter = getSender(sha);
+      User invitee = userService.getUserById(message.getInviteeId());
+      // Create a new invitation and save it to the database
       Invitation newInvitation = new Invitation(inviter, invitee);
       invitationService.saveInvitation(newInvitation);
+      // Send the invitation to the invitee
+      OutboundInvitationMessage inviterMessage = new OutboundInvitationMessage(message.getType());
+      inviterMessage.setMessage("You invited " + invitee.getName() + " to play a game!");
+      addInvitationsListToMessage(inviterMessage, inviter);
       
-    } else {
-      invitee = invitationService.getInvitationById(message.getInvitationId()).getInvitee();
+      OutboundInvitationMessage inviteeMessage = new OutboundInvitationMessage(message.getType());
+      inviteeMessage.setMessage(inviter.getName() + " invited you to play a game!");
+      addInvitationsListToMessage(inviteeMessage, inviter);
+      simpMessagingTemplate.convertAndSendToUser(String.valueOf(inviter.getId()), "/queue/messages", inviterMessage);
+      simpMessagingTemplate.convertAndSendToUser(String.valueOf(invitee.getId()), "/queue/messages", inviteeMessage);
+    } 
+    else {
+      User responder = getSender(sha);
+      User originalInviter = invitationService.getInvitationById(message.getInvitationId()).getInvitee();
       invitationService.deleteInvitation(message.getInvitationId());
       ///
       if (message.getType() == InvitationMessageType.DECLINE) {
+        OutboundInvitationMessage responderMessage = new OutboundInvitationMessage(message.getType());
+        responderMessage.setMessage("You declined " + originalInviter.getName() + "'s invitation to play a game!");
+        addInvitationsListToMessage(responderMessage, originalInviter);
+        
         //
+        OutboundInvitationMessage originalInviterMessage = new OutboundInvitationMessage(message.getType());
+        originalInviterMessage.setMessage(responder.getName() + " declined your invitation to play a game!");
+        addInvitationsListToMessage(originalInviterMessage, originalInviter);
       } else if (message.getType() == InvitationMessageType.ACCEPT) {
 
-
-        Game game = new Game(inviter, invitee, User.createAIUser());
+        Game game = new Game(originalInviter, responder, User.createAIUser());
         gamesService.saveGame(game);
+
+        OutboundInvitationMessage responderMessage = new OutboundInvitationMessage(message.getType());
+        responderMessage.setMessage("You accepted " + originalInviter.getName() + "'s invitation to play a game!");
+        addInvitationsListToMessage(responderMessage, originalInviter);
+
+        OutboundInvitationMessage originalInviterMessage = new OutboundInvitationMessage(message.getType());
+        originalInviterMessage.setMessage(responder.getName() + " accepted your invitation to play a game!");
+        addInvitationsListToMessage(originalInviterMessage, originalInviter);
 
         // Let everyone know these players are leaving to play a game
         OutboundMessage chatMessage = new OutboundMessage(PublicMessageType.STARTING_GAME,
-            encodeUsersList(inviter, invitee), inviter);
+            encodeUsersList(originalInviter, responder), responder);
         simpMessagingTemplate.convertAndSend("topic/public", chatMessage);
 
       }
     }
-
-    List<Invitation> inviteeInvitations = invitationService.getUserInvitations(invitee.getId());
-    List<Invitation> inviterInvitations = invitationService.getUserInvitations(inviter.getId());
-
-    outboundMessage.setUserInvitations(inviteeInvitations);
-    simpMessagingTemplate.convertAndSendToUser(String.valueOf(invitee.getId()), "/queue/messages", outboundMessage);
-    outboundMessage.setUserInvitations(inviterInvitations);
-    simpMessagingTemplate.convertAndSendToUser(String.valueOf(inviter.getId()), "/queue/messages", outboundMessage);
 
   }
 

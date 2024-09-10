@@ -1,16 +1,16 @@
 package com.wildeparty.model.DTO;
 
 import com.wildeparty.model.Invitation;
-import com.wildeparty.model.User;
 
 import java.util.List;
 
 public class OutboundInvitationMessage {
 
   private InvitationMessageType type;
-  private User sender;
+  private String message;
 
-  private List<Invitation> userInvitations;
+  private List<Invitation> sentInvitations;
+  private List<Invitation> receivedInvitations;
 
   public OutboundInvitationMessage(InvitationMessageType type) {
     this.type = type;
@@ -20,24 +20,33 @@ public class OutboundInvitationMessage {
     return type;
   }
 
-  public List<Invitation> getUserInvitations() {
-    return userInvitations;
+  public List<Invitation> getSentInvitations() {
+    return sentInvitations;
+  }
+
+
+  public List<Invitation> getReceivedInvitations() {
+    return receivedInvitations;
+  }
+
+  public void setReceivedInvitations(List<Invitation> receivedInvitations) {
+    this.receivedInvitations = receivedInvitations;
   }
 
   public void setType(InvitationMessageType type) {
     this.type = type;
   }
 
-  public void setUserInvitations(List<Invitation> userInvitations) {
-    this.userInvitations = userInvitations;
+  public void setSentInvitations(List<Invitation> sentInvitations) {
+    this.sentInvitations = sentInvitations;
   }
 
-  public User getSender() {
-    return sender;
+  public String getMessage() {
+    return message;
   }
 
-  public void setSender(User sender) {
-    this.sender = sender;
+  public void setMessage(String message) {
+    this.message = message;
   }
 
 }

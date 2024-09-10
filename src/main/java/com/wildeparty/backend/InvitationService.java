@@ -7,6 +7,10 @@ abstract public class InvitationService {
 
   abstract public List<Invitation> getUserInvitations(Long userId);
 
+  abstract public List<Invitation> getReceivedInvitationsByUserId(Long userId);
+
+  abstract public List<Invitation> getSentInvitationsByUserId(Long userId);
+
   abstract public Invitation saveInvitation(Invitation invitation);
 
   abstract public void deleteInvitation(Long invitationId);

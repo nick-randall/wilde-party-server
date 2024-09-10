@@ -11,4 +11,8 @@ import com.wildeparty.model.Invitation;
 public interface InvitationRepository extends JpaRepository<Invitation, Long> {
   @Query("SELECT i FROM Invitation i WHERE i.invitee.id = :userId OR i.inviter.id = :userId")
   List<Invitation> getUserInvitations(@Param("userId") Long inviteeId);
+  @Query("SELECT i FROM Invitation i WHERE i.invitee.id = :userId")
+  List<Invitation> getUserReceivedInvitations(@Param("userId") Long inviteeId);
+  @Query("SELECT i FROM Invitation i WHERE i.inviter.id = :userId")
+  List<Invitation> getUserSentInvitations(@Param("userId") Long inviterId);
 }
