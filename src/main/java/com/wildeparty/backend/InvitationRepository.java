@@ -1,12 +1,15 @@
 package com.wildeparty.backend;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 import com.wildeparty.model.Invitation;
+
+import jakarta.transaction.Transactional;
 
 public interface InvitationRepository extends JpaRepository<Invitation, Long> {
   @Query("SELECT i FROM Invitation i WHERE i.invitee.id = :userId OR i.inviter.id = :userId")
@@ -15,4 +18,8 @@ public interface InvitationRepository extends JpaRepository<Invitation, Long> {
   List<Invitation> getUserReceivedInvitations(@Param("userId") Long inviteeId);
   @Query("SELECT i FROM Invitation i WHERE i.inviter.id = :userId")
   List<Invitation> getUserSentInvitations(@Param("userId") Long inviterId);
+  @Modifying
+  @Transactional
+  @Query("DELETE FROM Invitation i WHERE i.invitee.id = :userId OR i.inviter.id = :userId")
+  void deleteAllUserInvitations(@Param("userId") Long userId);
 }

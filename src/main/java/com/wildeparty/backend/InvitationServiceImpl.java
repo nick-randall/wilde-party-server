@@ -42,4 +42,9 @@ public class InvitationServiceImpl extends InvitationService {
     return repository.getUserSentInvitations(userId);
 
   }
+
+  @Override
+  public void deleteAllUserInvitations(Long userId) {
+    repository.deleteAllUserInvitations(userId);
+  }
 }

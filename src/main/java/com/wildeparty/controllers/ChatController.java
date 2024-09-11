@@ -117,11 +117,14 @@ public class ChatController {
         OutboundInvitationMessage responderMessage = new OutboundInvitationMessage(message.getType());
         responderMessage.setMessage("You declined " + originalInviter.getName() + "'s invitation to play a game!");
         addInvitationsListToMessage(responderMessage, originalInviter);
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(responder.getId()), "/queue/messages", responderMessage);
         
         //
         OutboundInvitationMessage originalInviterMessage = new OutboundInvitationMessage(message.getType());
         originalInviterMessage.setMessage(responder.getName() + " declined your invitation to play a game!");
         addInvitationsListToMessage(originalInviterMessage, originalInviter);
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(originalInviter.getId()), "/queue/messages", originalInviterMessage);
+
       } else if (message.getType() == InvitationMessageType.ACCEPT) {
         User aiUser = User.createAIUser();
         userService.saveUser(aiUser);
@@ -144,6 +147,9 @@ public class ChatController {
         OutboundMessage chatMessage = new OutboundMessage(PublicMessageType.STARTING_GAME,
             encodeUsersList(originalInviter, responder), responder);
         simpMessagingTemplate.convertAndSend("topic/public", chatMessage);
+
+        invitationService.deleteAllUserInvitations(originalInviter.getId());
+        invitationService.deleteAllUserInvitations(responder.getId());
 
       }
     }

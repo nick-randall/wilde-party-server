@@ -15,6 +15,8 @@ abstract public class InvitationService {
 
   abstract public void deleteInvitation(Long invitationId);
 
+  abstract public void deleteAllUserInvitations(Long userId);
+
   abstract public Invitation getInvitationById(Long id);
 
 }

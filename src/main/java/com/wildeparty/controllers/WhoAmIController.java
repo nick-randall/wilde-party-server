@@ -102,25 +102,8 @@ public class WhoAmIController {
       @RequestBody AddUserRequest addUserRequest) {
     User newUser = userService.createUser(addUserRequest.getUsername());
     Cookie newCookie = createCookie();
-    Session newSession = sessionService.createSession(newUser.getId(), newCookie.getValue());
+    sessionService.createSession(newUser.getId(), newCookie.getValue());
     response.addCookie(newCookie);
-
-    /// Demo of UserServiceImpl
-    User savedUser = userService.saveUser(newUser);
-    User user = userService.getUserById(savedUser.getId());
-    User userTwo = new User();
-    userTwo.setName("Steve");
-    User savedUserTwo = userService.saveUser(userTwo);
-    User userThree = new User();
-    userTwo.setName("AI");
-    User savedUserThree = userService.saveUser(userThree);
-    ///
-    Game game = new Game(savedUser, savedUserTwo, savedUserThree);
-    Game savedGame = gamesService.saveGame(game);
-    gamesService.getGame(savedGame.getId());
-    System.out.println(new GameSnapshotJsonConverter().convertToDatabaseColumn(savedGame.getGameSnapshot()));
-    /// Demo of GamesServiceImpl
-
     return ResponseEntity.ok().body(newUser);
   }
 
