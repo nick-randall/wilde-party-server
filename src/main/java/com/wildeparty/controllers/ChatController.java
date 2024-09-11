@@ -22,6 +22,7 @@ import com.wildeparty.backend.SessionService;
 import com.wildeparty.backend.UserService;
 import com.wildeparty.model.OutboundMessage;
 import com.wildeparty.model.User;
+import com.wildeparty.model.DTO.GameDTO;
 import com.wildeparty.model.DTO.InboundInvitationMessage;
 import com.wildeparty.model.DTO.InvitationMessageType;
 import com.wildeparty.model.DTO.OutboundInvitationMessage;
@@ -79,8 +80,8 @@ public class ChatController {
   }
 
   OutboundInvitationMessage addInvitationsListToMessage(OutboundInvitationMessage message, User user){
-    List<Invitation> sentInvitations = invitationService.getUserInvitations(user.getId());
-    List<Invitation> receivedInvitations = invitationService.getUserInvitations(user.getId());
+    List<Invitation> sentInvitations = invitationService.getSentInvitationsByUserId(user.getId());
+    List<Invitation> receivedInvitations = invitationService.getReceivedInvitationsByUserId(user.getId());
     message.setSentInvitations(sentInvitations);
     message.setReceivedInvitations(receivedInvitations);
     return message;
@@ -103,13 +104,13 @@ public class ChatController {
       
       OutboundInvitationMessage inviteeMessage = new OutboundInvitationMessage(message.getType());
       inviteeMessage.setMessage(inviter.getName() + " invited you to play a game!");
-      addInvitationsListToMessage(inviteeMessage, inviter);
+      addInvitationsListToMessage(inviteeMessage, invitee);
       simpMessagingTemplate.convertAndSendToUser(String.valueOf(inviter.getId()), "/queue/messages", inviterMessage);
       simpMessagingTemplate.convertAndSendToUser(String.valueOf(invitee.getId()), "/queue/messages", inviteeMessage);
     } 
     else {
       User responder = getSender(sha);
-      User originalInviter = invitationService.getInvitationById(message.getInvitationId()).getInvitee();
+      User originalInviter = invitationService.getInvitationById(message.getInvitationId()).getInviter();
       invitationService.deleteInvitation(message.getInvitationId());
       ///
       if (message.getType() == InvitationMessageType.DECLINE) {
@@ -122,17 +123,22 @@ public class ChatController {
         originalInviterMessage.setMessage(responder.getName() + " declined your invitation to play a game!");
         addInvitationsListToMessage(originalInviterMessage, originalInviter);
       } else if (message.getType() == InvitationMessageType.ACCEPT) {
-
-        Game game = new Game(originalInviter, responder, User.createAIUser());
+        User aiUser = User.createAIUser();
+        userService.saveUser(aiUser);
+        Game game = new Game(originalInviter, responder, aiUser);
         gamesService.saveGame(game);
 
         OutboundInvitationMessage responderMessage = new OutboundInvitationMessage(message.getType());
         responderMessage.setMessage("You accepted " + originalInviter.getName() + "'s invitation to play a game!");
-        addInvitationsListToMessage(responderMessage, originalInviter);
+        responderMessage.setGame(GameDTO.fromGame(game));
+        addInvitationsListToMessage(responderMessage, responder);
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(responder.getId()), "/queue/messages", responderMessage);
 
         OutboundInvitationMessage originalInviterMessage = new OutboundInvitationMessage(message.getType());
         originalInviterMessage.setMessage(responder.getName() + " accepted your invitation to play a game!");
+        originalInviterMessage.setGame(GameDTO.fromGame(game));
         addInvitationsListToMessage(originalInviterMessage, originalInviter);
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(originalInviter.getId()), "/queue/messages", originalInviterMessage);
 
         // Let everyone know these players are leaving to play a game
         OutboundMessage chatMessage = new OutboundMessage(PublicMessageType.STARTING_GAME,
@@ -143,20 +149,6 @@ public class ChatController {
     }
 
   }
-
-  // @MessageMapping("/reply-to-invite")
-  // @SendTo("/topic/public")
-  // public OutboundMessage replyToInvite(SimpMessageHeaderAccessor sha, @Payload
-  // InviteReply reply) {
-  // // either get inviter from database or from the message
-  // User invitee = getSender(sha);
-  // // Create game in database
-  // simpMessagingTemplate.convertAndSendToUser(String.valueOf(inviteeId),
-  // "/queue/messages", reply);
-  // return new OutboundMessage(OutboundMessage.PublicMessageType.STARTING_GAME,
-  // "reply
-  // to invite", invitee);
-  // }
 
   @MessageMapping("/chat.sendMessage")
   @SendTo("/topic/public")
