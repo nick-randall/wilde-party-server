@@ -40,8 +40,8 @@ public class JustGetSnapshotController {
     ///
     Game game = new Game(savedUser, savedUserTwo, savedUserThree);
     Game savedGame = gamesService.saveGame(game);
-    SnapshotUpdater updater = new SnapshotUpdater(savedGame.getGameSnapshot());
-    GameSnapshot updatedSnapshot = updater.drawCards(game.getGameSnapshot().getPlayers().get(0), 1);
+    SnapshotUpdater updater = new SnapshotUpdater(savedGame.getLatestSnapshot());
+    GameSnapshot updatedSnapshot = updater.drawCards(game.getLatestSnapshot().getPlayers().get(0), 1);
     Card card = updatedSnapshot.getNonPlayerPlaces().getDeck().getCards().remove(0);
     updatedSnapshot.getPlayers().get(0).getPlaces().getGuestCardZone().getCards().add(card);
 
@@ -56,7 +56,18 @@ public class JustGetSnapshotController {
   @ResponseBody
   public GameSnapshot getLatestSnapshot(@RequestParam("id") String gameId) {
     System.out.println("getLatestSnapshot for game " + gameId);
-    return gamesService.getGame(Long.parseLong(gameId)).getGameSnapshot();
+    return gamesService.getGame(Long.parseLong(gameId)).getLatestSnapshot();
   }
+
+    @PostConstruct
+    void main() {
+      System.out.println("Creating game with snapshots");
+      User newUser = new User("John",9L);
+      User userTwo = new User("Steve", 99L);
+      User userThree = new User("AI", 999L);
+      Game game = new Game(newUser, userTwo, userThree);
+
+    }
+
 
 }

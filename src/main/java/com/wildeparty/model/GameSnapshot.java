@@ -19,14 +19,11 @@ import jakarta.persistence.Id;
 // @Entity
 public class GameSnapshot implements Serializable {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  private Long id;
+  private int id;
 
   List<Player> players = new ArrayList<Player>();
 
   private Current current;
-  private TurnPhase currPhase = TurnPhase.DEAL_PHASE;
   private SnapshotUpdateData snapshotUpdateData;
   private NonPlayerPlaces nonPlayerPlaces = new NonPlayerPlaces();
 
@@ -47,11 +44,21 @@ public class GameSnapshot implements Serializable {
     current = Current.init();
   }
 
-  public GameSnapshot(List<Player> players, int currPlayer, TurnPhase currPhase,
+  public GameSnapshot(List<Player> players, Current current, NonPlayerPlaces nonPlayerPlaces,
       SnapshotUpdateData snapshotUpdateData) {
+    // What about Non=Player-Places?
+
     this.players = players;
-    this.currPhase = currPhase;
+    this.current = current;
     this.snapshotUpdateData = snapshotUpdateData;
+    this.nonPlayerPlaces = nonPlayerPlaces;
+  }
+
+  public GameSnapshot withUpdatedId() {
+    // What about Non=Player-Places?
+    GameSnapshot updatedGameSnapshot = cloneGameSnapshot(this);
+    updatedGameSnapshot.setId(this.id + 1);
+    return updatedGameSnapshot;
   }
 
   public void updateLegalTargets() {
@@ -70,10 +77,18 @@ public class GameSnapshot implements Serializable {
     }
   }
 
-  public GameSnapshot cloneGameSnapshot(GameSnapshot snapshot) {
+  public static GameSnapshot cloneGameSnapshot(GameSnapshot snapshot) {
     GameSnapshotJsonConverter converter = new GameSnapshotJsonConverter();
     String json = converter.convertToDatabaseColumn(snapshot);
     return converter.convertToEntityAttribute(json);
+  }
+
+  public int getId() {
+    return id;
+  }
+
+  public void setId(int id) {
+    this.id = id;
   }
 
   public Current getCurrent() {
@@ -82,14 +97,6 @@ public class GameSnapshot implements Serializable {
 
   public void setCurrent(Current current) {
     this.current = current;
-  }
-
-  public TurnPhase getCurrPhase() {
-    return this.currPhase;
-  }
-
-  public void setCurrPhase(TurnPhase currPhase) {
-    this.currPhase = currPhase;
   }
 
   public SnapshotUpdateData getSnapshotUpdateData() {
@@ -107,11 +114,6 @@ public class GameSnapshot implements Serializable {
 
   public GameSnapshot current(Current current) {
     setCurrent(current);
-    return this;
-  }
-
-  public GameSnapshot currPhase(TurnPhase currPhase) {
-    setCurrPhase(currPhase);
     return this;
   }
 

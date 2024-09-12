@@ -79,7 +79,12 @@ public class WebSocketEventListener {
   public void handleWebSocketSubscribeListener(SessionSubscribeEvent event) {
     logger.info("Received a new web socket subscription");
     // Get the user and destination of subscription
+    
     StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
+    if(accessor == null) {
+      System.out.println("accessor is null!!! No user to subscribe!");
+      return;
+    }
     Long userId = Long.parseLong(accessor.getUser().getName());
     User user = userService.getUserById(userId);
     String destination = (String) accessor.getHeader(SimpMessageHeaderAccessor.DESTINATION_HEADER);
@@ -94,6 +99,8 @@ public class WebSocketEventListener {
       chatMessage.setContent(users);
       System.out.println("Sending join message to /chat.joinRoom");
       messagingTemplate.convertAndSend("/topic/public", chatMessage);
+      //TODO send invitations plus gameData to user who just joined
+
       return;
     }
 

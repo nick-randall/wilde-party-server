@@ -8,6 +8,7 @@ public enum SnapshotUpdateType {
   ADD_DRAGGED("addDragged"),
   DEALING_INITIAL_CARDS("dealingInitialCards"),
   DEALING_CARDS("dealingCards"),
+  DEALING_STARTING_GUEST("dealingStartingGuest"),
   // REARRANGING_HAND("rearrangingHand"),
   REARRANGING_TABLE_PLACE("rearrangingTablePlace"),
   DRAWING_WILDE_PARTY("drawingWildeParty"),

@@ -8,19 +8,20 @@ public class NonPlayerPlaces implements Serializable {
 
   @JsonIgnore
   private Place[] allPlaces;
-  private Place deck = new Place(PlaceType.DECK, 501);
-  private Place discardPile = new Place(PlaceType.DISCARD_PILE, 502);
+  private Place deck;
+  private Place discardPile;
 
   public Place getDeck() {
-    return allPlaces[0];
+    return deck;
   }
 
   public Place getDiscardPile() {
-    return allPlaces[1];
+    return discardPile;
   }
 
+  @JsonIgnore
   public Place[] getAllPlaces() {
-    return allPlaces;
+    return new Place[] { deck, discardPile };
   }
 
   public void setAllPlaces(Place[] allPlaces) {
@@ -32,6 +33,8 @@ public class NonPlayerPlaces implements Serializable {
   }
 
   private void initPlaces() {
+    deck = new Place(PlaceType.DECK, 501);
+    discardPile = new Place(PlaceType.DISCARD_PILE, 502);
     allPlaces = new Place[] { deck, discardPile };
   }
 

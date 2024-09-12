@@ -1,6 +1,7 @@
 package com.wildeparty.model;
 
 import com.wildeparty.utils.GameSnapshotJsonConverter;
+import com.wildeparty.utils.SnapshotSetupUtil;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -25,7 +26,7 @@ public class Game {
 
   @Convert(converter = GameSnapshotJsonConverter.class)
   @Column(columnDefinition = "TEXT")
-  private GameSnapshot gameSnapshot;
+  private List<GameSnapshot> gameSnapshots = new ArrayList<>();
 
   @ManyToMany(fetch = FetchType.EAGER)
   private List<User> users = new ArrayList<>();
@@ -40,7 +41,10 @@ public class Game {
     this.users.add(userOne);
     this.users.add(userTwo);
     this.users.add(userThree);
-    this.gameSnapshot = new GameSnapshot(userOne, userTwo, userThree);
+    GameSnapshot initialSnapshot = new GameSnapshot(userOne, userTwo, userThree);
+    List<GameSnapshot> initialSnapshots = SnapshotSetupUtil.setupInitialGameSnapshots(initialSnapshot);
+    this.gameSnapshots.addAll(initialSnapshots);
+
   }
 
   public User getWinner() {
@@ -71,12 +75,16 @@ public class Game {
     return id;
   }
 
-  public GameSnapshot getGameSnapshot() {
-    return gameSnapshot;
+  public List<GameSnapshot> getGameSnapshots() {
+    return gameSnapshots;
   }
 
-  public void setGameSnapshot(GameSnapshot gameSnapshot) {
-    this.gameSnapshot = gameSnapshot;
+  public GameSnapshot getLatestSnapshot() {
+    return gameSnapshots.get(gameSnapshots.size() - 1);
+  }
+
+  public void setGameSnapshot(List<GameSnapshot> gameSnapshots) {
+    this.gameSnapshots = gameSnapshots;
   }
 
 }

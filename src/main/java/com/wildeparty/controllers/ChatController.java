@@ -164,27 +164,6 @@ public class ChatController {
     return outboundMessage;
   }
 
-  @MessageMapping("/chat.joinRoom")
-  @SendTo("/topic/public")
-  public void joinRoom(SimpMessageHeaderAccessor headerAccessor) {
-    System.out.println("joinRoom called");
-    // Send the list of users in the chat room
-    Set<User> users = getRoomUsers();
-    simpMessagingTemplate.convertAndSend("/topic/users-in-chat-room", users);
-    // Send a message to the chat room that a user has joined
-    OutboundMessage chatMessage = new OutboundMessage();
-    User sender = getSender(headerAccessor);
-    if (sender != null) {
-      // headerAccessor.getSessionAttributes().put("username", sender.getName());
-      chatMessage.setSender(sender);
-      chatMessage.setContent(sender.getName() + " has joined the chat room!");
-      chatMessage.setType(OutboundMessage.PublicMessageType.JOIN);
-      System.out.println("type set to " + chatMessage.getType());
-    }
-
-    simpMessagingTemplate.convertAndSend("/topic/public", chatMessage);
-  }
-
   @MessageMapping("/game/{room}")
   @SendTo("/topic/{room}")
   public OutboundMessage sendMessageToRoom(@DestinationVariable String room, @Payload OutboundMessage chatMessage) {

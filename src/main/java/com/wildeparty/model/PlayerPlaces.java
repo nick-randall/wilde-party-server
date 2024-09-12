@@ -2,13 +2,10 @@ package com.wildeparty.model;
 
 import java.io.Serializable;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class PlayerPlaces implements Serializable {
 
-  @JsonIgnore
-  private Place[] allPlaces = new Place[5];
   private Place guestCardZone;
   private Place enchantmentsRow;
   private Place hand;
@@ -30,35 +27,31 @@ public class PlayerPlaces implements Serializable {
     hand = new Place(PlaceType.HAND,  playerSuffix + 3);
     unwantedsZone = new Place(PlaceType.UNWANTEDS_ZONE, playerSuffix + 4);
     specialsZone = new Place(PlaceType.SPECIALS_ZONE, playerSuffix + 5);
-    this.allPlaces = new Place[] { guestCardZone, enchantmentsRow, unwantedsZone, hand, specialsZone };
   }
 
+  @JsonIgnore
   public Place[] getAllPlaces() {
-    return allPlaces;
-  }
-
-  public void setAllPlaces(Place[] allPlaces) {
-    this.allPlaces = allPlaces;
+    return new Place[] { guestCardZone, enchantmentsRow, unwantedsZone, hand, specialsZone };
   }
 
   public Place getGuestCardZone() {
-    return allPlaces[0];
+    return guestCardZone;
   }
 
   public Place getEnchantmentsRow() {
-    return allPlaces[1];
+    return enchantmentsRow;
   }
 
   public Place getUnwantedsZone() {
-    return allPlaces[2];
+    return unwantedsZone;
   }
 
   public Place getHand() {
-    return allPlaces[3];
+    return hand;
   }
 
   public Place getSpecialsZone() {
-    return allPlaces[4];
+    return specialsZone;
   }
 
 }

@@ -25,10 +25,10 @@ import jakarta.annotation.PostConstruct;
 @Component
 public class DeckCreator {
 
-  @Autowired
-  UserService userService;
-  @Autowired
-  GamesService gamesService;
+  // @Autowired
+  // UserService userService;
+  // @Autowired
+  // GamesService gamesService;
 
   private int currCardId = 0;
 
@@ -117,7 +117,8 @@ public class DeckCreator {
     deck.addAll(createUnwanteds());
     deck.addAll(createDestroyCards());
     deck.addAll(createEnchantPlayer());
-    deck.addAll(createStartGast(numPlayers));
+    Collections.shuffle(deck);
+    deck.addAll(0, createStartGast(numPlayers));
     return deck;
   }
 
@@ -141,34 +142,34 @@ public class DeckCreator {
 
   }
 
-  @PostConstruct
-  void main() {
-    System.out.println("Creating deck");
-    List<Card> deck = createDeck(3);
-    Collections.shuffle(deck);
-    for (Card card : deck) {
-      // System.out.println(card.getImageName() + "(" + card.getId() + ")" + " = " + card.getCardType());
-    }
-    User newUser = new User();
-    newUser.setName("John");
-    User savedUser = userService.saveUser(newUser);
-    User user = userService.getUserById(savedUser.getId());
-    User userTwo = new User();
-    userTwo.setName("Steve");
-    User savedUserTwo = userService.saveUser(userTwo);
-    User userThree = new User();
-    userTwo.setName("AI");
-    User savedUserThree = userService.saveUser(userThree);
-    ///
-    Game game = new Game(savedUser, savedUserTwo, savedUserThree);
-    Game savedGame = gamesService.saveGame(game);
-    Iterable<Game> userGames = gamesService.getUserActiveGames(userTwo.getId());
-    for (Game userGame : userGames) {
-      System.out.println("User game id: " + userGame.getId());
-      for(User userInGame : userGame.getUsers()) {
-        System.out.println("User in game: " + userInGame.getName());
-      }
-    }
+  // @PostConstruct
+  // void main() {
+  //   System.out.println("Creating deck");
+  //   List<Card> deck = createDeck(3);
+  //   Collections.shuffle(deck);
+  //   for (Card card : deck) {
+  //     // System.out.println(card.getImageName() + "(" + card.getId() + ")" + " = " + card.getCardType());
+  //   }
+  //   User newUser = new User();
+  //   newUser.setName("John");
+  //   User savedUser = userService.saveUser(newUser);
+  //   User user = userService.getUserById(savedUser.getId());
+  //   User userTwo = new User();
+  //   userTwo.setName("Steve");
+  //   User savedUserTwo = userService.saveUser(userTwo);
+  //   User userThree = new User();
+  //   userTwo.setName("AI");
+  //   User savedUserThree = userService.saveUser(userThree);
+  //   ///
+  //   Game game = new Game(savedUser, savedUserTwo, savedUserThree);
+  //   Game savedGame = gamesService.saveGame(game);
+  //   Iterable<Game> userGames = gamesService.getUserActiveGames(userTwo.getId());
+  //   for (Game userGame : userGames) {
+  //     System.out.println("User game id: " + userGame.getId());
+  //     for(User userInGame : userGame.getUsers()) {
+  //       System.out.println("User in game: " + userInGame.getName());
+  //     }
+  //   }
     // Create game snapshot
     // GameSnapshot snapshot = new GameSnapshot();
     // List<Player> players = new ArrayList<>();
@@ -186,6 +187,6 @@ public class DeckCreator {
     // snapshot.setPlayers(players);
     // GameSnapshotJsonConverter converter = new GameSnapshotJsonConverter();
     // System.out.println(converter.convertToDatabaseColumn(snapshot));
-  }
+  // }
 
 }

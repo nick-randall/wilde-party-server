@@ -103,23 +103,24 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         if (StompCommand.CONNECT.equals(accessor.getCommand())) {
           Map<String, Object> sessionAttributes = accessor.getSessionAttributes();
-          try {
-            String token = (String) sessionAttributes.get("token");
-            if (token != null) {
-              User existingUser = userService.getUserBySessionToken(token);
-              if (existingUser != null) {
-                // User user = userService.getUserById(existingSession.getUserId());
-                // Because we are not using Spring Security, we need to
-                // set the user in the accessor in a hacky way, that allows
-                // us to access the userId in the controller.
-                IdContainer idContainer = new IdContainer(existingUser.getId());
-                System.out.println("adding principal '" + idContainer.getName() + "' to accessor");
-                accessor.setUser(idContainer);
-              }
+          String token = (String) sessionAttributes.get("token");
+          if (token != null) {
+            User existingUser = userService.getUserBySessionToken(token);
+            if (existingUser != null) {
+              // User user = userService.getUserById(existingSession.getUserId());
+              // Because we are not using Spring Security, we need to
+              // set the user in the accessor in a hacky way, that allows
+              // us to access the userId in the controller.
+              IdContainer idContainer = new IdContainer(existingUser.getId());
+              System.out.println("adding principal '" + idContainer.getName() + "' to accessor");
+              accessor.setUser(idContainer);
+            } else {
+              System.out.println("existingUser is null");
+              // return new SubscriptionRejectionMessage(accessor.getSubscriptionId());
+              return null;
+
             }
 
-          } catch (Exception e) {
-            System.err.println(e);
           }
 
         }
