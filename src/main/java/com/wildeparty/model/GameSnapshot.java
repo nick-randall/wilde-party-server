@@ -56,7 +56,7 @@ public class GameSnapshot implements Serializable {
 
   public GameSnapshot withUpdatedId() {
     // What about Non=Player-Places?
-    GameSnapshot updatedGameSnapshot = cloneGameSnapshot(this);
+     GameSnapshot updatedGameSnapshot = this; //cloneGameSnapshot(this);
     updatedGameSnapshot.setId(this.id + 1);
     return updatedGameSnapshot;
   }

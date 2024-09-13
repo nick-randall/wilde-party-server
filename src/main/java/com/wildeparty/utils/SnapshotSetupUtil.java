@@ -47,6 +47,15 @@ public class SnapshotSetupUtil {
         }
       });
     // }
+    for(GameSnapshot createdSnapshot : snapshots) {
+      System.out.println("Snapshot: " + createdSnapshot.getId());
+      SnapshotUpdateData updateData2 = createdSnapshot.getSnapshotUpdateData();
+      System.out.println("Snapshot update data: " + updateData2.getType());
+      System.out.println("Snapshot update data: " + updateData2.getPlayedCardIds());
+      System.out.println("Snapshot update data: " + updateData2.getSecondaryCardId());
+
+
+    }
 
     return snapshots;
   }

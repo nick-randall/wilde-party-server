@@ -117,7 +117,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
             } else {
               System.out.println("existingUser is null");
               // return new SubscriptionRejectionMessage(accessor.getSubscriptionId());
-              return null;
+              throw new IllegalArgumentException("User not found");
 
             }
 
