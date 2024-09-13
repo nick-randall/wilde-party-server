@@ -5,15 +5,15 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 
 public class InboundInvitationMessage {
-  private InvitationMessageType type; 
+  private OutboundChatRoomMessageType type; 
   private Long inviteeId;
   private Long invitationId;
 
-  public InvitationMessageType getType() {
+  public OutboundChatRoomMessageType getType() {
     return type;
   }
 
-  public void setType(InvitationMessageType type) {
+  public void setType(OutboundChatRoomMessageType type) {
     this.type = type;
   }
 

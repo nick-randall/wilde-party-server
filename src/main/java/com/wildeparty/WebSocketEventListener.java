@@ -18,13 +18,20 @@ import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import java.util.regex.Pattern;
 import java.util.Set;
 import java.util.HashSet;
+import java.util.List;
 import java.util.regex.Matcher;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wildeparty.backend.GamesService;
+import com.wildeparty.backend.InvitationService;
 import com.wildeparty.backend.UserService;
+import com.wildeparty.model.Game;
+import com.wildeparty.model.Invitation;
 import com.wildeparty.model.OutboundMessage;
 import com.wildeparty.model.User;
+import com.wildeparty.model.DTO.GameDTO;
+import com.wildeparty.model.DTO.OutboundChatRoomMessage;
+import com.wildeparty.model.DTO.OutboundChatRoomMessageType;
 import com.wildeparty.model.DTO.PrivateMessageDTO;
 import com.wildeparty.model.DTO.PrivateMessageType;
 
@@ -43,6 +50,9 @@ public class WebSocketEventListener {
   private GamesService gamesService;
   @Autowired
   private SimpUserRegistry simpUserRegistry;
+  @Autowired
+  private InvitationService invitationService;
+
 
   private String getRoomUsers() {
     Set<SimpUser> roomUsers = simpUserRegistry.getUsers();
@@ -100,7 +110,16 @@ public class WebSocketEventListener {
       System.out.println("Sending join message to /chat.joinRoom");
       messagingTemplate.convertAndSend("/topic/public", chatMessage);
       //TODO send invitations plus gameData to user who just joined
-
+      OutboundChatRoomMessage dataMessage = new OutboundChatRoomMessage(OutboundChatRoomMessageType.UPDATE);
+      List<Game> games = gamesService.getUserActiveGames(userId);
+      if(games.size()  > 0) {
+        dataMessage.setGame(GameDTO.fromGame(games.get(0)));
+      }
+      List<Invitation> sentInvitations = invitationService.getSentInvitationsByUserId(userId);
+      List<Invitation> receivedInvitations = invitationService.getReceivedInvitationsByUserId(userId);
+      dataMessage.setSentInvitations(sentInvitations);
+      dataMessage.setReceivedInvitations(receivedInvitations);
+      messagingTemplate.convertAndSendToUser(user.getId().toString(), "/queue/messages", dataMessage);
       return;
     }
 
@@ -114,9 +133,10 @@ public class WebSocketEventListener {
       boolean userIsInGame = gamesService.isUserInGame(user.getId(), Long.getLong(gameId));
       if (!userIsInGame) {
         System.out.println("User " + user.getName() + " is not in game " + gameId + " and cannot subscribe");
+        User userAsUser = (User) accessor.getUser();
         PrivateMessageDTO message = new PrivateMessageDTO(PrivateMessageType.ERROR_SUBSCRIBING, null,
             accessor.getSubscriptionId(), "You are not in this game");
-        simpMessagingTemplate.convertAndSendToUser(event.getUser().getName(), "/queue/messages", message);
+        simpMessagingTemplate.convertAndSendToUser(userAsUser.getId().toString(), "/queue/messages", message);
       }
 
     }

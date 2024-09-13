@@ -2,10 +2,11 @@ package com.wildeparty.model.DTO;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 
-public enum InvitationMessageType {
+public enum OutboundChatRoomMessageType {
   INVITE("invite"),
   ACCEPT("accept"),
-  DECLINE("decline");
+  DECLINE("decline"),
+  UPDATE("update");
 
   private String name;
 
@@ -14,7 +15,7 @@ public enum InvitationMessageType {
     return this.name;
   }
 
-  InvitationMessageType(String name) {
+  OutboundChatRoomMessageType(String name) {
     this.name = name;
   }
 

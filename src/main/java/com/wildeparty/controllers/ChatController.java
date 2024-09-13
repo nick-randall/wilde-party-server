@@ -24,8 +24,8 @@ import com.wildeparty.model.OutboundMessage;
 import com.wildeparty.model.User;
 import com.wildeparty.model.DTO.GameDTO;
 import com.wildeparty.model.DTO.InboundInvitationMessage;
-import com.wildeparty.model.DTO.InvitationMessageType;
-import com.wildeparty.model.DTO.OutboundInvitationMessage;
+import com.wildeparty.model.DTO.OutboundChatRoomMessageType;
+import com.wildeparty.model.DTO.OutboundChatRoomMessage;
 import com.wildeparty.model.OutboundMessage.PublicMessageType;
 import com.wildeparty.model.Game;
 import com.wildeparty.model.InboundMessage;
@@ -79,7 +79,7 @@ public class ChatController {
     return null;
   }
 
-  OutboundInvitationMessage addInvitationsListToMessage(OutboundInvitationMessage message, User user){
+  OutboundChatRoomMessage addInvitationsListToMessage(OutboundChatRoomMessage message, User user){
     List<Invitation> sentInvitations = invitationService.getSentInvitationsByUserId(user.getId());
     List<Invitation> receivedInvitations = invitationService.getReceivedInvitationsByUserId(user.getId());
     message.setSentInvitations(sentInvitations);
@@ -91,18 +91,18 @@ public class ChatController {
   public void sendInvite(SimpMessageHeaderAccessor sha, @Payload InboundInvitationMessage message) {
     System.out.println("sendInvite called");
    
-    if (message.getType() == InvitationMessageType.INVITE) {
+    if (message.getType() == OutboundChatRoomMessageType.INVITE) {
       User inviter = getSender(sha);
       User invitee = userService.getUserById(message.getInviteeId());
       // Create a new invitation and save it to the database
       Invitation newInvitation = new Invitation(inviter, invitee);
       invitationService.saveInvitation(newInvitation);
       // Send the invitation to the invitee
-      OutboundInvitationMessage inviterMessage = new OutboundInvitationMessage(message.getType());
+      OutboundChatRoomMessage inviterMessage = new OutboundChatRoomMessage(message.getType());
       inviterMessage.setMessage("You invited " + invitee.getName() + " to play a game!");
       addInvitationsListToMessage(inviterMessage, inviter);
       
-      OutboundInvitationMessage inviteeMessage = new OutboundInvitationMessage(message.getType());
+      OutboundChatRoomMessage inviteeMessage = new OutboundChatRoomMessage(message.getType());
       inviteeMessage.setMessage(inviter.getName() + " invited you to play a game!");
       addInvitationsListToMessage(inviteeMessage, invitee);
       simpMessagingTemplate.convertAndSendToUser(String.valueOf(inviter.getId()), "/queue/messages", inviterMessage);
@@ -113,31 +113,31 @@ public class ChatController {
       User originalInviter = invitationService.getInvitationById(message.getInvitationId()).getInviter();
       invitationService.deleteInvitation(message.getInvitationId());
       ///
-      if (message.getType() == InvitationMessageType.DECLINE) {
-        OutboundInvitationMessage responderMessage = new OutboundInvitationMessage(message.getType());
+      if (message.getType() == OutboundChatRoomMessageType.DECLINE) {
+        OutboundChatRoomMessage responderMessage = new OutboundChatRoomMessage(message.getType());
         responderMessage.setMessage("You declined " + originalInviter.getName() + "'s invitation to play a game!");
         addInvitationsListToMessage(responderMessage, originalInviter);
         simpMessagingTemplate.convertAndSendToUser(String.valueOf(responder.getId()), "/queue/messages", responderMessage);
         
         //
-        OutboundInvitationMessage originalInviterMessage = new OutboundInvitationMessage(message.getType());
+        OutboundChatRoomMessage originalInviterMessage = new OutboundChatRoomMessage(message.getType());
         originalInviterMessage.setMessage(responder.getName() + " declined your invitation to play a game!");
         addInvitationsListToMessage(originalInviterMessage, originalInviter);
         simpMessagingTemplate.convertAndSendToUser(String.valueOf(originalInviter.getId()), "/queue/messages", originalInviterMessage);
 
-      } else if (message.getType() == InvitationMessageType.ACCEPT) {
+      } else if (message.getType() == OutboundChatRoomMessageType.ACCEPT) {
         User aiUser = User.createAIUser();
         userService.saveUser(aiUser);
         Game game = new Game(originalInviter, responder, aiUser);
         gamesService.saveGame(game);
 
-        OutboundInvitationMessage responderMessage = new OutboundInvitationMessage(message.getType());
+        OutboundChatRoomMessage responderMessage = new OutboundChatRoomMessage(message.getType());
         responderMessage.setMessage("You accepted " + originalInviter.getName() + "'s invitation to play a game!");
         responderMessage.setGame(GameDTO.fromGame(game));
         addInvitationsListToMessage(responderMessage, responder);
         simpMessagingTemplate.convertAndSendToUser(String.valueOf(responder.getId()), "/queue/messages", responderMessage);
 
-        OutboundInvitationMessage originalInviterMessage = new OutboundInvitationMessage(message.getType());
+        OutboundChatRoomMessage originalInviterMessage = new OutboundChatRoomMessage(message.getType());
         originalInviterMessage.setMessage(responder.getName() + " accepted your invitation to play a game!");
         originalInviterMessage.setGame(GameDTO.fromGame(game));
         addInvitationsListToMessage(originalInviterMessage, originalInviter);

@@ -5,20 +5,20 @@ import com.wildeparty.model.Invitation;
 
 import java.util.List;
 
-public class OutboundInvitationMessage {
+public class OutboundChatRoomMessage {
 
-  private InvitationMessageType type;
+  private OutboundChatRoomMessageType type;
   private String message;
   @JsonInclude(JsonInclude.Include.NON_NULL)
   private GameDTO gameData;
   private List<Invitation> sentInvitations;
   private List<Invitation> receivedInvitations;
 
-  public OutboundInvitationMessage(InvitationMessageType type) {
+  public OutboundChatRoomMessage(OutboundChatRoomMessageType type) {
     this.type = type;
   }
 
-  public InvitationMessageType getType() {
+  public OutboundChatRoomMessageType getType() {
     return type;
   }
 
@@ -35,7 +35,7 @@ public class OutboundInvitationMessage {
     this.receivedInvitations = receivedInvitations;
   }
 
-  public void setType(InvitationMessageType type) {
+  public void setType(OutboundChatRoomMessageType type) {
     this.type = type;
   }
 
