@@ -1,6 +1,7 @@
 package com.wildeparty.model;
+import java.io.Serializable;
 
-public class SnapshotUpdateData {
+public class SnapshotUpdateData implements Serializable {
 
   private SnapshotUpdateType type;
   private int[] playedCardIds; // only plural for dealt cards

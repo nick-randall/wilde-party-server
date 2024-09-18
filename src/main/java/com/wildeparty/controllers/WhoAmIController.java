@@ -83,7 +83,7 @@ public class WhoAmIController {
     if(user == null) {
       return ResponseEntity.notFound().build();
     }
-    List<Game> games = gamesService.getUserActiveGames(user.getId());
+    List<Game> games = gamesService.getUserActiveGames(user);
     if(games.size() == 0) {
       return ResponseEntity.ok().body(new UserGameDTO(user, null));
     }
@@ -100,9 +100,23 @@ public class WhoAmIController {
   @PostMapping("/addUser")
   public ResponseEntity<User> addUser(HttpServletResponse response, HttpServletRequest request,
       @RequestBody AddUserRequest addUserRequest) {
+    Cookie existingCookie = extractCookie(request);
+    if(existingCookie != null) {
+      User user = userService.getUserBySessionToken(existingCookie.getValue());
+      if(user != null) {
+        System.out.println("User already exists: " + user.getName());
+        return ResponseEntity.ok().body(user);
+      }
+    }
+
     User newUser = userService.createUser(addUserRequest.getUsername());
+    System.out.println("New user created: " + newUser.getName());
     Cookie newCookie = createCookie();
-    sessionService.createSession(newUser.getId(), newCookie.getValue());
+    Session session = sessionService.createSession(newUser.getId(), newCookie.getValue());
+    newUser.setSession(session);
+    userService.saveUser(newUser);
+    System.out.println(session.getToken());
+    System.out.println(session.getId());
     response.addCookie(newCookie);
     return ResponseEntity.ok().body(newUser);
   }

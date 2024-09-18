@@ -1,29 +1,35 @@
 package com.wildeparty.model;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
 public class User {
+  public static User createAIUser() {
+    Random rnd = new Random();
+    User user = new User();
+    String name = "AI" + rnd.nextInt(1000);
+    user.setName(name);
+    user.setHuman(false);
+    return user;
+  }
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
-  Long id;
-  String name;
+  private Long id;
+  private String name;
+
   @OneToOne
-  Session session;
-  @ManyToMany(mappedBy = "users")
-  private List<Game> games = new ArrayList<Game>();
+  private Session session;
+
+  // @ManyToMany(targetEntity = Game.class)
+  // private List<Game> games = new ArrayList<Game>();
   private boolean isHuman = true;
 
   public User() {
@@ -34,14 +40,26 @@ public class User {
     this.id = id;
   }
 
-  public static User createAIUser() {
-    Random rnd = new Random();
-    User user = new User();
-    String name = "AI" + rnd.nextInt(1000);
-    user.setName(name);
-    user.setHuman(false);
-    return user;
+  public Session getSession() {
+    return session;
   }
+
+
+  public void setSession(Session session) {
+    this.session = session;
+  }
+
+  // public List<Game> getGames() {
+  //   return games;
+  // }
+
+  // public void setGames(List<Game> games) {
+  //   this.games = games;
+  // }
+
+  // public void addGame(Game game) {
+  //   games.add(game);
+  // }
 
   public String getName() {
     return name;

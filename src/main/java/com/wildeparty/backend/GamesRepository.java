@@ -1,13 +1,18 @@
 package com.wildeparty.backend;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.wildeparty.model.Game;
+import com.wildeparty.model.User;
+
+import java.util.List;
 
 public interface GamesRepository extends JpaRepository<Game, Long> {
-  @Query("SELECT g FROM Game g JOIN g.users u WHERE u.id = :userId")
-  public Iterable<Game> getUserGames(@Param("userId") Long userId);
+  // @Query("SELECT g FROM Game g JOIN games_users gu ON gu.game_id = g.id WHERE gu.users_id = :userId")
+  public List<Game> findByUsers(User user);
+  
 
 }

@@ -111,7 +111,7 @@ public class WebSocketEventListener {
       messagingTemplate.convertAndSend("/topic/public", chatMessage);
       //TODO send invitations plus gameData to user who just joined
       OutboundChatRoomMessage dataMessage = new OutboundChatRoomMessage(OutboundChatRoomMessageType.UPDATE);
-      List<Game> games = gamesService.getUserActiveGames(userId);
+      List<Game> games = gamesService.getUserActiveGames(user);
       if(games.size()  > 0) {
         dataMessage.setGame(GameDTO.fromGame(games.get(0)));
       }
@@ -130,7 +130,7 @@ public class WebSocketEventListener {
     if (matcher.matches()) {
       String gameId = matcher.group(1);
       System.out.println("User " + user.getName() + " wants to subscribe to game " + gameId);
-      boolean userIsInGame = gamesService.isUserInGame(user.getId(), Long.getLong(gameId));
+      boolean userIsInGame = gamesService.isUserInGame(user, Long.getLong(gameId));
       if (!userIsInGame) {
         System.out.println("User " + user.getName() + " is not in game " + gameId + " and cannot subscribe");
         User userAsUser = (User) accessor.getUser();

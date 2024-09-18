@@ -3,6 +3,7 @@ package com.wildeparty.backend;
 import java.util.List;
 
 import com.wildeparty.model.Game;
+import com.wildeparty.model.User;
 
 public interface GamesService {
 
@@ -10,9 +11,9 @@ public interface GamesService {
 
   public Game getGame(Long id);
 
-  public List<Game> getUserActiveGames(Long userId);
+  public List<Game> getUserActiveGames(User user);
 
-  public boolean isUserInGame(Long userId, Long gameId);
+  public boolean isUserInGame(User user, Long gameId);
 
   public void deleteGame(Long id);
 

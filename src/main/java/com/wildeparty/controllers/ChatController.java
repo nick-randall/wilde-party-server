@@ -129,6 +129,9 @@ public class ChatController {
         User aiUser = User.createAIUser();
         userService.saveUser(aiUser);
         Game game = new Game(originalInviter, responder, aiUser);
+        // originalInviter.addGame(game);
+        // responder.addGame(game);
+        // aiUser.addGame(game);
         gamesService.saveGame(game);
 
         OutboundChatRoomMessage responderMessage = new OutboundChatRoomMessage(message.getType());
