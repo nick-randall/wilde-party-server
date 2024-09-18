@@ -16,6 +16,7 @@ public class SnapshotSetupUtil {
     List<GameSnapshot> snapshots = new ArrayList<GameSnapshot>();
     List<Card> deck = new DeckCreator().createDeck(snapshot.getPlayers().size());
     snapshot.getNonPlayerPlaces().getDeck().setCards(deck);
+    snapshot.setId(0);
     SnapshotUpdateData updateData = new SnapshotUpdateData(SnapshotUpdateType.INITIAL_SNAPSHOT, -1, new int[0]);
     snapshot.setSnapshotUpdateData(updateData);
     snapshots.add(snapshot);

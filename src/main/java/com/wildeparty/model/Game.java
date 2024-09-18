@@ -1,16 +1,15 @@
 package com.wildeparty.model;
 
-import com.wildeparty.utils.GameSnapshotJsonConverter;
 import com.wildeparty.utils.SnapshotSetupUtil;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import java.util.List;
@@ -24,11 +23,14 @@ public class Game {
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   private Long id;
 
-  @Convert(converter = GameSnapshotJsonConverter.class)
-  @Column(columnDefinition = "TEXT")
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  @OneToMany(targetEntity = GameSnapshot.class, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
   private List<GameSnapshot> gameSnapshots = new ArrayList<>();
 
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(targetEntity = User.class, fetch = FetchType.EAGER)
   private List<User> users = new ArrayList<>();
   private GameStatus status = GameStatus.CREATED;
   @OneToOne(targetEntity = User.class)
@@ -47,13 +49,13 @@ public class Game {
 
   }
 
-  public User getWinner() {
-    return winner;
-  }
+  // public User getWinner() {
+  //   return winner;
+  // }
 
-  public void setWinner(User winner) {
-    this.winner = winner;
-  }
+  // public void setWinner(User winner) {
+  //   this.winner = winner;
+  // }
 
   public GameStatus getStatus() {
     return status;
@@ -83,7 +85,7 @@ public class Game {
     return gameSnapshots.get(gameSnapshots.size() - 1);
   }
 
-  public void setGameSnapshot(List<GameSnapshot> gameSnapshots) {
+  public void setGameSnapshots(List<GameSnapshot> gameSnapshots) {
     this.gameSnapshots = gameSnapshots;
   }
 

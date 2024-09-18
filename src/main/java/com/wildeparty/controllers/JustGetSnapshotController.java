@@ -90,27 +90,27 @@ public class JustGetSnapshotController {
       userService.saveUser(savedUserThree);
       ///
 
-      Game game = new Game();
+      Game game = new Game(savedUser, savedUserTwo, savedUserThree);
       // game.setWinner(null);
-      GameSnapshot initialSnapshot = new GameSnapshot();
-      List<GameSnapshot> snapshots = SnapshotSetupUtil.setupInitialGameSnapshots(initialSnapshot);
+      // GameSnapshot initialSnapshot = new GameSnapshot();
+      // List<GameSnapshot> snapshots = SnapshotSetupUtil.setupInitialGameSnapshots(initialSnapshot);
       // game.setGameSnapshots(snapshots);
       
       ////
-      User loadedUserOne = userService.getUserById(savedUser.getId());
-      User loadedUserTwo = userService.getUserById(savedUserTwo.getId());
-      User loadedUserThree = userService.getUserById(savedUserThree.getId());
-      List<User> users = new ArrayList<>();
-      users.add(loadedUserOne);
-      users.add(loadedUserTwo);
-      users.add(loadedUserThree);
-      game.setUsers(users);
+      // User loadedUserOne = userService.getUserById(savedUser.getId());
+      // User loadedUserTwo = userService.getUserById(savedUserTwo.getId());
+      // User loadedUserThree = userService.getUserById(savedUserThree.getId());
+      // List<User> users = new ArrayList<>();
+      // users.add(loadedUserOne);
+      // users.add(loadedUserTwo);
+      // users.add(loadedUserThree);
+      // game.setUsers(users);
 
       ///
       Game savedGame = gamesService.saveGame(game);
       System.out.println("Game saved with id " + savedGame.getId());
       Game o = gamesService.getGame(savedGame.getId());
-      gamesService.getUserActiveGames(loadedUserOne);
+      List<Game> games  = gamesService.getUserActiveGames(savedUser);
       String x = "";
     
 
