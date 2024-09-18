@@ -1,6 +1,5 @@
 package com.wildeparty.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import com.wildeparty.model.Session;
 import com.wildeparty.model.User;
 import com.wildeparty.model.cards.Card;
 import com.wildeparty.model.cards.SnapshotUpdater;
-import com.wildeparty.utils.SnapshotSetupUtil;
 
 import jakarta.annotation.PostConstruct;
 

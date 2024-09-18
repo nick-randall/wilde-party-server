@@ -21,14 +21,14 @@ public class SnapshotUpdater {
     Location location = utils.findCard(card, gameSnapshot);
     location.place.getCards().remove(location.index);
     gameSnapshot.getNonPlayerPlaces().getDiscardPile().getCards().add(card);
-    return gameSnapshot.withUpdatedId();
+    return gameSnapshot.withUpdatedIndex();
   }
 
   public GameSnapshot drawCard(Player player) {
     Place deck = gameSnapshot.getNonPlayerPlaces().getDeck();
     Card card = deck.getCards().remove(0);
     player.getPlaces().getHand().getCards().add(card);
-    return gameSnapshot.withUpdatedId();
+    return gameSnapshot.withUpdatedIndex();
   }
 
   public GameSnapshot drawCards(Player player, int numCards) {
@@ -42,7 +42,7 @@ public class SnapshotUpdater {
     }
     SnapshotUpdateData updateData = new SnapshotUpdateData(SnapshotUpdateType.DEALING_INITIAL_CARDS, -1, drawnCardIds);
     gameSnapshot.setSnapshotUpdateData(updateData);
-    return gameSnapshot.withUpdatedId();
+    return gameSnapshot.withUpdatedIndex();
   }
 
   public static GameSnapshot staticdrawCards(int playerIndex, int numCards, GameSnapshot original) {
@@ -56,7 +56,7 @@ public class SnapshotUpdater {
     }
     SnapshotUpdateData updateData = new SnapshotUpdateData(SnapshotUpdateType.DEALING_INITIAL_CARDS, -1, drawnCardIds);
     gameSnapshot.setSnapshotUpdateData(updateData);
-    GameSnapshot updated =  gameSnapshot.withUpdatedId();
+    GameSnapshot updated =  gameSnapshot.withUpdatedIndex();
     return updated;
 
   }
@@ -69,7 +69,7 @@ public class SnapshotUpdater {
         new int[] { card.getId() });
     gameSnapshot.setSnapshotUpdateData(updateData);
 
-    return gameSnapshot.withUpdatedId();
+    return gameSnapshot.withUpdatedIndex();
   }
 
 }

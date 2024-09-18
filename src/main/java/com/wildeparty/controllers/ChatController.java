@@ -18,7 +18,6 @@ import org.springframework.stereotype.Controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wildeparty.backend.GamesService;
 import com.wildeparty.backend.InvitationService;
-import com.wildeparty.backend.SessionService;
 import com.wildeparty.backend.UserService;
 import com.wildeparty.model.OutboundMessage;
 import com.wildeparty.model.User;

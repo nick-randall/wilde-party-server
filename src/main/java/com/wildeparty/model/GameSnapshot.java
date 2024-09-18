@@ -16,9 +16,12 @@ import com.wildeparty.utils.NonPlayerPlacesJsonConverter;
 import com.wildeparty.utils.PlayersListJsonConverter;
 import com.wildeparty.utils.SnapshotUpdateDataJsonConverter;
 
+import jakarta.annotation.Generated;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -27,8 +30,16 @@ import jakarta.persistence.Table;
 @Table(name = "game_snapshots")
 public class GameSnapshot {
 
+  public static GameSnapshot cloneGameSnapshot(GameSnapshot snapshot) {
+    GameSnapshotJsonConverter converter = new GameSnapshotJsonConverter();
+    String json = converter.convertToDatabaseColumn(snapshot);
+    return converter.convertToEntityAttribute(json);
+  }
+  @GeneratedValue(strategy = GenerationType.SEQUENCE)
   @Id
-  private int id;
+  private Long id;
+
+  private int index;
 
   @ManyToOne(targetEntity = Game.class)
   Game game;
@@ -57,7 +68,7 @@ public class GameSnapshot {
   }
 
   public GameSnapshot(User userOne, User userTwo, User userThree) {
-    this.id = 0;
+    this.index = 0;
     Player playerOne = new Player(userOne, 1);
     Player playerTwo = new Player(userTwo, 2);
     Player playerThree = new Player(userThree, 3);
@@ -71,18 +82,24 @@ public class GameSnapshot {
 
   public GameSnapshot(List<Player> players, Current current, NonPlayerPlaces nonPlayerPlaces,
       SnapshotUpdateData snapshotUpdateData) {
-    // What about Non=Player-Places?
-
     this.players = players;
     this.current = current;
     this.snapshotUpdateData = snapshotUpdateData;
     this.nonPlayerPlaces = nonPlayerPlaces;
   }
 
-  public GameSnapshot withUpdatedId() {
+  public Long getId() {
+    return id;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public GameSnapshot withUpdatedIndex() {
     // What about Non=Player-Places?
     GameSnapshot updatedGameSnapshot = this; // cloneGameSnapshot(this);
-    updatedGameSnapshot.setId(this.id + 1);
+    updatedGameSnapshot.setIndex(this.index + 1);
     return updatedGameSnapshot;
   }
 
@@ -102,18 +119,12 @@ public class GameSnapshot {
     }
   }
 
-  public static GameSnapshot cloneGameSnapshot(GameSnapshot snapshot) {
-    GameSnapshotJsonConverter converter = new GameSnapshotJsonConverter();
-    String json = converter.convertToDatabaseColumn(snapshot);
-    return converter.convertToEntityAttribute(json);
+  public int getIndex() {
+    return index;
   }
 
-  public int getId() {
-    return id;
-  }
-
-  public void setId(int id) {
-    this.id = id;
+  public void setIndex(int index) {
+    this.index = index;
   }
 
   public Current getCurrent() {
