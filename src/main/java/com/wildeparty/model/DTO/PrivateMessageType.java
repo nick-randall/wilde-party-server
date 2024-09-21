@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum PrivateMessageType {
   INVITE("invite"),
-  ERROR_SUBSCRIBING("error_subscribing");
+  NOT_IN_GAME_ERROR("notInGameError");
 
   String name;
 

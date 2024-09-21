@@ -41,8 +41,8 @@ public class GameSnapshot {
 
   private int index;
 
-  @ManyToOne(targetEntity = Game.class)
-  Game game;
+  // @ManyToOne(targetEntity = Game.class)
+  // Game game;
 
   @Column(columnDefinition = "TEXT")
   @Convert(converter = PlayersListJsonConverter.class)

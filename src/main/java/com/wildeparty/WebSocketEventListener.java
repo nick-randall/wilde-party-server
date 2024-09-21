@@ -17,6 +17,7 @@ import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 import java.util.regex.Pattern;
 import java.util.Set;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -30,10 +31,14 @@ import com.wildeparty.model.Invitation;
 import com.wildeparty.model.OutboundMessage;
 import com.wildeparty.model.User;
 import com.wildeparty.model.DTO.GameDTO;
+import com.wildeparty.model.DTO.GameSnapshotDTO;
 import com.wildeparty.model.DTO.OutboundChatRoomMessage;
 import com.wildeparty.model.DTO.OutboundChatRoomMessageType;
+import com.wildeparty.model.DTO.OutboundPersonalGameMessage;
 import com.wildeparty.model.DTO.PrivateMessageDTO;
 import com.wildeparty.model.DTO.PrivateMessageType;
+import com.wildeparty.model.DTO.OutgoingGameMessage;
+import com.wildeparty.model.DTO.OutgoingGameMessageType;
 
 @Component
 public class WebSocketEventListener {
@@ -52,7 +57,6 @@ public class WebSocketEventListener {
   private SimpUserRegistry simpUserRegistry;
   @Autowired
   private InvitationService invitationService;
-
 
   private String getRoomUsers() {
     Set<SimpUser> roomUsers = simpUserRegistry.getUsers();
@@ -89,9 +93,9 @@ public class WebSocketEventListener {
   public void handleWebSocketSubscribeListener(SessionSubscribeEvent event) {
     logger.info("Received a new web socket subscription");
     // Get the user and destination of subscription
-    
+
     StompHeaderAccessor accessor = StompHeaderAccessor.wrap(event.getMessage());
-    if(accessor == null) {
+    if (accessor == null) {
       System.out.println("accessor is null!!! No user to subscribe!");
       return;
     }
@@ -109,10 +113,10 @@ public class WebSocketEventListener {
       chatMessage.setContent(users);
       System.out.println("Sending join message to /chat.joinRoom");
       messagingTemplate.convertAndSend("/topic/public", chatMessage);
-      //TODO send invitations plus gameData to user who just joined
+      // TODO send invitations plus gameData to user who just joined
       OutboundChatRoomMessage dataMessage = new OutboundChatRoomMessage(OutboundChatRoomMessageType.UPDATE);
       List<Game> games = gamesService.getUserActiveGames(user);
-      if(games.size()  > 0) {
+      if (games.size() > 0) {
         dataMessage.setGame(GameDTO.fromGame(games.get(0)));
       }
       List<Invitation> sentInvitations = invitationService.getSentInvitationsByUserId(userId);
@@ -128,15 +132,34 @@ public class WebSocketEventListener {
     Matcher matcher = pattern.matcher(destination);
     matcher.find();
     if (matcher.matches()) {
-      String gameId = matcher.group(1);
+      String gameId = matcher.group(2);
       System.out.println("User " + user.getName() + " wants to subscribe to game " + gameId);
-      boolean userIsInGame = gamesService.isUserInGame(user, Long.getLong(gameId));
+      boolean userIsInGame = gamesService.isUserInGame(user, Long.parseLong(gameId));
+      // User userAsUser = (User) accessor.getUser();
+      // String userId = userAsUser.getId().toString();
       if (!userIsInGame) {
         System.out.println("User " + user.getName() + " is not in game " + gameId + " and cannot subscribe");
-        User userAsUser = (User) accessor.getUser();
-        PrivateMessageDTO message = new PrivateMessageDTO(PrivateMessageType.ERROR_SUBSCRIBING, null,
-            accessor.getSubscriptionId(), "You are not in this game");
-        simpMessagingTemplate.convertAndSendToUser(userAsUser.getId().toString(), "/queue/messages", message);
+        OutboundPersonalGameMessage message = new OutboundPersonalGameMessage(
+            OutboundPersonalGameMessage.MessageType.NOT_IN_GAME_ERROR, null);
+        simpMessagingTemplate.convertAndSendToUser(userId.toString(), "/queue/messages", message);
+      } else {
+        System.out.println("User " + user.getName() + " is in game " + gameId + " and can subscribe");
+        // If so send the user the game data
+        Game game = gamesService.getGame(Long.parseLong(gameId));
+        OutboundPersonalGameMessage message = new OutboundPersonalGameMessage(
+            OutboundPersonalGameMessage.MessageType.INITIAL_GAME_SNAPSHOTS, game.getGameSnapshots());
+        
+
+        simpMessagingTemplate.convertAndSendToUser(userId.toString(), "/queue/messages", message);
+        simpMessagingTemplate.convertAndSend("/topic/game/" + gameId, message);
+
+        // If so let everyone know they have joined
+        // OutgoingGameMessage message = new OutgoingGameMessage();
+        // message.setType(OutgoingGameMessageType.JOIN);
+        // message.setMessage(user.getName() + " joined the game");
+        // message.setActivePlayers(null);
+
+        // simpMessagingTemplate.convertAndSend(destination, message);
       }
 
     }

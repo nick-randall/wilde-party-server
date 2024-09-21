@@ -6,11 +6,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.wildeparty.model.Game;
 import com.wildeparty.model.GameStatus;
 import com.wildeparty.model.User;
+import com.wildeparty.model.DTO.UserGameDTO;
 
 @Service
 public class GamesServiceImpl implements GamesService {
@@ -37,25 +39,43 @@ public class GamesServiceImpl implements GamesService {
   public List<Game> getUserActiveGames(User user) {
     List<Game> result = new ArrayList<Game>();
     List<Game> iterable = gamesRepository.findByUsers(user);
-    for(Game game : iterable) {
-    if (game.getStatus() != GameStatus.FINISHED && game.getStatus() !=
-    GameStatus.CANCELLED) {
-    result.add(game);
-    }
+    for (Game game : iterable) {
+      if (game.getStatus() != GameStatus.FINISHED && game.getStatus() != GameStatus.CANCELLED) {
+        result.add(game);
+      }
     }
     return result;
   }
 
+  public Game getUserActiveGame(User user) {
+    List<Game> allUserGames = gamesRepository.findByUsers(user);
+    List<Game> activeGames = allUserGames.stream()
+        .filter(game -> game.getStatus() != GameStatus.FINISHED && game.getStatus() != GameStatus.CANCELLED).toList();
+    if (activeGames.size() == 0) {
+      return null;
+    }
+    if (activeGames.size() > 1) {
+      throw new IllegalStateException("User is in more than one game");
+    }
+    return activeGames.get(0);
+  }
+
   @Override
   public boolean isUserInGame(User user, Long gameId) {
-    List<Game> userGames = gamesRepository.findByUsers(user);
-    Iterator<Game> iterator = userGames.iterator();
-    while (iterator.hasNext()) {
-    Game game = iterator.next();
-    if (game.getStatus() != GameStatus.FINISHED && game.getStatus() !=
-    GameStatus.CANCELLED) {
-    return true;
+    List<Game> allUserGames = gamesRepository.findByUsers(user);
+    List<Game> activeGames = allUserGames.stream()
+        .filter(game -> game.getStatus() != GameStatus.FINISHED && game.getStatus() != GameStatus.CANCELLED).toList();
+    
+    if (activeGames.size() > 1) {
+      throw new IllegalStateException("User is in more than one game");
     }
+    if (activeGames.size() == 0) {
+      return false;
+    }
+    for(Game game : activeGames) {
+      if(game.getId() == gameId) {
+        return true;
+      }
     }
     return false;
   }

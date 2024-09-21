@@ -169,6 +169,7 @@ public class ChatController {
   @MessageMapping("/game/{room}")
   @SendTo("/topic/{room}")
   public OutboundMessage sendMessageToRoom(@DestinationVariable String room, @Payload OutboundMessage chatMessage) {
+    System.err.println("Receieved game message for room " + room);
     // Kick out the user if they are not in the game
     // Also send them a private message saying they were kicked out
 
