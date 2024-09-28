@@ -2,6 +2,7 @@ package com.wildeparty.model.cards;
 
 import com.wildeparty.model.SnapshotUpdateData;
 import com.wildeparty.model.SnapshotUpdateType;
+import com.wildeparty.model.gameElements.GameEntity;
 import com.wildeparty.model.gameElements.GameSnapshot;
 import com.wildeparty.model.gameElements.LegalTargetType;
 import com.wildeparty.model.gameElements.PlaceType;
@@ -9,7 +10,7 @@ import com.wildeparty.model.gameElements.PlaceType;
 public class DestroyAction extends CardAction {
 
   @Override
-  public boolean isLegalTargetOf(GameSnapshot gameSnapshot, Card playedCard, Object target) {
+  public boolean isLegalTargetOf(GameSnapshot gameSnapshot, Card playedCard, GameEntity target) {
     if (!(target instanceof Card)) {
       return false;
     }
@@ -22,9 +23,9 @@ public class DestroyAction extends CardAction {
   }
 
   @Override
-  public CardActionResult getActionResult(GameSnapshot gameSnapshot, Card playedCard, Object target) {
+  public CardActionResult getActionResult(GameSnapshot gameSnapshot, Card playedCard, GameEntity target) {
     if (!isLegalTargetOf(gameSnapshot, playedCard, target)) {
-      return new CardActionResult(false);
+      return new CardActionResult(target.getId(), false);
     }
     Card targetCard = (Card) target;
     SnapshotUpdater updater = new SnapshotUpdater(gameSnapshot);
@@ -35,7 +36,7 @@ public class DestroyAction extends CardAction {
     SnapshotUpdateData updateData = new SnapshotUpdateData(SnapshotUpdateType.DESTROY, targetCard.getId(),
         playedCard.getId());
     gameSnapshot.setSnapshotUpdateData(updateData);
-    CardActionResult result = new CardActionResult(true, LegalTargetType.CARD, updatedSnapshot,
+    CardActionResult result = new CardActionResult(target.getId(), true, LegalTargetType.CARD, updatedSnapshot,
         CardActionType.DESTROY);
 
     return result;

@@ -7,9 +7,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.wildeparty.model.cards.Card;
 import com.wildeparty.model.cards.CardActionResult;
 import com.wildeparty.model.cards.CardType;
-import com.wildeparty.utils.DeckCreator;
 
-public class Place implements Serializable {
+public class Place implements Serializable, GameEntity {
 
   private int id;
 
@@ -41,7 +40,7 @@ public class Place implements Serializable {
     this.cards = cards;
   }
 
-  public long getId() {
+  public int getId() {
     return id;
   }
 

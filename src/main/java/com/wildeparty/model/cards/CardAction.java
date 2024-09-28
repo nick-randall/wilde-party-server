@@ -1,5 +1,6 @@
 package com.wildeparty.model.cards;
 
+import com.wildeparty.model.gameElements.GameEntity;
 import com.wildeparty.model.gameElements.GameSnapshot;
 
 public abstract class CardAction {
@@ -7,9 +8,9 @@ public abstract class CardAction {
   ConditionChecker checker = new ConditionChecker();
   // SnapshotUpdater snapshotUpdater;
 
-  public abstract boolean isLegalTargetOf(GameSnapshot gameSnapshot, Card playedCard, Object target);
+  public abstract boolean isLegalTargetOf(GameSnapshot gameSnapshot, Card playedCard, GameEntity target);
 
-  public abstract CardActionResult getActionResult(GameSnapshot gameSnapshot, Card playedCard, Object target);
+  public abstract CardActionResult getActionResult(GameSnapshot gameSnapshot, Card playedCard, GameEntity target);
 
 }
 

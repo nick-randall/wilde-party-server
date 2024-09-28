@@ -5,7 +5,8 @@ import java.io.Serializable;
 import com.wildeparty.model.gameElements.GameSnapshot;
 import com.wildeparty.model.gameElements.LegalTargetType;
 
-public class CardActionResult implements Serializable{
+public class CardActionResult implements Serializable {
+  int targetId;
   boolean isLegalTarget;
   GameSnapshot resultingGameSnapshot;
   LegalTargetType targetType;
@@ -43,12 +44,15 @@ public class CardActionResult implements Serializable{
     this.actionType = actionType;
   }
 
-  public CardActionResult(boolean isLegalTarget) {
+  public CardActionResult(int targetId, boolean isLegalTarget) {
+    this.targetId = targetId;
     this.isLegalTarget = isLegalTarget;
   }
 
-  public CardActionResult(boolean isLegalTarget, LegalTargetType targetType, GameSnapshot resultingGameSnapshot,
+  public CardActionResult(int targetId, boolean isLegalTarget, LegalTargetType targetType,
+      GameSnapshot resultingGameSnapshot,
       CardActionType actionType) {
+    this.targetId = targetId;
     this.isLegalTarget = isLegalTarget;
     this.resultingGameSnapshot = resultingGameSnapshot;
     this.targetType = targetType;

@@ -6,9 +6,8 @@ import java.util.List;
 import com.wildeparty.model.User;
 import com.wildeparty.model.cards.Card;
 import com.wildeparty.model.cards.CardActionResult;
-import com.wildeparty.utils.DeckCreator;
 
-public class Player implements Serializable {
+public class Player implements Serializable, GameEntity {
   private int id;
 
   private Long userId;

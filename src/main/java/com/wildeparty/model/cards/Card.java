@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.wildeparty.model.gameElements.GameEntity;
 import com.wildeparty.model.gameElements.GameSnapshot;
 import com.wildeparty.model.gameElements.PlaceType;
 import com.wildeparty.model.gameElements.TargetPlayerType;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Card implements Serializable {
+public class Card implements Serializable, GameEntity {
   private int id;
   private String imageName;
   private CardType cardType;
