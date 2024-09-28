@@ -1,6 +1,6 @@
 package com.wildeparty.model.cards;
 
-import com.wildeparty.model.GameSnapshot;
+import com.wildeparty.model.gameElements.GameSnapshot;
 
 public abstract class CardAction {
   GameSnapshotUtils utils = new GameSnapshotUtils();

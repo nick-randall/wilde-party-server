@@ -2,8 +2,8 @@ package com.wildeparty.model.DTO;
 
 import java.util.List;
 
-import com.wildeparty.model.GameSnapshot;
 import com.wildeparty.model.User;
+import com.wildeparty.model.gameElements.GameSnapshot;
 
 public class OutgoingGameMessage {
 

@@ -1,5 +1,6 @@
-package com.wildeparty.model;
+package com.wildeparty.model.gameElements;
 
+import com.wildeparty.model.User;
 import com.wildeparty.utils.SnapshotSetupUtil;
 
 import jakarta.persistence.CascadeType;

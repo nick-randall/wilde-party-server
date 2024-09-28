@@ -3,13 +3,13 @@ package com.wildeparty.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.wildeparty.model.Game;
-import com.wildeparty.model.GameSnapshot;
-import com.wildeparty.model.Player;
 import com.wildeparty.model.SnapshotUpdateData;
 import com.wildeparty.model.SnapshotUpdateType;
 import com.wildeparty.model.cards.Card;
 import com.wildeparty.model.cards.SnapshotUpdater;
+import com.wildeparty.model.gameElements.Game;
+import com.wildeparty.model.gameElements.GameSnapshot;
+import com.wildeparty.model.gameElements.Player;
 
 public class SnapshotSetupUtil {
   public static List<GameSnapshot> setupInitialGameSnapshots(GameSnapshot snapshot) {

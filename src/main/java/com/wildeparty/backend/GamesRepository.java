@@ -1,8 +1,9 @@
 package com.wildeparty.backend;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.wildeparty.model.Game;
+
 import com.wildeparty.model.User;
+import com.wildeparty.model.gameElements.Game;
 
 import java.util.List;
 

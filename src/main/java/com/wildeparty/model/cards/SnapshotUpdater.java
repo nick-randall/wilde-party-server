@@ -3,11 +3,11 @@ package com.wildeparty.model.cards;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.wildeparty.model.GameSnapshot;
-import com.wildeparty.model.Place;
-import com.wildeparty.model.Player;
 import com.wildeparty.model.SnapshotUpdateData;
 import com.wildeparty.model.SnapshotUpdateType;
+import com.wildeparty.model.gameElements.GameSnapshot;
+import com.wildeparty.model.gameElements.Place;
+import com.wildeparty.model.gameElements.Player;
 
 public class SnapshotUpdater {
   GameSnapshot gameSnapshot;

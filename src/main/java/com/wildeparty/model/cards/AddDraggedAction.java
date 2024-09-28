@@ -1,10 +1,11 @@
 package com.wildeparty.model.cards;
 
-import com.wildeparty.model.GameSnapshot;
-import com.wildeparty.model.LegalTargetType;
-import com.wildeparty.model.Place;
-import com.wildeparty.model.Player;
 import java.util.Arrays;
+
+import com.wildeparty.model.gameElements.GameSnapshot;
+import com.wildeparty.model.gameElements.LegalTargetType;
+import com.wildeparty.model.gameElements.Place;
+import com.wildeparty.model.gameElements.Player;
 
 public class AddDraggedAction extends CardAction {
   GameSnapshotUtils utils = new GameSnapshotUtils();

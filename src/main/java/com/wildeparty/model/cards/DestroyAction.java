@@ -1,10 +1,10 @@
 package com.wildeparty.model.cards;
 
-import com.wildeparty.model.GameSnapshot;
-import com.wildeparty.model.LegalTargetType;
-import com.wildeparty.model.PlaceType;
 import com.wildeparty.model.SnapshotUpdateData;
 import com.wildeparty.model.SnapshotUpdateType;
+import com.wildeparty.model.gameElements.GameSnapshot;
+import com.wildeparty.model.gameElements.LegalTargetType;
+import com.wildeparty.model.gameElements.PlaceType;
 
 public class DestroyAction extends CardAction {
 

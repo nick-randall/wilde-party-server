@@ -1,8 +1,9 @@
 package com.wildeparty.model.cards;
 
-import com.wildeparty.model.GameSnapshot;
-import com.wildeparty.model.LegalTargetType;
 import java.io.Serializable;
+
+import com.wildeparty.model.gameElements.GameSnapshot;
+import com.wildeparty.model.gameElements.LegalTargetType;
 
 public class CardActionResult implements Serializable{
   boolean isLegalTarget;

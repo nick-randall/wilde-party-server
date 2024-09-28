@@ -32,9 +32,9 @@ import org.springframework.web.socket.server.HandshakeInterceptor;
 import com.wildeparty.backend.GamesService;
 import com.wildeparty.backend.SessionService;
 import com.wildeparty.backend.UserService;
-import com.wildeparty.model.Game;
 import com.wildeparty.model.Session;
 import com.wildeparty.model.User;
+import com.wildeparty.model.gameElements.Game;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

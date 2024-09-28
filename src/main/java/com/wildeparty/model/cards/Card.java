@@ -4,9 +4,9 @@ import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.wildeparty.model.GameSnapshot;
-import com.wildeparty.model.PlaceType;
-import com.wildeparty.model.TargetPlayerType;
+import com.wildeparty.model.gameElements.GameSnapshot;
+import com.wildeparty.model.gameElements.PlaceType;
+import com.wildeparty.model.gameElements.TargetPlayerType;
 
 import java.io.Serializable;
 import java.util.List;

@@ -9,10 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import com.wildeparty.model.Game;
-import com.wildeparty.model.GameStatus;
 import com.wildeparty.model.User;
 import com.wildeparty.model.DTO.UserGameDTO;
+import com.wildeparty.model.gameElements.Game;
+import com.wildeparty.model.gameElements.GameStatus;
 
 @Service
 public class GamesServiceImpl implements GamesService {

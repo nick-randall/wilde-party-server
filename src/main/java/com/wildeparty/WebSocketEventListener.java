@@ -26,7 +26,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wildeparty.backend.GamesService;
 import com.wildeparty.backend.InvitationService;
 import com.wildeparty.backend.UserService;
-import com.wildeparty.model.Game;
 import com.wildeparty.model.Invitation;
 import com.wildeparty.model.OutboundMessage;
 import com.wildeparty.model.User;
@@ -37,6 +36,7 @@ import com.wildeparty.model.DTO.OutboundChatRoomMessageType;
 import com.wildeparty.model.DTO.OutboundPersonalGameMessage;
 import com.wildeparty.model.DTO.PrivateMessageDTO;
 import com.wildeparty.model.DTO.PrivateMessageType;
+import com.wildeparty.model.gameElements.Game;
 import com.wildeparty.model.DTO.OutgoingGameMessage;
 import com.wildeparty.model.DTO.OutgoingGameMessageType;
 

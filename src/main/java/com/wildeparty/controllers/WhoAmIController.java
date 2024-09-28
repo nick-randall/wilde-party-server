@@ -10,11 +10,12 @@ import com.wildeparty.backend.GamesService;
 import com.wildeparty.backend.SessionService;
 import com.wildeparty.backend.UserService;
 import com.wildeparty.model.AddUserRequest;
-import com.wildeparty.model.Game;
 import com.wildeparty.model.Session;
 import com.wildeparty.model.User;
 import com.wildeparty.model.DTO.GameDTO;
 import com.wildeparty.model.DTO.UserGameDTO;
+import com.wildeparty.model.gameElements.Game;
+
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

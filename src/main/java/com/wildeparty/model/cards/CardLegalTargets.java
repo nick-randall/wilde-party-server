@@ -1,6 +1,6 @@
 package com.wildeparty.model.cards;
 
-import com.wildeparty.model.LegalTargetType;
+import com.wildeparty.model.gameElements.LegalTargetType;
 
 public class CardLegalTargets {
 

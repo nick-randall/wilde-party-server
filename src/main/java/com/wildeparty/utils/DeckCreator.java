@@ -14,11 +14,11 @@ import com.wildeparty.backend.GamesService;
 import com.wildeparty.backend.GamesServiceImpl;
 import com.wildeparty.backend.UserService;
 import com.wildeparty.backend.UserServiceImpl;
-import com.wildeparty.model.Game;
 import com.wildeparty.model.User;
 import com.wildeparty.model.cards.Card;
 import com.wildeparty.model.cards.CardType;
 import com.wildeparty.model.cards.GuestCardType;
+import com.wildeparty.model.gameElements.Game;
 
 import jakarta.annotation.PostConstruct;
 

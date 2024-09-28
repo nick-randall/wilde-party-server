@@ -1,8 +1,8 @@
 package com.wildeparty.model.cards;
 
-import com.wildeparty.model.GameSnapshot;
-import com.wildeparty.model.Place;
-import com.wildeparty.model.Player;
+import com.wildeparty.model.gameElements.GameSnapshot;
+import com.wildeparty.model.gameElements.Place;
+import com.wildeparty.model.gameElements.Player;
 
 public class GameSnapshotUtils {
   public boolean isCardProtected(GameSnapshot gameSnapshot, Card card) {

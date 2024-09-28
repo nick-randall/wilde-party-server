@@ -2,8 +2,8 @@ package com.wildeparty.model.DTO;
 import java.util.List;
 import java.util.ArrayList;
 
-import com.wildeparty.model.Game;
 import com.wildeparty.model.User;
+import com.wildeparty.model.gameElements.Game;
 
 public record GameDTO(Long id, List<PlayerDTO> players) {
   public static GameDTO fromGame(Game game) {

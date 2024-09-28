@@ -3,7 +3,7 @@ package com.wildeparty.model.DTO;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonValue;
-import com.wildeparty.model.GameSnapshot;
+import com.wildeparty.model.gameElements.GameSnapshot;
 
 public record OutboundPersonalGameMessage(
     MessageType type,

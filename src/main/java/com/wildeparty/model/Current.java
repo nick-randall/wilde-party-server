@@ -1,6 +1,8 @@
 package com.wildeparty.model;
 import java.io.Serializable;
 
+import com.wildeparty.model.gameElements.TurnPhase;
+
 
 public class Current implements Serializable{
   private int player;

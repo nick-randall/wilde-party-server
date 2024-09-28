@@ -1,10 +1,14 @@
-package com.wildeparty.model;
+package com.wildeparty.model.gameElements;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.wildeparty.model.Current;
+import com.wildeparty.model.SnapshotUpdateData;
+import com.wildeparty.model.User;
 import com.wildeparty.model.cards.Card;
 import com.wildeparty.model.cards.CardActionResult;
 import com.wildeparty.model.cards.SnapshotUpdater;
@@ -25,6 +29,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 @Entity
 @Table(name = "game_snapshots")
@@ -35,6 +40,7 @@ public class GameSnapshot {
     String json = converter.convertToDatabaseColumn(snapshot);
     return converter.convertToEntityAttribute(json);
   }
+
   @GeneratedValue(strategy = GenerationType.SEQUENCE)
   @Id
   private Long id;
@@ -62,6 +68,10 @@ public class GameSnapshot {
 
   @Column(columnDefinition = "TEXT")
   @Convert(converter = CardActionResultsMapJsonConverter.class)
+
+  // JsonInclude + Transient = no database persistence but still JSON serialization  
+  @JsonInclude(JsonInclude.Include.NON_NULL)
+  @Transient
   Map<Integer, List<CardActionResult>> actionResultsMap = new HashMap<Integer, List<CardActionResult>>();
 
   public GameSnapshot() {

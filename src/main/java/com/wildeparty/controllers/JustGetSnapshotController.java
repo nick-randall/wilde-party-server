@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.wildeparty.backend.GamesService;
 import com.wildeparty.backend.SessionService;
 import com.wildeparty.backend.UserService;
-import com.wildeparty.model.Game;
-import com.wildeparty.model.GameSnapshot;
 import com.wildeparty.model.Session;
 import com.wildeparty.model.User;
 import com.wildeparty.model.cards.Card;
 import com.wildeparty.model.cards.SnapshotUpdater;
+import com.wildeparty.model.gameElements.Game;
+import com.wildeparty.model.gameElements.GameSnapshot;
 
 import jakarta.annotation.PostConstruct;
 

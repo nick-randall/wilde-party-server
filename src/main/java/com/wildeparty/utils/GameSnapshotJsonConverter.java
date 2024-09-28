@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wildeparty.model.GameSnapshot;
+import com.wildeparty.model.gameElements.GameSnapshot;
 
 import jakarta.persistence.AttributeConverter;
 

@@ -26,7 +26,7 @@ import com.wildeparty.model.DTO.InboundInvitationMessage;
 import com.wildeparty.model.DTO.OutboundChatRoomMessageType;
 import com.wildeparty.model.DTO.OutboundChatRoomMessage;
 import com.wildeparty.model.OutboundMessage.PublicMessageType;
-import com.wildeparty.model.Game;
+import com.wildeparty.model.gameElements.Game;
 import com.wildeparty.model.InboundMessage;
 import com.wildeparty.model.Invitation;
 

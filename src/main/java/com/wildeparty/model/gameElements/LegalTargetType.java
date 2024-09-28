@@ -1,4 +1,4 @@
-package com.wildeparty.model;
+package com.wildeparty.model.gameElements;
 
 import com.fasterxml.jackson.annotation.JsonValue;
 

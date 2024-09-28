@@ -2,8 +2,8 @@ package com.wildeparty.backend;
 
 import java.util.List;
 
-import com.wildeparty.model.Game;
 import com.wildeparty.model.User;
+import com.wildeparty.model.gameElements.Game;
 
 public interface GamesService {
 
