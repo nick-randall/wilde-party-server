@@ -6,6 +6,7 @@ import java.util.List;
 import com.wildeparty.model.SnapshotUpdateData;
 import com.wildeparty.model.SnapshotUpdateType;
 import com.wildeparty.model.cards.Card;
+import com.wildeparty.model.cards.CardType;
 import com.wildeparty.model.cards.SnapshotUpdater;
 import com.wildeparty.model.gameElements.Game;
 import com.wildeparty.model.gameElements.GameSnapshot;
@@ -47,13 +48,31 @@ public class SnapshotSetupUtil {
       }
     });
 
+    GameSnapshot lastSnapshot = snapshots.get(snapshots.size() - 1);
+    Card card = null;
+    for(Card possiblezwilling : lastSnapshot.getNonPlayerPlaces().getDeck().getCards()) {
+      if(possiblezwilling.getName().equals("zwilling")) {
+        card = possiblezwilling;
+        break;
+      }
+    }
+
+    if(card != null) {
+      lastSnapshot.getPlayers().get(0).getPlaces().getEnchantmentsRow().getCards().add(card);
+    }
+    else{
+      System.out.println("Card not found");
+    }
+
     for (GameSnapshot createdSnapshot : snapshots) {
       System.out.println("Snapshot: " + createdSnapshot.getIndex());
       SnapshotUpdateData updateData2 = createdSnapshot.getSnapshotUpdateData();
       System.out.println("Snapshot update data: " + updateData2.getType());
       System.out.println("Snapshot update data: " + updateData2.getPlayedCardIds());
       System.out.println("Snapshot update data: " + updateData2.getSecondaryCardId());
-
+      for( Card ddd :      createdSnapshot.getPlayers().get(0).getPlaces().getEnchantmentsRow().getCards()){
+        System.out.println(ddd.getName());
+      }
     }
 
     return snapshots;

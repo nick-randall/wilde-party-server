@@ -19,6 +19,7 @@ import com.wildeparty.model.cards.Card;
 import com.wildeparty.model.cards.CardType;
 import com.wildeparty.model.cards.GuestCardType;
 import com.wildeparty.model.gameElements.Game;
+import com.wildeparty.model.gameElements.GameSnapshot;
 
 import jakarta.annotation.PostConstruct;
 
@@ -133,7 +134,7 @@ public class DeckCreator {
       for (int i = 0; i < numCardsPerType; i++) {
         Card card = new Card();
         card.setCardType(cardType);
-        card.setImageName(name + i);
+        card.setImageName(name);
         card.setId(getCurrCardId());
         cards.add(card);
       }
@@ -142,51 +143,12 @@ public class DeckCreator {
 
   }
 
-  // @PostConstruct
-  // void main() {
-  //   System.out.println("Creating deck");
-  //   List<Card> deck = createDeck(3);
-  //   Collections.shuffle(deck);
-  //   for (Card card : deck) {
-  //     // System.out.println(card.getImageName() + "(" + card.getId() + ")" + " = " + card.getCardType());
-  //   }
-  //   User newUser = new User();
-  //   newUser.setName("John");
-  //   User savedUser = userService.saveUser(newUser);
-  //   User user = userService.getUserById(savedUser.getId());
-  //   User userTwo = new User();
-  //   userTwo.setName("Steve");
-  //   User savedUserTwo = userService.saveUser(userTwo);
-  //   User userThree = new User();
-  //   userTwo.setName("AI");
-  //   User savedUserThree = userService.saveUser(userThree);
-  //   ///
-  //   Game game = new Game(savedUser, savedUserTwo, savedUserThree);
-  //   Game savedGame = gamesService.saveGame(game);
-  //   Iterable<Game> userGames = gamesService.getUserActiveGames(userTwo.getId());
-  //   for (Game userGame : userGames) {
-  //     System.out.println("User game id: " + userGame.getId());
-  //     for(User userInGame : userGame.getUsers()) {
-  //       System.out.println("User in game: " + userInGame.getName());
-  //     }
-  //   }
-    // Create game snapshot
-    // GameSnapshot snapshot = new GameSnapshot();
-    // List<Player> players = new ArrayList<>();
-    // Player player = new Player();
-    // player.setId(0L);
-    // player.setName("francis");
-    // player.setPlaces(new PlayerPlaces());
-    // Player player2 = new Player();
-    // player2.setId(1L);
-    // player.getPlaces().getHand().setCards(createStartGast(3));;
+  @PostConstruct
+  void main() {
+    GameSnapshot initialSnapshot = new GameSnapshot(new User(), new User(), new User());
+    List<GameSnapshot> initialSnapshots = SnapshotSetupUtil.setupInitialGameSnapshots(initialSnapshot);
 
-    // player2.setName("steven");
-    // players.add(player);
-    // players.add(player2);
-    // snapshot.setPlayers(players);
-    // GameSnapshotJsonConverter converter = new GameSnapshotJsonConverter();
-    // System.out.println(converter.convertToDatabaseColumn(snapshot));
-  // }
+    //
+  }
 
 }
