@@ -8,9 +8,17 @@ import com.wildeparty.model.gameElements.GameSnapshot;
 public class OutgoingGameMessage {
 
   private OutgoingGameMessageType type;
+  private List<GameSnapshot> newSnapshots;
+  private List<User> activePlayers;
+  private String message;
   public OutgoingGameMessageType getType() {
     return type;
   }
+  public OutgoingGameMessage(List<GameSnapshot> newSnapshots) {
+    this.type = OutgoingGameMessageType.GAME_SNAPSHOTS;
+    this.newSnapshots = newSnapshots;
+  }
+
   public void setType(OutgoingGameMessageType type) {
     this.type = type;
   }
@@ -32,9 +40,7 @@ public class OutgoingGameMessage {
   public void setMessage(String message) {
     this.message = message;
   }
-  private List<GameSnapshot> newSnapshots;
-  private List<User> activePlayers;
-  private String message;
+
 
 }
 

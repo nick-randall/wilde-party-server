@@ -146,11 +146,13 @@ public class WebSocketEventListener {
         System.out.println("User " + user.getName() + " is in game " + gameId + " and can subscribe");
         // If so send the user the game data
         Game game = gamesService.getGame(Long.parseLong(gameId));
-        OutboundPersonalGameMessage message = new OutboundPersonalGameMessage(
-            OutboundPersonalGameMessage.MessageType.INITIAL_GAME_SNAPSHOTS, game.getGameSnapshots());
+        // OutboundPersonalGameMessage message = new OutboundPersonalGameMessage(
+        //     OutboundPersonalGameMessage.MessageType.INITIAL_GAME_SNAPSHOTS, game.getGameSnapshots());
         
 
-        simpMessagingTemplate.convertAndSendToUser(userId.toString(), "/queue/messages", message);
+        // simpMessagingTemplate.convertAndSendToUser(userId.toString(), "/queue/messages", message);
+        OutgoingGameMessage message = new OutgoingGameMessage(game.getGameSnapshots());
+        // Let's just use the normal broadcast to send snapshots to all users in the game -- client code will filter out the right ones
         simpMessagingTemplate.convertAndSend("/topic/game/" + gameId, message);
 
         // If so let everyone know they have joined

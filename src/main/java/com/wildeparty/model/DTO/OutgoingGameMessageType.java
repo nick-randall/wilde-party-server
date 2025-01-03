@@ -6,7 +6,7 @@ public enum OutgoingGameMessageType {
   JOIN("join"),
   LEAVE("leave"),
   ERROR("error"),
-  GAME_SNAPSHOTS("game_snapshots");
+  GAME_SNAPSHOTS("gameSnapshots");
 
   private String name;
 
