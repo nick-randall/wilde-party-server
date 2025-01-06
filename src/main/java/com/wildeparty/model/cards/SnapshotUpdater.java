@@ -67,9 +67,21 @@ public class SnapshotUpdater {
   public GameSnapshot dealStartingGuest(int playerIndex) {
     GameSnapshot gameSnapshot = GameSnapshot.cloneGameSnapshot(this.gameSnapshot);
     Card card = gameSnapshot.getNonPlayerPlaces().getDeck().getCards().remove(0);
-    Place hand = gameSnapshot.getPlayers().get(playerIndex).getPlaces().getHand();
+    Place guestCardZone = gameSnapshot.getPlayers().get(playerIndex).getPlaces().getGuestCardZone();
     gameSnapshot.getPlayers().get(playerIndex).getPlaces().getGuestCardZone().getCards().add(card);
-    SnapshotUpdateData updateData = new SnapshotUpdateData(SnapshotUpdateType.DEALING_STARTING_GUEST, hand.getId(),
+    SnapshotUpdateData updateData = new SnapshotUpdateData(SnapshotUpdateType.DEALING_STARTING_GUEST, guestCardZone.getId(),
+        new int[] { card.getId() });
+    gameSnapshot.setSnapshotUpdateData(updateData);
+
+    return gameSnapshot.withUpdatedIndex();
+  }
+
+  public GameSnapshot staticdealStartingGuest(int playerIndex, GameSnapshot original) {
+    GameSnapshot gameSnapshot = GameSnapshot.cloneGameSnapshot(this.gameSnapshot);
+    Card card = gameSnapshot.getNonPlayerPlaces().getDeck().getCards().remove(0);
+    Place guestCardZone = gameSnapshot.getPlayers().get(playerIndex).getPlaces().getGuestCardZone();
+    gameSnapshot.getPlayers().get(playerIndex).getPlaces().getGuestCardZone().getCards().add(card);
+    SnapshotUpdateData updateData = new SnapshotUpdateData(SnapshotUpdateType.DEALING_STARTING_GUEST, guestCardZone.getId(),
         new int[] { card.getId() });
     gameSnapshot.setSnapshotUpdateData(updateData);
 
