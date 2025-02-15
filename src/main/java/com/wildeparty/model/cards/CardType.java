@@ -27,7 +27,7 @@ public enum CardType {
   }
 
   static public CardType[] getAllCardTypes() {
-    CardType[] allCardTypes = new CardType[8];
+    CardType[] allCardTypes = new CardType[11];
     int i = 0;
     for (CardType type : CardType.values()) {
       allCardTypes[i] = type;

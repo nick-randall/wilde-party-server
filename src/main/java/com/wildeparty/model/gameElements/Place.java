@@ -25,8 +25,13 @@ public class Place implements Serializable, GameEntity {
 
   public void gatherCardActionResults(GameSnapshot gameSnapshot, Card playedCard,
       List<CardActionResult> cardActionResults) {
-    CardActionResult result = playedCard.getAction().getActionResult(gameSnapshot, playedCard, this);
-    cardActionResults.add(result);
+    if (playedCard.getCardAction() == null) {
+      return;
+    }
+    CardActionResult result = playedCard.getCardAction().getActionResult(gameSnapshot, playedCard, this);
+    if (result.isLegalTarget()) {
+      cardActionResults.add(result);
+    }
     for (Card card : cards) {
       card.gatherCardActionResults(gameSnapshot, card, cardActionResults);
     }
@@ -75,6 +80,5 @@ public class Place implements Serializable, GameEntity {
       default -> new CardType[0];
     };
   }
-
 
 }

@@ -73,10 +73,21 @@ public class Player implements Serializable, GameEntity {
 
   public void gatherCardActionResults(GameSnapshot gameSnapshot, Card playedCard,
       List<CardActionResult> cardActionResults) {
-    CardActionResult result = playedCard.getAction().getActionResult(gameSnapshot, playedCard, this);
-    cardActionResults.add(result);
+    if (playedCard.getCardAction() == null) {
+      return;
+    }
+    CardActionResult result = playedCard.getCardAction().getActionResult(gameSnapshot, playedCard, this);
+    // System.out.println("result inside player is " + result);
+    if (result.isLegalTarget()) {
+      cardActionResults.add(result);
+    }
     for (Place place : places.getAllPlaces()) {
       place.gatherCardActionResults(gameSnapshot, playedCard, cardActionResults);
+    }
+    System.out.println("Card action results for player " + name + " are: ");
+    for (CardActionResult cardActionResult : cardActionResults) {
+      if (cardActionResult.getSnapshotUpdateData() != null)
+        System.out.println(cardActionResult.getSnapshotUpdateData());
     }
   }
 

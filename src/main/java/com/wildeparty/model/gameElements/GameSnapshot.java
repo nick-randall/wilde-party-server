@@ -20,6 +20,7 @@ import com.wildeparty.utils.NonPlayerPlacesJsonConverter;
 import com.wildeparty.utils.PlayersListJsonConverter;
 import com.wildeparty.utils.SnapshotUpdateDataJsonConverter;
 
+import ch.qos.logback.core.joran.action.Action;
 import jakarta.annotation.Generated;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -113,11 +114,34 @@ public class GameSnapshot {
     return updatedGameSnapshot;
   }
 
+  // public GameSnapshot withCompletePhase() {
+  //   GameSnapshot updatedGameSnapshot = this; // cloneGameSnapshot(this);
+  //   Current current = updatedGameSnapshot.getCurrent();
+  //   switch (current.getPhase()) {
+  //     case DRAW_PHASE:
+  //       current.setPhase(TurnPhase.PLAY_PHASE);
+  //       break;
+  //       case PLAY_PHASE:
+  //       current.setPhase(TurnPhase.);
+  //       break;
+    
+  //     default:
+  //       break;
+  //   }
+  //   return updatedGameSnapshot;
+  // }
+
+  // public Map<Integer, List<CardActionResult>> getActionResultsMap() {
+  //   return actionResultsMap;
+  // }
+
   public void updateLegalTargets() {
     List<Card> currentHandCards = players.get(getCurrent().getPlayer()).getPlaces().getHand().getCards();
+    System.out.println("Updating legal targets for " + currentHandCards.size() + " cards");
     SnapshotUpdater updater = new SnapshotUpdater(this);
     // All legal targets will be calculated based on player having drawn once.
     updater.drawCard(players.get(getCurrent().getPlayer()));
+    System.out.println("Player " + getCurrent().getPlayer() + " has drawn a card");
     for (Card card : currentHandCards) {
       List<CardActionResult> cardActionResults = new ArrayList<CardActionResult>();
       // Iterate through all players, places and cards to see if they are legal

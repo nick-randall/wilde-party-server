@@ -9,6 +9,7 @@ import com.wildeparty.model.gameElements.GameSnapshot;
 import com.wildeparty.model.gameElements.PlaceType;
 import com.wildeparty.model.gameElements.TargetPlayerType;
 
+import java.beans.Transient;
 import java.io.Serializable;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -19,15 +20,18 @@ public class Card implements Serializable, GameEntity {
   private String imageName;
   private CardType cardType;
   private GuestCardType guestCardType;
-  @JsonIgnore
-  private CardAction action;
   @JsonIgnore // TODO just remove?
   private int pointValue;
 
   public void gatherCardActionResults(GameSnapshot gameSnapshot, Card playedCard,
       List<CardActionResult> cardActionResults) {
-    CardActionResult result = playedCard.getAction().getActionResult(gameSnapshot, playedCard, this);
-    cardActionResults.add(result);
+    if (playedCard.getCardAction() == null) {
+      return;
+    }
+    CardActionResult result = playedCard.getCardAction().getActionResult(gameSnapshot, playedCard, this);
+    if (result.isLegalTarget()) {
+      cardActionResults.add(result);
+    }
   }
 
   public void setGuestCardType(GuestCardType guestCardType) {
@@ -47,6 +51,24 @@ public class Card implements Serializable, GameEntity {
       case DESTROY -> CardActionType.DESTROY;
       case ENCHANT_PLAYER -> CardActionType.ENCHANT_PLAYER;
       case SORCERY_ON_PLAYER -> CardActionType.SORCERY_ON_PLAYER;
+    };
+  }
+
+  @Transient
+  @JsonIgnore
+  public CardAction getCardAction() {
+    return switch (cardType) {
+      case GUEST -> new AddDraggedAction();
+      case UNWANTED -> new AddDraggedAction();
+      case SPECIAL -> new AddDraggedAction();
+      case INTERRUPT -> null;
+      case BFF -> null;
+      case ENCHANT -> null;
+      case STEAL -> null;
+      case SWAP -> null;
+      case DESTROY -> new DestroyAction();
+      case ENCHANT_PLAYER -> null;
+      case SORCERY_ON_PLAYER -> null;
     };
   }
 
@@ -124,36 +146,36 @@ public class Card implements Serializable, GameEntity {
   }
 
   // public void setPointValue() {
-  //   int pointValue;
-  //   if (guestCardType == null) {
-  //     pointValue = 0;
-  //   } else {
-  //     pointValue = switch (guestCardType) {
-  //       case RUMGROELERIN -> 1;
-  //       case SAUFNASE -> 1;
-  //       case SCHLECKERMAUL -> 1;
-  //       case TAENZERIN -> 1;
-  //       case DOPPELT -> 2;
-  //       case UNSCHEINBAR -> 1;
-  //       default -> 0;
-  //     };
-  //   }
-  //   this.pointValue = pointValue;
+  // int pointValue;
+  // if (guestCardType == null) {
+  // pointValue = 0;
+  // } else {
+  // pointValue = switch (guestCardType) {
+  // case RUMGROELERIN -> 1;
+  // case SAUFNASE -> 1;
+  // case SCHLECKERMAUL -> 1;
+  // case TAENZERIN -> 1;
+  // case DOPPELT -> 2;
+  // case UNSCHEINBAR -> 1;
+  // default -> 0;
+  // };
+  // }
+  // this.pointValue = pointValue;
   // }
 
   // public int getTakesUpSpaces() {
-  //   if (guestCardType == null) {
-  //     return 0;
-  //   }
-  //   return switch (guestCardType) {
-  //     case RUMGROELERIN -> 1;
-  //     case SAUFNASE -> 1;
-  //     case SCHLECKERMAUL -> 1;
-  //     case TAENZERIN -> 1;
-  //     case DOPPELT -> 1;
-  //     case UNSCHEINBAR -> 0;
-  //     default -> 0;
-  //   };
+  // if (guestCardType == null) {
+  // return 0;
+  // }
+  // return switch (guestCardType) {
+  // case RUMGROELERIN -> 1;
+  // case SAUFNASE -> 1;
+  // case SCHLECKERMAUL -> 1;
+  // case TAENZERIN -> 1;
+  // case DOPPELT -> 1;
+  // case UNSCHEINBAR -> 0;
+  // default -> 0;
+  // };
   // }
 
   // public LegalTargetType getHighlightType() {
@@ -212,14 +234,6 @@ public class Card implements Serializable, GameEntity {
 
   public void setCardType(CardType cardType) {
     this.cardType = cardType;
-  }
-
-  public CardAction getAction() {
-    return action;
-  }
-
-  public void setAction(CardAction action) {
-    this.action = action;
   }
 
 }

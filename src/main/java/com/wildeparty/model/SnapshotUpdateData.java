@@ -6,7 +6,7 @@ public class SnapshotUpdateData implements Serializable {
   private SnapshotUpdateType type;
   private int[] playedCardIds; // only plural for dealt cards
   private int targetId; // can be playerId, placeId, or cardId
-  private int secondaryCardId; // Nullable; necessary for swap
+  private Integer secondaryCardId; // Nullable; necessary for swap
 
   public SnapshotUpdateData() {
   }
@@ -55,6 +55,16 @@ public class SnapshotUpdateData implements Serializable {
 
   public void setSecondaryCardId(Integer secondaryCardId) {
     this.secondaryCardId = secondaryCardId;
+  }
+
+  @Override
+  public String toString() {
+    return "SnapshotUpdateData{" +
+        "type=" + type +
+        ", playedCardIds=" + playedCardIds +
+        ", targetId=" + targetId +
+        ", secondaryCardId=" + secondaryCardId +
+        '}';
   }
 
 }

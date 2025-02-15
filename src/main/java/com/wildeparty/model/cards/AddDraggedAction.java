@@ -2,6 +2,8 @@ package com.wildeparty.model.cards;
 
 import java.util.Arrays;
 
+import com.wildeparty.model.SnapshotUpdateData;
+import com.wildeparty.model.SnapshotUpdateType;
 import com.wildeparty.model.gameElements.GameEntity;
 import com.wildeparty.model.gameElements.GameSnapshot;
 import com.wildeparty.model.gameElements.LegalTargetType;
@@ -29,7 +31,9 @@ public class AddDraggedAction extends CardAction {
   @Override
   public CardActionResult getActionResult(GameSnapshot gameSnapshot, Card playedCard, GameEntity target) {
     if (isLegalTargetOf(gameSnapshot, playedCard, target)) {
-      return new CardActionResult(target.getId(), true, LegalTargetType.PLACE, null, CardActionType.ADD_DRAGGED);
+      SnapshotUpdateData updateData = new SnapshotUpdateData(SnapshotUpdateType.ADD_DRAGGED, 
+          target.getId(), playedCard.getId());
+      return new CardActionResult(target.getId(), true, LegalTargetType.PLACE, updateData, CardActionType.ADD_DRAGGED);
     }
     return new CardActionResult(target.getId(), false);
   }

@@ -31,12 +31,12 @@ public class DestroyAction extends CardAction {
     SnapshotUpdater updater = new SnapshotUpdater(gameSnapshot);
 
     updater.moveCardToDiscardPile(targetCard);
-    GameSnapshot updatedSnapshot = updater.moveCardToDiscardPile(playedCard);
+    // GameSnapshot updatedSnapshot = updater.moveCardToDiscardPile(playedCard);
 
     SnapshotUpdateData updateData = new SnapshotUpdateData(SnapshotUpdateType.DESTROY, targetCard.getId(),
         playedCard.getId());
-    gameSnapshot.setSnapshotUpdateData(updateData);
-    CardActionResult result = new CardActionResult(target.getId(), true, LegalTargetType.CARD, updatedSnapshot,
+    // gameSnapshot.setSnapshotUpdateData(updateData);
+    CardActionResult result = new CardActionResult(target.getId(), true, LegalTargetType.CARD, updateData,
         CardActionType.DESTROY);
 
     return result;

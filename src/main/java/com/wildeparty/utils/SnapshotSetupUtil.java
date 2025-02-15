@@ -2,10 +2,12 @@ package com.wildeparty.utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.wildeparty.model.SnapshotUpdateData;
 import com.wildeparty.model.SnapshotUpdateType;
 import com.wildeparty.model.cards.Card;
+import com.wildeparty.model.cards.CardActionResult;
 import com.wildeparty.model.cards.SnapshotUpdater;
 import com.wildeparty.model.gameElements.GameSnapshot;
 
@@ -26,51 +28,22 @@ public class SnapshotSetupUtil {
     }
 
     for (int i = 0; i < snapshot.getPlayers().size(); i++) {
-      // SnapshotUpdater updater = new SnapshotUpdater(snapshot);
       snapshot = SnapshotUpdater.staticdrawCards(i, 7, snapshot);
       snapshots.add(snapshot);
     }
 
-    GameSnapshot snap = snapshots.get(snapshots.size() - 1);
-    snap.getPlayers().forEach(player -> {
-      List<Card> cardsInHand = player.getPlaces().getHand().getCards();
-      System.out.println("number of cards in hand: " + cardsInHand.size());
-      for (Card card : cardsInHand) {
-        System.out.println(card.getImageName());
-      }
-      System.out.println("number of cards in guest zone: " + player.getPlaces().getGuestCardZone().getCards().size());
-      List<Card> cardsInGuestZone = player.getPlaces().getGuestCardZone().getCards();
-      for (Card card : cardsInGuestZone) {
-        System.out.println(card.getImageName());
-      }
-    });
+    snapshots.get(snapshots.size() - 1).updateLegalTargets();
+    // Map<Integer, List<CardActionResult>> resMap = snapshots.get(snapshots.size() - 1).getActionResultsMap();
+    // for (Map.Entry<Integer, List<CardActionResult>> entry: resMap.entrySet()) {
+    //   List<CardActionResult> resList = entry.getValue();
+    //   System.out.println("Card with id:" + entry.getKey() + "... can target " + resList.size() + " targets");
 
-    GameSnapshot lastSnapshot = snapshots.get(snapshots.size() - 1);
-    Card card = null;
-    for(Card possiblezwilling : lastSnapshot.getNonPlayerPlaces().getDeck().getCards()) {
-      if(possiblezwilling.getName().equals("zwilling")) {
-        card = possiblezwilling;
-        break;
-      }
-    }
-
-    if(card != null) {
-      lastSnapshot.getPlayers().get(0).getPlaces().getEnchantmentsRow().getCards().add(card);
-    }
-    else{
-      System.out.println("Card not found");
-    }
-
-    for (GameSnapshot createdSnapshot : snapshots) {
-      System.out.println("Snapshot: " + createdSnapshot.getIndex());
-      SnapshotUpdateData updateData2 = createdSnapshot.getSnapshotUpdateData();
-      System.out.println("Snapshot update data: " + updateData2.getType());
-      System.out.println("Snapshot update data: " + updateData2.getPlayedCardIds());
-      System.out.println("Snapshot update data: " + updateData2.getSecondaryCardId());
-      for( Card ddd :      createdSnapshot.getPlayers().get(0).getPlaces().getEnchantmentsRow().getCards()){
-        System.out.println(ddd.getName());
-      }
-    }
+    //   for (CardActionResult res : resList) {
+    //     if (res.isLegalTarget()) {
+    //       System.out.println("... can target " + res.getTargetType() + "with " +res.getActionType());
+    //     }
+    //   }
+    // }
 
     return snapshots;
   }

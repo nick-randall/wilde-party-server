@@ -15,6 +15,7 @@ import com.wildeparty.backend.GamesServiceImpl;
 import com.wildeparty.backend.UserService;
 import com.wildeparty.backend.UserServiceImpl;
 import com.wildeparty.model.User;
+import com.wildeparty.model.cards.AddDraggedAction;
 import com.wildeparty.model.cards.Card;
 import com.wildeparty.model.cards.CardType;
 import com.wildeparty.model.cards.GuestCardType;
@@ -61,6 +62,7 @@ public class DeckCreator {
         card.setImageName(guestCardType.getName() + i);
         card.setId(getCurrCardId());
         card.setGuestCardType(guestCardType);
+        // card.setAction(new AddDraggedAction());
         guests.add(card);
       }
     }
