@@ -69,11 +69,11 @@ public class Place implements Serializable, GameEntity {
 
   @JsonIgnore
   public CardType[] getAcceptedCardTypes() {
-    return switch (this.placeType) {
+    return switch (this.placeType) {  
       case DECK -> CardType.getAllCardTypes();
       case DISCARD_PILE -> CardType.getAllCardTypes();
       case GUEST_CARD_ZONE -> new CardType[] { CardType.BFF, CardType.GUEST, CardType.ENCHANT };
-      case HAND -> CardType.getAllCardTypes();
+      case HAND -> new CardType[0];
       case PLAYER_ENCHANTMENT -> new CardType[] { CardType.ENCHANT_PLAYER };
       case SPECIALS_ZONE -> new CardType[] { CardType.SPECIAL };
       case UNWANTEDS_ZONE -> new CardType[] { CardType.UNWANTED };

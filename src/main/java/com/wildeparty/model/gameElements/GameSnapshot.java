@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wildeparty.model.Current;
 import com.wildeparty.model.SnapshotUpdateData;
 import com.wildeparty.model.User;
@@ -67,13 +68,13 @@ public class GameSnapshot {
   @Convert(converter = NonPlayerPlacesJsonConverter.class)
   private NonPlayerPlaces nonPlayerPlaces = new NonPlayerPlaces();
 
-  @Column(columnDefinition = "TEXT")
-  @Convert(converter = CardActionResultsMapJsonConverter.class)
-
   // JsonInclude + Transient = no database persistence but still JSON serialization  
-  @JsonInclude(JsonInclude.Include.NON_NULL)
   @Transient
+  @JsonProperty
+  @Convert(converter = CardActionResultsMapJsonConverter.class)
   Map<Integer, List<CardActionResult>> actionResultsMap = new HashMap<Integer, List<CardActionResult>>();
+
+
 
   public GameSnapshot() {
   }
@@ -138,10 +139,6 @@ public class GameSnapshot {
   public void updateLegalTargets() {
     List<Card> currentHandCards = players.get(getCurrent().getPlayer()).getPlaces().getHand().getCards();
     System.out.println("Updating legal targets for " + currentHandCards.size() + " cards");
-    SnapshotUpdater updater = new SnapshotUpdater(this);
-    // All legal targets will be calculated based on player having drawn once.
-    updater.drawCard(players.get(getCurrent().getPlayer()));
-    System.out.println("Player " + getCurrent().getPlayer() + " has drawn a card");
     for (Card card : currentHandCards) {
       List<CardActionResult> cardActionResults = new ArrayList<CardActionResult>();
       // Iterate through all players, places and cards to see if they are legal
@@ -149,7 +146,7 @@ public class GameSnapshot {
       for (Player player : players) {
         player.gatherCardActionResults(this, card, cardActionResults);
       }
-      actionResultsMap.put(card.getId(), cardActionResults);
+      this.actionResultsMap.put(card.getId(), cardActionResults);
     }
   }
 

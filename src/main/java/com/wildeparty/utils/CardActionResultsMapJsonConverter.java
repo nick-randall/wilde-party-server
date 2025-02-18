@@ -15,9 +15,9 @@ public class CardActionResultsMapJsonConverter implements AttributeConverter<Map
       private ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
-    public String convertToDatabaseColumn(Map<Integer, CardActionResult> snapshot) {
+    public String convertToDatabaseColumn(Map<Integer, CardActionResult> cardActionResultsMap) {
         try {
-            return objectMapper.writeValueAsString(snapshot);
+            return objectMapper.writeValueAsString(cardActionResultsMap);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Could not convert to Json", e);
         }

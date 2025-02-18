@@ -37,6 +37,7 @@ import com.wildeparty.model.DTO.OutboundPersonalGameMessage;
 import com.wildeparty.model.DTO.PrivateMessageDTO;
 import com.wildeparty.model.DTO.PrivateMessageType;
 import com.wildeparty.model.gameElements.Game;
+import com.wildeparty.model.gameElements.GameSnapshot;
 import com.wildeparty.model.DTO.OutgoingGameMessage;
 import com.wildeparty.model.DTO.OutgoingGameMessageType;
 
@@ -151,7 +152,11 @@ public class WebSocketEventListener {
         
 
         // simpMessagingTemplate.convertAndSendToUser(userId.toString(), "/queue/messages", message);
-        OutgoingGameMessage message = new OutgoingGameMessage(game.getGameSnapshots());
+        List<GameSnapshot> snapshots = game.getGameSnapshots();
+        for(GameSnapshot snapshot: snapshots) {
+          snapshot.updateLegalTargets();
+        }
+        OutgoingGameMessage message = new OutgoingGameMessage(snapshots);
         // Let's just use the normal broadcast to send snapshots to all users in the game -- client code will filter out the right ones
         simpMessagingTemplate.convertAndSend("/topic/game/" + gameId, message);
 

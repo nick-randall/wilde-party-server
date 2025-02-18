@@ -2,12 +2,9 @@ package com.wildeparty.utils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-
 import com.wildeparty.model.SnapshotUpdateData;
 import com.wildeparty.model.SnapshotUpdateType;
 import com.wildeparty.model.cards.Card;
-import com.wildeparty.model.cards.CardActionResult;
 import com.wildeparty.model.cards.SnapshotUpdater;
 import com.wildeparty.model.gameElements.GameSnapshot;
 
@@ -22,8 +19,9 @@ public class SnapshotSetupUtil {
     snapshots.add(snapshot);
 
     for (int i = 0; i < snapshot.getPlayers().size(); i++) {
-      SnapshotUpdater updater = new SnapshotUpdater(snapshot);
-      snapshot = updater.dealStartingGuest(i);
+      // SnapshotUpdater updater = new SnapshotUpdater(snapshot);
+      // snapshot = updater.dealStartingGuest(i);
+      snapshot = SnapshotUpdater.staticdealStartingGuest(i, snapshot);
       snapshots.add(snapshot);
     }
 
@@ -32,7 +30,7 @@ public class SnapshotSetupUtil {
       snapshots.add(snapshot);
     }
 
-    snapshots.get(snapshots.size() - 1).updateLegalTargets();
+    // snapshots.get(snapshots.size() - 1).updateLegalTargets();
     // Map<Integer, List<CardActionResult>> resMap = snapshots.get(snapshots.size() - 1).getActionResultsMap();
     // for (Map.Entry<Integer, List<CardActionResult>> entry: resMap.entrySet()) {
     //   List<CardActionResult> resList = entry.getValue();

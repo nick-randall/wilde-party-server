@@ -3,7 +3,6 @@ package com.wildeparty.model.cards;
 import java.io.Serializable;
 
 import com.wildeparty.model.SnapshotUpdateData;
-import com.wildeparty.model.gameElements.GameSnapshot;
 import com.wildeparty.model.gameElements.LegalTargetType;
 
 public class CardActionResult implements Serializable {
@@ -12,6 +11,10 @@ public class CardActionResult implements Serializable {
   SnapshotUpdateData snapshotUpdateData;
   LegalTargetType targetType;
   CardActionType actionType;
+
+  public CardActionResult() {
+    
+  }
 
   public boolean isLegalTarget() {
     return isLegalTarget;

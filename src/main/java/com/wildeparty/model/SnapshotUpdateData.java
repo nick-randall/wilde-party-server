@@ -59,9 +59,16 @@ public class SnapshotUpdateData implements Serializable {
 
   @Override
   public String toString() {
+    String playedCardIdsString = "";
+    for(int i = 0; i < this.playedCardIds.length; i++) {
+      playedCardIdsString += playedCardIds[i];
+      if(i < this.playedCardIds.length - 1) {
+        playedCardIdsString += ",";
+      }
+    }
     return "SnapshotUpdateData{" +
         "type=" + type +
-        ", playedCardIds=" + playedCardIds +
+        ", playedCardIds=" + playedCardIdsString +
         ", targetId=" + targetId +
         ", secondaryCardId=" + secondaryCardId +
         '}';

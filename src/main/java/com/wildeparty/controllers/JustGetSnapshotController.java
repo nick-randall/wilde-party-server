@@ -57,28 +57,50 @@ public class JustGetSnapshotController {
 
   @PostMapping("/just-create-game")
   public ResponseEntity<UserGameDTO> justCreateGame(HttpServletResponse response, HttpServletRequest request) {
-    System.out.println("just create demo snapshot called");
+    System.out.println("just create demo game called");
+    User currUser = null;
+    Cookie cookie = extractCookie(request);
+    if (cookie != null) {
+      currUser = userService.getUserBySessionToken(cookie.getValue());
+    }
 
-    User newUser = userService.createUser("Demo Roger");
-    System.out.println("New user created: " + newUser.getName());
-    Cookie newCookie = createCookie();
-    Session session = sessionService.createSession(newUser.getId(), newCookie.getValue());
-    newUser.setSession(session);
-    userService.saveUser(newUser);
-    response.addCookie(newCookie);
+    if (currUser == null) {
+      currUser = userService.createUser("Demo Roger");
+      System.out.println("New user created: " + currUser.getName());
+      Cookie newCookie = createCookie();
+      Session session = sessionService.createSession(currUser.getId(), newCookie.getValue());
+      currUser.setSession(session);
+      userService.saveUser(currUser);
+      response.addCookie(newCookie);
+    }
 
     User userTwo = User.createAIUser();
     User savedUserTwo = userService.saveUser(userTwo);
     User userThree = User.createAIUser();
     User savedUserThree = userService.saveUser(userThree);
     ///
-    Game game = new Game(newUser, savedUserTwo, savedUserThree);
+    Game game = new Game(currUser, savedUserTwo, savedUserThree);
     Game savedGame = gamesService.saveGame(game);
     SnapshotSetupUtil.setupInitialGameSnapshots(savedGame.getLatestSnapshot());
     GameDTO gameDTO = GameDTO.fromGame(game);
 
-    return ResponseEntity.ok().body(new UserGameDTO(newUser, gameDTO));
+    return ResponseEntity.ok().body(new UserGameDTO(currUser, gameDTO));
 
+  }
+
+  @PostMapping("/end-game")
+  public ResponseEntity<Void> endCurrentGame(HttpServletRequest request) {
+    Cookie cookie = extractCookie(request);
+    if (cookie == null) {
+      return ResponseEntity.notFound().build();
+    }
+    User user = userService.getUserBySessionToken(cookie.getValue());
+    if (user == null) {
+      return ResponseEntity.notFound().build();
+    }
+    List<Game> userGames = gamesService.getUserActiveGames(user);
+    gamesService.deleteGame(userGames.get(0).getId());
+    return ResponseEntity.ok(null);
   }
 
   @GetMapping("game-latest")

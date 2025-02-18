@@ -3,6 +3,7 @@ package com.wildeparty.model.gameElements;
 import java.io.Serializable;
 import java.util.List;
 
+import com.wildeparty.model.SnapshotUpdateData;
 import com.wildeparty.model.User;
 import com.wildeparty.model.cards.Card;
 import com.wildeparty.model.cards.CardActionResult;
