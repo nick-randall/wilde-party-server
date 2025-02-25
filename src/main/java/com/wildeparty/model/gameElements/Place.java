@@ -33,7 +33,7 @@ public class Place implements Serializable, GameEntity {
       cardActionResults.add(result);
     }
     for (Card card : cards) {
-      card.gatherCardActionResults(gameSnapshot, card, cardActionResults);
+      card.gatherCardActionResults(gameSnapshot, playedCard, cardActionResults);
     }
   }
 

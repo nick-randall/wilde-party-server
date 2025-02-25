@@ -78,12 +78,13 @@ public class Player implements Serializable, GameEntity {
       return;
     }
     CardActionResult result = playedCard.getCardAction().getActionResult(gameSnapshot, playedCard, this);
-    // System.out.println("result inside player is " + result);
     if (result.isLegalTarget()) {
       cardActionResults.add(result);
     }
     for (Place place : places.getAllPlaces()) {
-      place.gatherCardActionResults(gameSnapshot, playedCard, cardActionResults);
+      if (place.getPlaceType() != PlaceType.HAND) {
+        place.gatherCardActionResults(gameSnapshot, playedCard, cardActionResults);
+      }
     }
     System.out.println("Card action results for player " + name + " are: ");
     for (CardActionResult cardActionResult : cardActionResults) {

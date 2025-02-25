@@ -63,7 +63,7 @@ public class Card implements Serializable, GameEntity {
       case SPECIAL -> new AddDraggedAction();
       case INTERRUPT -> null;
       case BFF -> null;
-      case ENCHANT -> null;
+      case ENCHANT -> new EnchantAction();
       case STEAL -> null;
       case SWAP -> null;
       case DESTROY -> new DestroyAction();
