@@ -22,11 +22,15 @@ import com.wildeparty.backend.UserService;
 import com.wildeparty.model.OutboundMessage;
 import com.wildeparty.model.User;
 import com.wildeparty.model.DTO.GameDTO;
+import com.wildeparty.model.DTO.InboundGameMessage;
+import com.wildeparty.model.DTO.InboundGameMessageType;
 import com.wildeparty.model.DTO.InboundInvitationMessage;
 import com.wildeparty.model.DTO.OutboundChatRoomMessageType;
+import com.wildeparty.model.DTO.OutgoingGameMessage;
 import com.wildeparty.model.DTO.OutboundChatRoomMessage;
 import com.wildeparty.model.OutboundMessage.PublicMessageType;
 import com.wildeparty.model.gameElements.Game;
+import com.wildeparty.model.gameElements.GameSnapshot;
 import com.wildeparty.model.InboundMessage;
 import com.wildeparty.model.Invitation;
 
@@ -78,7 +82,7 @@ public class ChatController {
     return null;
   }
 
-  OutboundChatRoomMessage addInvitationsListToMessage(OutboundChatRoomMessage message, User user){
+  OutboundChatRoomMessage addInvitationsListToMessage(OutboundChatRoomMessage message, User user) {
     List<Invitation> sentInvitations = invitationService.getSentInvitationsByUserId(user.getId());
     List<Invitation> receivedInvitations = invitationService.getReceivedInvitationsByUserId(user.getId());
     message.setSentInvitations(sentInvitations);
@@ -89,7 +93,7 @@ public class ChatController {
   @MessageMapping("/invitations")
   public void sendInvite(SimpMessageHeaderAccessor sha, @Payload InboundInvitationMessage message) {
     System.out.println("sendInvite called");
-   
+
     if (message.getType() == OutboundChatRoomMessageType.INVITE) {
       User inviter = getSender(sha);
       User invitee = userService.getUserById(message.getInviteeId());
@@ -100,14 +104,13 @@ public class ChatController {
       OutboundChatRoomMessage inviterMessage = new OutboundChatRoomMessage(message.getType());
       inviterMessage.setMessage("You invited " + invitee.getName() + " to play a game!");
       addInvitationsListToMessage(inviterMessage, inviter);
-      
+
       OutboundChatRoomMessage inviteeMessage = new OutboundChatRoomMessage(message.getType());
       inviteeMessage.setMessage(inviter.getName() + " invited you to play a game!");
       addInvitationsListToMessage(inviteeMessage, invitee);
       simpMessagingTemplate.convertAndSendToUser(String.valueOf(inviter.getId()), "/queue/messages", inviterMessage);
       simpMessagingTemplate.convertAndSendToUser(String.valueOf(invitee.getId()), "/queue/messages", inviteeMessage);
-    } 
-    else {
+    } else {
       User responder = getSender(sha);
       User originalInviter = invitationService.getInvitationById(message.getInvitationId()).getInviter();
       invitationService.deleteInvitation(message.getInvitationId());
@@ -116,13 +119,15 @@ public class ChatController {
         OutboundChatRoomMessage responderMessage = new OutboundChatRoomMessage(message.getType());
         responderMessage.setMessage("You declined " + originalInviter.getName() + "'s invitation to play a game!");
         addInvitationsListToMessage(responderMessage, originalInviter);
-        simpMessagingTemplate.convertAndSendToUser(String.valueOf(responder.getId()), "/queue/messages", responderMessage);
-        
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(responder.getId()), "/queue/messages",
+            responderMessage);
+
         //
         OutboundChatRoomMessage originalInviterMessage = new OutboundChatRoomMessage(message.getType());
         originalInviterMessage.setMessage(responder.getName() + " declined your invitation to play a game!");
         addInvitationsListToMessage(originalInviterMessage, originalInviter);
-        simpMessagingTemplate.convertAndSendToUser(String.valueOf(originalInviter.getId()), "/queue/messages", originalInviterMessage);
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(originalInviter.getId()), "/queue/messages",
+            originalInviterMessage);
 
       } else if (message.getType() == OutboundChatRoomMessageType.ACCEPT) {
         User aiUser = User.createAIUser();
@@ -137,13 +142,15 @@ public class ChatController {
         responderMessage.setMessage("You accepted " + originalInviter.getName() + "'s invitation to play a game!");
         responderMessage.setGame(GameDTO.fromGame(game));
         addInvitationsListToMessage(responderMessage, responder);
-        simpMessagingTemplate.convertAndSendToUser(String.valueOf(responder.getId()), "/queue/messages", responderMessage);
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(responder.getId()), "/queue/messages",
+            responderMessage);
 
         OutboundChatRoomMessage originalInviterMessage = new OutboundChatRoomMessage(message.getType());
         originalInviterMessage.setMessage(responder.getName() + " accepted your invitation to play a game!");
         originalInviterMessage.setGame(GameDTO.fromGame(game));
         addInvitationsListToMessage(originalInviterMessage, originalInviter);
-        simpMessagingTemplate.convertAndSendToUser(String.valueOf(originalInviter.getId()), "/queue/messages", originalInviterMessage);
+        simpMessagingTemplate.convertAndSendToUser(String.valueOf(originalInviter.getId()), "/queue/messages",
+            originalInviterMessage);
 
         // Let everyone know these players are leaving to play a game
         OutboundMessage chatMessage = new OutboundMessage(PublicMessageType.STARTING_GAME,
@@ -168,8 +175,34 @@ public class ChatController {
 
   @MessageMapping("/game/{room}")
   @SendTo("/topic/{room}")
-  public OutboundMessage sendMessageToRoom(@DestinationVariable String room, @Payload OutboundMessage chatMessage) {
-    System.err.println("Receieved game message for room " + room);
+  public OutgoingGameMessage sendMessageToRoom(SimpMessageHeaderAccessor sha, @Payload InboundGameMessage msg,
+      @DestinationVariable String room) {
+        System.out.println("sendMessageToRoom called in room: " + room);
+
+    User sender = getSender(sha);
+
+    if (msg.getType() == InboundGameMessageType.GAME_SNAPSHOT) {
+      List<Game> games = gamesService.getUserActiveGames(sender);
+      if (games.size() > 1) {
+        System.err.println("User has more than one active game");
+        return null;
+      }
+      Game game = games.get(0);
+
+      GameSnapshot savedSnapshot = gamesService.addGameSnapshot(game.getId(), msg.getGameSnapshot());
+      List<GameSnapshot> snapshots = game.getGameSnapshots();
+      snapshots.add(savedSnapshot);
+      // game.getGameSnapshots().add(gameSnapshot);
+
+      // outgoingGameMessage.setActivePlayers(game.getPlayers());
+      OutgoingGameMessage outgoingGameMessage = new OutgoingGameMessage(snapshots);
+      for(GameSnapshot snapshot : snapshots) {
+        System.out.println("snap update data " + snapshot.getSnapshotUpdateData());
+      }
+      return outgoingGameMessage;
+
+    }
+    return null;
     // Kick out the user if they are not in the game
     // Also send them a private message saying they were kicked out
 
@@ -177,7 +210,7 @@ public class ChatController {
     // We can simply send the game snapshot to all users in the room
     // System.out.println("new chat msg: " + chatMessage.getContent() + " sent to
     // room " + room);
-    return chatMessage;
+    // return chatMessage;
   }
 
 }

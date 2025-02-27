@@ -5,14 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.wildeparty.model.Current;
 import com.wildeparty.model.SnapshotUpdateData;
 import com.wildeparty.model.User;
 import com.wildeparty.model.cards.Card;
 import com.wildeparty.model.cards.CardActionResult;
-import com.wildeparty.model.cards.SnapshotUpdater;
 import com.wildeparty.utils.CardActionResultsMapJsonConverter;
 import com.wildeparty.utils.CurrentJsonConverter;
 import com.wildeparty.utils.DeckCreator;
@@ -21,15 +19,12 @@ import com.wildeparty.utils.NonPlayerPlacesJsonConverter;
 import com.wildeparty.utils.PlayersListJsonConverter;
 import com.wildeparty.utils.SnapshotUpdateDataJsonConverter;
 
-import ch.qos.logback.core.joran.action.Action;
-import jakarta.annotation.Generated;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.wildeparty.model.User;
 import com.wildeparty.model.gameElements.Game;
+import com.wildeparty.model.gameElements.GameSnapshot;
 
 public interface GamesService {
 
@@ -18,5 +19,7 @@ public interface GamesService {
   public void deleteGame(Long id);
 
   public void updateGame(Game game);
+
+  public GameSnapshot addGameSnapshot(Long gameId, GameSnapshot snapshot);
 
 }
