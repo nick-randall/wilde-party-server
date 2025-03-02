@@ -131,6 +131,10 @@ public class GameSnapshot {
   //   return actionResultsMap;
   // }
 
+  public void resetActionResultsMap() {
+    this.actionResultsMap = new HashMap<Integer, List<CardActionResult>>();
+  }
+
   public void updateLegalTargets() {
     List<Card> currentHandCards = players.get(getCurrent().getPlayer()).getPlaces().getHand().getCards();
     System.out.println("Updating legal targets for " + currentHandCards.size() + " cards");

@@ -23,37 +23,30 @@ public class EnchantAction extends CardAction {
     Player playedCardOwner = utils.findCard(playedCard, gameSnapshot).player;
     TargetPlayerType targetOwnerType = targetCardLocation.player == playedCardOwner ? TargetPlayerType.SELF
         : TargetPlayerType.ENEMY;
+    boolean cardIsEnchant = playedCard.getCardType() == CardType.ENCHANT;
     boolean correctTargetOwnerType = playedCard.getLegalTargetOwnerType() == targetOwnerType;
     boolean correctTargetCardType = playedCard.getTargetCardType() == targetCard.getCardType();
-    System.out.println("Enchant card: " + targetCard.getName() + " Played Card: " + playedCard.getName()
-        + " correct Owner type (" + correctTargetOwnerType + ")");
-    System.out.println("Played Card Target Type = " + playedCard.getTargetCardType() + ", Target Card Type = " + targetCard.getCardType() + "... Correct Target Card type? (" + correctTargetCardType + ")");
-    // Check if BFF to left or any other enchantment to right
     boolean cardAlreadyEnchanted = false;
     List<Card> cards = targetCardLocation.place.getCards();
     int targetCardIndex = cards.indexOf(targetCard);
     boolean checkLeft = targetCardIndex > 0;
-    boolean checkRight = targetCardIndex > cards.size() - 1;
+    boolean checkRight = targetCardIndex < cards.size() - 1;
     if (checkLeft) {
-      System.out.println("Checking left...");
       if (cards.get(targetCardIndex - 1).getCardType() == CardType.BFF) {
         cardAlreadyEnchanted = true;
       }
-      System.out.println("Card already enchantted ? " + cardAlreadyEnchanted);
     }
     if (checkRight) {
-      System.out.println("Checking right...");
       CardType rightNeighbourCardType = cards.get(targetCardIndex + 1).getCardType();
       if (rightNeighbourCardType == CardType.BFF || rightNeighbourCardType == CardType.ENCHANT) {
         cardAlreadyEnchanted = true;
       }
-      System.out.println("Card already enchantted ? " + cardAlreadyEnchanted);
-
     }
-    System.out.println("Card already enchanted (At final count) ? " + cardAlreadyEnchanted);
+    else {
+      System.out.println("No right neighbour to check. targetCardIndex " + targetCardIndex + " > cards.size() - 1: " + (cards.size() - 1));
+    }
 
-    checker.setConditions(correctTargetOwnerType, correctTargetCardType, !cardAlreadyEnchanted);
-    System.out.println(" All conditions passed ? " + checker.areAllTrue());
+    checker.setConditions(cardIsEnchant, correctTargetOwnerType, correctTargetCardType, !cardAlreadyEnchanted);
     return checker.areAllTrue();
   }
 

@@ -86,11 +86,11 @@ public class Player implements Serializable, GameEntity {
         place.gatherCardActionResults(gameSnapshot, playedCard, cardActionResults);
       }
     }
-    System.out.println("Card action results for player " + name + " are: ");
-    for (CardActionResult cardActionResult : cardActionResults) {
-      if (cardActionResult.getSnapshotUpdateData() != null)
-        System.out.println(cardActionResult.getSnapshotUpdateData());
-    }
+    // System.out.println("Card action results for player " + name + " are: ");
+    // for (CardActionResult cardActionResult : cardActionResults) {
+    //   if (cardActionResult.getSnapshotUpdateData() != null)
+    //     System.out.println(cardActionResult.getSnapshotUpdateData());
+    // }
   }
 
 }

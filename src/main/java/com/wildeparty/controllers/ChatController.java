@@ -174,7 +174,7 @@ public class ChatController {
   }
 
   @MessageMapping("/game/{room}")
-  @SendTo("/topic/{room}")
+  @SendTo("/topic/game/{room}")
   public OutgoingGameMessage sendMessageToRoom(SimpMessageHeaderAccessor sha, @Payload InboundGameMessage msg,
       @DestinationVariable String room) {
         System.out.println("sendMessageToRoom called in room: " + room);
@@ -191,6 +191,7 @@ public class ChatController {
 
       GameSnapshot savedSnapshot = gamesService.addGameSnapshot(game.getId(), msg.getGameSnapshot());
       List<GameSnapshot> snapshots = game.getGameSnapshots();
+      savedSnapshot.updateLegalTargets();
       snapshots.add(savedSnapshot);
       // game.getGameSnapshots().add(gameSnapshot);
 

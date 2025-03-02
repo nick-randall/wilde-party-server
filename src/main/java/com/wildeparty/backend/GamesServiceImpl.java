@@ -105,6 +105,7 @@ public class GamesServiceImpl implements GamesService {
       newSnapshots.addAll(existingGameSnapshots);
       // Required to avoid an error when saving the snapshot
       snapshot.setId(null);
+      snapshot.resetActionResultsMap();
       newSnapshots.add(snapshot);
       existinggame.setGameSnapshots(newSnapshots);
       gamesRepository.save(existinggame);
