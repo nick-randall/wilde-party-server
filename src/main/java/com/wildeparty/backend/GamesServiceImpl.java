@@ -96,7 +96,7 @@ public class GamesServiceImpl implements GamesService {
   }
 
   @Override
-  public GameSnapshot addGameSnapshot(Long gameId, GameSnapshot snapshot) {
+  public Game addGameSnapshot(Long gameId, GameSnapshot snapshot) {
     Optional<Game> game = gamesRepository.findById(gameId);
     if(game.isPresent()) {
       Game existinggame = game.get();
@@ -109,7 +109,7 @@ public class GamesServiceImpl implements GamesService {
       newSnapshots.add(snapshot);
       existinggame.setGameSnapshots(newSnapshots);
       gamesRepository.save(existinggame);
-      return existinggame.getLatestSnapshot();
+      return existinggame;
     }
     return null;
   }

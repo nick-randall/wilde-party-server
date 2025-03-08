@@ -177,7 +177,7 @@ public class ChatController {
   @SendTo("/topic/game/{room}")
   public OutgoingGameMessage sendMessageToRoom(SimpMessageHeaderAccessor sha, @Payload InboundGameMessage msg,
       @DestinationVariable String room) {
-        System.out.println("sendMessageToRoom called in room: " + room);
+    System.out.println("sendMessageToRoom called in room: " + room);
 
     User sender = getSender(sha);
 
@@ -189,17 +189,14 @@ public class ChatController {
       }
       Game game = games.get(0);
 
-      GameSnapshot savedSnapshot = gamesService.addGameSnapshot(game.getId(), msg.getGameSnapshot());
+      Game savedGame = gamesService.addGameSnapshot(game.getId(), msg.getGameSnapshot());
       List<GameSnapshot> snapshots = game.getGameSnapshots();
-      savedSnapshot.updateLegalTargets();
-      snapshots.add(savedSnapshot);
+      savedGame.getLatestSnapshot().updateLegalTargets();
       // game.getGameSnapshots().add(gameSnapshot);
 
       // outgoingGameMessage.setActivePlayers(game.getPlayers());
-      OutgoingGameMessage outgoingGameMessage = new OutgoingGameMessage(snapshots);
-      for(GameSnapshot snapshot : snapshots) {
-        System.out.println("snap update data " + snapshot.getSnapshotUpdateData());
-      }
+      OutgoingGameMessage outgoingGameMessage = new OutgoingGameMessage(savedGame.getGameSnapshots());
+      savedGame.getLatestSnapshot().printActionResultsMap();
       return outgoingGameMessage;
 
     }

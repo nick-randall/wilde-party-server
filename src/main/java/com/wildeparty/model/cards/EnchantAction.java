@@ -29,10 +29,10 @@ public class EnchantAction extends CardAction {
     boolean cardAlreadyEnchanted = false;
     List<Card> cards = targetCardLocation.place.getCards();
     int targetCardIndex = cards.indexOf(targetCard);
-    boolean checkLeft = targetCardIndex > 0;
+    boolean checkLeft = playedCard.getName().equals("bffs") && targetCardIndex > 1;
     boolean checkRight = targetCardIndex < cards.size() - 1;
     if (checkLeft) {
-      if (cards.get(targetCardIndex - 1).getCardType() == CardType.BFF) {
+      if (cards.get(targetCardIndex - 2).getCardType() == CardType.BFF) {
         cardAlreadyEnchanted = true;
       }
     }
@@ -41,9 +41,6 @@ public class EnchantAction extends CardAction {
       if (rightNeighbourCardType == CardType.BFF || rightNeighbourCardType == CardType.ENCHANT) {
         cardAlreadyEnchanted = true;
       }
-    }
-    else {
-      System.out.println("No right neighbour to check. targetCardIndex " + targetCardIndex + " > cards.size() - 1: " + (cards.size() - 1));
     }
 
     checker.setConditions(cardIsEnchant, correctTargetOwnerType, correctTargetCardType, !cardAlreadyEnchanted);

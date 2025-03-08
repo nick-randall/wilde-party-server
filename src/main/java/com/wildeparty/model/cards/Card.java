@@ -125,9 +125,9 @@ public class Card implements Serializable, GameEntity {
       case SWAP -> TargetPlayerType.ENEMY;
       case DESTROY -> TargetPlayerType.SELF;
       case ENCHANT ->
-        this.getName().toLowerCase() == "perplex" ? TargetPlayerType.ENEMY : TargetPlayerType.SELF;
+        this.getImageName().toLowerCase().equals("perplex") ? TargetPlayerType.ENEMY : TargetPlayerType.SELF;
       case ENCHANT_PLAYER ->
-        this.getName().toLowerCase() == "stromausfall" ? TargetPlayerType.ENEMY : TargetPlayerType.SELF;
+        this.getName().toLowerCase().equals("stromausfall") ? TargetPlayerType.ENEMY : TargetPlayerType.SELF;
       case SORCERY_ON_PLAYER -> TargetPlayerType.SELF;
     };
   }

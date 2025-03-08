@@ -20,6 +20,6 @@ public interface GamesService {
 
   public void updateGame(Game game);
 
-  public GameSnapshot addGameSnapshot(Long gameId, GameSnapshot snapshot);
+  public Game addGameSnapshot(Long gameId, GameSnapshot snapshot);
 
 }

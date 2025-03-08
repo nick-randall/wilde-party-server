@@ -39,7 +39,7 @@ public class CardNames {
           "playlist"
       });
 
-  public static String[] enchantNames = new String[] { "bffs",
+  public static String[] enchantNames = new String[] {
       "zwilling",
       "perplex"
   };

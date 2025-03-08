@@ -104,6 +104,10 @@ public class DeckCreator {
     return createCards(CardType.ENCHANT, CardNames.enchantNames);
   }
 
+  List<Card> createBFFs() {
+    return createCards(CardType.BFF, new String[] { "bffs" });
+  }
+
   List<Card> createUnwanteds() {
     return createCards(CardType.UNWANTED, CardNames.unwantedsNames);
   }
@@ -114,13 +118,13 @@ public class DeckCreator {
 
   public List<Card> createDeck(int numPlayers) {
     List<Card> deck = new ArrayList<Card>();
+    deck.addAll(createEnchantments());
     deck.addAll(createGuests());
     deck.addAll(createSpecials());
-    deck.addAll(createEnchantments());
     deck.addAll(createUnwanteds());
     deck.addAll(createDestroyCards());
     deck.addAll(createEnchantPlayer());
-    Collections.shuffle(deck);
+    // Collections.shuffle(deck);
     deck.addAll(0, createStartGast(numPlayers));
     return deck;
   }

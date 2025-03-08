@@ -63,13 +63,12 @@ public class GameSnapshot {
   @Convert(converter = NonPlayerPlacesJsonConverter.class)
   private NonPlayerPlaces nonPlayerPlaces = new NonPlayerPlaces();
 
-  // JsonInclude + Transient = no database persistence but still JSON serialization  
+  // JsonInclude + Transient = no database persistence but still JSON
+  // serialization
   @Transient
   @JsonProperty
   @Convert(converter = CardActionResultsMapJsonConverter.class)
   Map<Integer, List<CardActionResult>> actionResultsMap = new HashMap<Integer, List<CardActionResult>>();
-
-
 
   public GameSnapshot() {
   }
@@ -111,25 +110,37 @@ public class GameSnapshot {
   }
 
   // public GameSnapshot withCompletePhase() {
-  //   GameSnapshot updatedGameSnapshot = this; // cloneGameSnapshot(this);
-  //   Current current = updatedGameSnapshot.getCurrent();
-  //   switch (current.getPhase()) {
-  //     case DRAW_PHASE:
-  //       current.setPhase(TurnPhase.PLAY_PHASE);
-  //       break;
-  //       case PLAY_PHASE:
-  //       current.setPhase(TurnPhase.);
-  //       break;
-    
-  //     default:
-  //       break;
-  //   }
-  //   return updatedGameSnapshot;
+  // GameSnapshot updatedGameSnapshot = this; // cloneGameSnapshot(this);
+  // Current current = updatedGameSnapshot.getCurrent();
+  // switch (current.getPhase()) {
+  // case DRAW_PHASE:
+  // current.setPhase(TurnPhase.PLAY_PHASE);
+  // break;
+  // case PLAY_PHASE:
+  // current.setPhase(TurnPhase.);
+  // break;
+
+  // default:
+  // break;
+  // }
+  // return updatedGameSnapshot;
   // }
 
   // public Map<Integer, List<CardActionResult>> getActionResultsMap() {
-  //   return actionResultsMap;
+  // return actionResultsMap;
   // }
+
+  public void printActionResultsMap() {
+    System.out.println("Printing action results map");
+    for (Map.Entry<Integer, List<CardActionResult>> entry : actionResultsMap.entrySet()) {
+      System.out.println("Card ID: " + entry.getKey());
+      for (CardActionResult cardActionResult : entry.getValue()) {
+        if (cardActionResult.isLegalTarget()) {
+          System.out.println(cardActionResult);
+        }
+      }
+    }
+  }
 
   public void resetActionResultsMap() {
     this.actionResultsMap = new HashMap<Integer, List<CardActionResult>>();
